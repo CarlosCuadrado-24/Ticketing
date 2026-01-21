@@ -1,176 +1,207 @@
-<div class="qr-scanner-container">
-  <!-- Header -->
-  <div class="scanner-header">
-    <h2>🎫 Escáner de Entradas</h2>
-    <p class="subtitle">Valida las entradas escaneando el código QR</p>
-  </div>
+<!-- Canvas for QR scanning (hidden) -->
+<canvas #canvasElement style="display: none"></canvas>
 
-  <!-- Event Selection -->
-  <div class="event-selection">
-    <label for="eventSelect">Seleccionar Evento:</label>
-    <select
-      id="eventSelect"
-      [value]="selectedEventId()"
-      (change)="onEventChange($any($event.target).value)"
-      [disabled]="isLoading()"
-      class="event-select"
-    >
-      <option value="">-- Selecciona un evento --</option>
-      @for (event of events(); track event.id) {
-        <option [value]="event.id">{{ event.name }} - {{ event.date | date: 'dd/MM/yyyy' }}</option>
-      }
-    </select>
-  </div>
-
-  <!-- Camera Controls -->
-  <div class="camera-controls">
-    @if (!cameraSupported()) {
-      <div class="camera-error">
-        <p>❌ Cámara no disponible</p>
-        <small>Asegúrate de usar HTTPS y permitir acceso a la cámara</small>
-      </div>
-    } @else if (!selectedEventId()) {
-      <div class="camera-disabled">
-        <p>📱 Selecciona un evento para activar el escáner</p>
-      </div>
-    } @else {
-      <div class="camera-buttons">
-        @if (!isCameraActive()) {
-          <button
-            class="btn btn-primary btn-large btn-scan"
-            (click)="startCamera()"
-            [disabled]="isLoading() || !canScan()"
-          >
-            @if (isLoading()) {
-              <span class="spinner"></span> Iniciando...
-            } @else {
-              <span class="btn-icon">📷</span>
-              <span>Escanear Entrada</span>
-            }
-          </button>
-        } @else {
-          <button class="btn btn-danger btn-large" (click)="stopCamera()">
-            <span class="btn-icon">⏹️</span>
-            <span>Detener</span>
-          </button>
+<!-- ESTADO 1: SCANNER VIEW -->
+@if (scanState() === 'scanning') {
+  <div class="scanner-view">
+    <video #videoElement class="camera-video" autoplay playsinline></video>
+    
+    <!-- Event Selector -->
+    <div class="event-selector">
+      <select
+        [value]="selectedEventId()"
+        (change)="onEventChange($any($event.target).value)"
+        [disabled]="isLoading()"
+        class="event-select"
+      >
+        <option value="">-- Selecciona un evento --</option>
+        @for (event of events(); track event.id) {
+          <option [value]="event.id">{{ event.name }} - {{ event.date | date: 'dd/MM/yyyy' }}</option>
         }
+      </select>
+    </div>
+
+    <!-- QR Frame -->
+    <div class="qr-frame">
+      <div class="corner corner-tl"></div>
+      <div class="corner corner-tr"></div>
+      <div class="corner corner-bl"></div>
+      <div class="corner corner-br"></div>
+      <div class="scan-line"></div>
+    </div>
+
+    <!-- Manual Search -->
+    <div class="manual-search">
+      <div class="search-container">
+        <span class="material-symbols-outlined search-icon">barcode_scanner</span>
+        <input
+          type="text"
+          [value]="manualTicketId()"
+          (input)="manualTicketId.set($any($event.target).value)"
+          placeholder="Buscar por ID de ticket..."
+          class="search-input"
+          (keyup.enter)="validateManualTicket()"
+        />
+        <button 
+          class="search-button"
+          (click)="validateManualTicket()"
+          [disabled]="!manualTicketId() || isLoading()"
+        >
+          <span class="material-symbols-outlined">search</span>
+        </button>
       </div>
+    </div>
+
+    <!-- Staff Session Info -->
+    <div class="staff-session">
+      <div class="session-info">
+        <div class="session-item">
+          <span class="material-symbols-outlined">person</span>
+          <span class="session-label">{{ currentUser()?.email || 'STAFF' }}</span>
+        </div>
+        <div class="session-divider"></div>
+        <div class="session-item">
+          <span class="material-symbols-outlined">check_circle</span>
+          <span class="session-label">{{ validatedCount() }} validados</span>
+        </div>
+      </div>
+    </div>
+
+    @if (!isCameraActive()) {
+      <button
+        class="btn-start-camera"
+        (click)="startCamera()"
+        [disabled]="isLoading() || !canScan()"
+      >
+        <span class="material-symbols-outlined">qr_code_scanner</span>
+        <span>Activar Escáner</span>
+      </button>
     }
   </div>
+}
 
-  <!-- Camera View -->
-  @if (isCameraActive()) {
-    <div class="camera-container">
-      <video #videoElement class="camera-video" autoplay playsinline></video>
-
-      <!-- Canvas for QR scanning (hidden) -->
-      <canvas #canvasElement style="display: none"> </canvas>
-
-      <div class="scan-overlay">
-        <div class="scan-frame">
-          <div class="scan-corner scan-corner-tl"></div>
-          <div class="scan-corner scan-corner-tr"></div>
-          <div class="scan-corner scan-corner-bl"></div>
-          <div class="scan-corner scan-corner-br"></div>
-        </div>
-
-        @if (isLoading()) {
-          <div class="scan-status scanning">
-            <div class="spinner-large"></div>
-            <p>Validando entrada...</p>
-          </div>
-        } @else {
-          <div class="scan-instructions">
-            <div class="pulse-icon">📱</div>
-            <p>Coloca el QR dentro del marco</p>
-          </div>
-        }
-      </div>
+<!-- ESTADO 2: SUCCESS VIEW -->
+@if (scanState() === 'success' && lastValidation()) {
+  <div class="validation-view success-view">
+    <!-- Success Icon -->
+    <div class="validation-icon success-icon">
+      <span class="material-symbols-outlined">check_circle</span>
     </div>
-  }
 
-  <!-- Scan Results -->
-  @if (scanResults().length > 0) {
-    <div class="results-section">
-      <div class="results-header">
-        <h3>📋 Últimas Validaciones</h3>
-        <button class="btn btn-small btn-outline" (click)="clearResults()">🗑️ Limpiar</button>
+    <h1 class="validation-title success-title">TICKET VÁLIDO</h1>
+    <p class="validation-subtitle">Acceso permitido al evento</p>
+
+    <!-- Ticket Card -->
+    <div class="ticket-card">
+      <!-- Attendee Info -->
+      <div class="ticket-header">
+        <div class="attendee-info">
+          <h2 class="attendee-name">{{ lastValidation()?.ticket?.buyerEmail || 'Asistente' }}</h2>
+          @if (lastValidation()?.ticket?.type === 'VIP') {
+            <span class="vip-badge">VIP</span>
+          }
+        </div>
       </div>
 
-      <div class="results-list">
-        @for (result of scanResults(); track $index) {
-          <div class="result-item" [ngClass]="getResultClass(result.success)">
-            <div class="result-icon-large">
-              {{ getResultIcon(result.success) }}
-            </div>
-
-            <div class="result-content">
-              <div class="result-status">
-                <span
-                  class="status-badge"
-                  [class.success]="result.success"
-                  [class.error]="!result.success"
-                >
-                  {{ result.success ? 'VÁLIDA' : 'RECHAZADA' }}
-                </span>
-                <span class="result-time">{{ formatTime(result.timestamp) }}</span>
-              </div>
-
-              <p class="result-message">{{ result.message }}</p>
-
-              @if (result.ticket) {
-                <div class="ticket-details">
-                  <div class="ticket-info-grid">
-                    <div class="info-item">
-                      <span class="info-label">Código</span>
-                      <span class="info-value">{{ result.ticket.code }}</span>
-                    </div>
-                    <div class="info-item">
-                      <span class="info-label">Tipo</span>
-                      <span class="info-value">{{ result.ticket.type }}</span>
-                    </div>
-                    <div class="info-item full-width">
-                      <span class="info-label">Comprador</span>
-                      <span class="info-value">{{ result.ticket.buyerEmail }}</span>
-                    </div>
-                  </div>
-
-                  @if (result.ticket.usedAt) {
-                    <div class="usage-info">
-                      <small>⏰ Usado: {{ result.ticket.usedAt | date: 'dd/MM/yyyy HH:mm' }}</small>
-                    </div>
-                  }
-                </div>
-              }
-            </div>
-          </div>
-        }
-      </div>
-    </div>
-  }
-
-  <!-- Quick Instructions (Mobile Optimized) -->
-  @if (!isCameraActive()) {
-    <div class="quick-instructions">
-      <h4>📖 Cómo usar</h4>
-      <div class="instruction-steps">
-        <div class="step">
-          <span class="step-number">1</span>
-          <span class="step-text">Selecciona el evento</span>
+      <!-- Event Details -->
+      <div class="ticket-details">
+        <div class="detail-row">
+          <span class="detail-label">Evento</span>
+          <span class="detail-value">{{ getEventName() }}</span>
         </div>
-        <div class="step">
-          <span class="step-number">2</span>
-          <span class="step-text">Presiona "Escanear Entrada"</span>
+        <div class="detail-row">
+          <span class="detail-label">Tipo</span>
+          <span class="detail-value">{{ lastValidation()?.ticket?.type || 'GENERAL' }}</span>
         </div>
-        <div class="step">
-          <span class="step-number">3</span>
-          <span class="step-text">Apunta al código QR</span>
+        <div class="detail-row">
+          <span class="detail-label">Zona</span>
+          <span class="detail-value">General</span>
         </div>
-        <div class="step">
-          <span class="step-number">4</span>
-          <span class="step-text">Verifica el resultado</span>
+        <div class="detail-row">
+          <span class="detail-label">Fecha</span>
+          <span class="detail-value">{{ getEventDate() }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">ID Ticket</span>
+          <span class="detail-value ticket-id">{{ lastValidation()?.ticket?.code || 'N/A' }}</span>
         </div>
       </div>
     </div>
-  }
-</div>
+
+    <!-- Action Buttons -->
+    <div class="validation-actions">
+      <button class="btn-action btn-primary" (click)="markAsUsed()">
+        <span class="material-symbols-outlined">done</span>
+        <span>Marcar como usado</span>
+      </button>
+      <button class="btn-action btn-secondary" (click)="scanNext()">
+        <span class="material-symbols-outlined">qr_code_scanner</span>
+        <span>Escanear siguiente</span>
+      </button>
+    </div>
+  </div>
+}
+
+<!-- ESTADO 3: ERROR VIEW -->
+@if (scanState() === 'error' && lastValidation()) {
+  <div class="validation-view error-view">
+    <!-- Error Icon -->
+    <div class="validation-icon error-icon">
+      <span class="material-symbols-outlined">close</span>
+    </div>
+
+    <h1 class="validation-title error-title">TICKET YA USADO</h1>
+    <p class="validation-subtitle">Este ticket fue validado anteriormente</p>
+
+    <!-- Used Info Card -->
+    <div class="ticket-card error-card">
+      <div class="error-info">
+        <div class="error-detail">
+          <span class="material-symbols-outlined warning-icon">warning</span>
+          <div class="error-text">
+            <span class="error-label">Usado el:</span>
+            <span class="error-value">{{ lastValidation()?.ticket?.usedAt | date: 'dd/MM/yyyy' }}</span>
+          </div>
+        </div>
+        <div class="error-detail">
+          <span class="material-symbols-outlined">schedule</span>
+          <div class="error-text">
+            <span class="error-label">Hora:</span>
+            <span class="error-value">{{ lastValidation()?.ticket?.usedAt | date: 'HH:mm:ss' }}</span>
+          </div>
+        </div>
+        <div class="error-detail">
+          <span class="material-symbols-outlined">confirmation_number</span>
+          <div class="error-text">
+            <span class="error-label">ID Ticket:</span>
+            <span class="error-value">{{ lastValidation()?.ticket?.code || 'N/A' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="error-badge">
+        <span class="material-symbols-outlined">block</span>
+        <span>ACCESO DENEGADO</span>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="validation-actions">
+      <button class="btn-action btn-primary" (click)="scanNext()">
+        <span class="material-symbols-outlined">qr_code_scanner</span>
+        <span>Escanear siguiente</span>
+      </button>
+      <button class="btn-action btn-secondary" (click)="retryValidation()">
+        <span class="material-symbols-outlined">refresh</span>
+        <span>Reintentar</span>
+      </button>
+    </div>
+
+    <!-- Error Code -->
+    <div class="error-code">
+      <span class="material-symbols-outlined">info</span>
+      <span>ERROR_CODE_409</span>
+    </div>
+  </div>
+}
+

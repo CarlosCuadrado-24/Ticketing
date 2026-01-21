@@ -62,6 +62,10 @@ export class QRScannerComponent implements OnInit, OnDestroy {
   readonly events = signal<any[]>([]);
   readonly scanResults = signal<ScanResult[]>([]);
   readonly currentUser = this.authService.currentUser;
+  readonly scanState = signal<'scanning' | 'success' | 'error'>('scanning');
+  readonly lastValidation = signal<QRValidationResponse | null>(null);
+  readonly manualTicketId = signal<string>('');
+  readonly validatedCount = signal<number>(0);
 
   // Computed
   readonly canScan = computed(
@@ -319,14 +323,16 @@ export class QRScannerComponent implements OnInit, OnDestroy {
         .subscribe(
           (response: QRValidationResponse) => {
             this.addScanResult(response);
+            this.lastValidation.set(response);
 
             if (response.valid) {
+              this.scanState.set('success');
+              this.validatedCount.update(count => count + 1);
               this.toastService.show('¡Entrada válida! Acceso permitido', 'success');
-              // Play success sound (optional)
               this.playSound('success');
             } else {
+              this.scanState.set('error');
               this.toastService.show(response.message, 'error');
-              // Play error sound (optional)
               this.playSound('error');
             }
           },
@@ -452,4 +458,52 @@ export class QRScannerComponent implements OnInit, OnDestroy {
       second: '2-digit',
     });
   }
+
+  // New methods for redesigned UI
+  validateManualTicket() {
+    const ticketId = this.manualTicketId();
+    if (!ticketId || !this.selectedEventId()) {
+      this.toastService.show('Ingresa un ID de ticket válido', 'warning');
+      return;
+    }
+    
+    // Simulate QR detection with manual ID
+    this.onQRDetected(ticketId);
+    this.manualTicketId.set('');
+  }
+
+  markAsUsed() {
+    // Already marked as used during validation
+    this.scanNext();
+  }
+
+  scanNext() {
+    this.scanState.set('scanning');
+    this.lastValidation.set(null);
+    if (this.selectedEventId() && this.cameraSupported()) {
+      this.startCamera();
+    }
+  }
+
+  retryValidation() {
+    this.scanNext();
+  }
+
+  getEventName(): string {
+    const eventId = this.selectedEventId();
+    const event = this.events().find(e => e.id === eventId);
+    return event?.name || 'Evento desconocido';
+  }
+
+  getEventDate(): string {
+    const eventId = this.selectedEventId();
+    const event = this.events().find(e => e.id === eventId);
+    if (!event?.date) return 'Fecha no disponible';
+    return new Date(event.date).toLocaleDateString('es-ES', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    });
+  }
 }
+

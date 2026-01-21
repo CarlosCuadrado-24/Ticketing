@@ -24,6 +24,8 @@
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 77, 0, 0.7);
 }
+
+label {
   display: block;
   margin-bottom: 8px;
   font-weight: 500;
