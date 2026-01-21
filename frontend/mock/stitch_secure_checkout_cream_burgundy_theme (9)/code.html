@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>HARDCORE BRUTALIST | EVENT EXPLORER</title>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Barcode+39+Text&amp;family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&amp;family=Bebas+Neue&amp;family=Cormorant+Garamond:ital,wght@1,700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
+<style type="text/tailwindcss">
+        :root {
+            --primary: #FF4D00;
+            --bg: #000000;
+            --noise: url("https://www.transparenttextures.com/patterns/carbon-fibre.png");
+        }
+        body {
+            background-color: var(--bg);
+            background-image: var(--noise);
+            overflow-x: hidden;
+        }
+        .brutalist-border {
+            border: 8px solid white;
+            box-shadow: 12px 12px 0px var(--primary);
+        }
+        .brutalist-border-orange {
+            border: 8px solid var(--primary);
+            box-shadow: 12px 12px 0px white;
+        }
+        .distorted-title {
+            font-family: 'Bebas Neue', sans-serif;
+            line-height: 0.75;
+            letter-spacing: -0.05em;
+        }
+        .serif-italic {
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+            font-weight: 700;
+        }
+        .mono {
+            font-family: 'Space Mono', monospace;
+        }
+        .barcode {
+            font-family: 'Libre Barcode 39 Text', cursive;
+            font-size: 3rem;
+        }
+        .grain-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.05;
+            background: url('https://upload.wikimedia.org/wikipedia/commons/7/76/1k_Studio_Noise_Texture.png');
+        }
+        .halftone {
+            background-image: radial-gradient(circle, #333 1px, transparent 1px);
+            background-size: 4px 4px;
+        }
+        .torn-edge {
+            clip-path: polygon(0% 0%, 5% 2%, 10% 0%, 15% 3%, 20% 0%, 25% 2%, 30% 0%, 35% 1%, 40% 0%, 45% 2%, 50% 0%, 55% 3%, 60% 0%, 65% 2%, 70% 0%, 75% 1%, 80% 0%, 85% 2%, 90% 0%, 95% 3%, 100% 0%, 100% 100%, 95% 98%, 90% 100%, 85% 97%, 80% 100%, 75% 98%, 70% 100%, 65% 97%, 60% 100%, 55% 98%, 50% 100%, 45% 97%, 40% 100%, 35% 98%, 30% 100%, 25% 97%, 20% 100%, 15% 98%, 10% 100%, 5% 97%, 0% 100%);
+        }
+        .industrial-tape {
+            background-color: var(--primary);
+            color: black;
+            padding: 4px 12px;
+            font-weight: 900;
+            text-transform: uppercase;
+            transform: rotate(-2deg);
+            box-shadow: 2px 2px 0px black;
+            display: inline-block;
+        }
+        .xerox-effect {
+            filter: contrast(300%) grayscale(100%) brightness(80%);
+            mix-blend-mode: screen;
+        }
+        .x-mark {
+            position: absolute;
+            font-size: 20rem;
+            color: rgba(255,255,255,0.05);
+            font-weight: 900;
+            line-height: 1;
+            z-index: -1;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="text-white selection:bg-primary selection:text-black">
+<div class="grain-overlay"></div>
+<div class="x-mark top-0 left-[-5%]">X</div>
+<div class="x-mark bottom-0 right-[-5%]">X</div>
+<header class="relative pt-32 pb-20 px-6 overflow-hidden">
+<div class="max-w-[1400px] mx-auto relative">
+<div class="absolute top-0 right-0 mono text-[10px] text-primary space-y-1">
+<p>REF_ID: 992-AX-001</p>
+<p>STATUS: SYSTEM_ACTIVE</p>
+<p>MANIFEST: 2024_07_EXP</p>
+</div>
+<div class="flex flex-col items-start gap-0 relative">
+<h1 class="distorted-title flex flex-col">
+<span class="text-[14rem] md:text-[22rem] leading-[0.7] z-10 hover:skew-x-12 transition-transform">PRÓXIMOS</span>
+<span class="serif-italic text-[10rem] md:text-[16rem] text-primary leading-[0.5] -mt-10 ml-20 md:ml-40 z-20 mix-blend-difference hover:-skew-x-12 transition-transform">EVENTOS</span>
+</h1>
+</div>
+<div class="mt-20 max-w-4xl relative z-30">
+<div class="bg-white p-2">
+<div class="bg-black border-[10px] border-white p-6 flex items-center gap-4">
+<input class="w-full bg-transparent border-none focus:ring-0 text-4xl mono font-bold uppercase placeholder:text-zinc-800" placeholder="TYPE_SEARCH_QUERY..." type="text"/>
+<button class="bg-primary text-black px-10 py-4 font-black text-2xl hover:bg-white transition-colors">
+                            SCAN
+                        </button>
+</div>
+</div>
+</div>
+</div>
+</header>
+<main class="max-w-[1400px] mx-auto px-6 py-12">
+<div class="flex flex-col md:flex-row gap-16">
+<aside class="w-full md:w-80 flex-shrink-0">
+<div class="sticky top-12 border-l-2 border-primary pl-6 py-4 space-y-12">
+<div class="mono text-xs text-primary mb-8 border-b border-primary/30 pb-4">
+<span class="barcode block mb-2">FILTER_MANIFEST</span>
+<p class="font-bold">// CATEGORY_SELECTION</p>
+</div>
+<nav class="space-y-4 mono">
+<a class="block group" href="#">
+<span class="text-primary mr-2">[X]</span>
+<span class="text-2xl font-bold line-through group-hover:no-underline">ALL_DEPT</span>
+</a>
+<a class="block group text-zinc-500 hover:text-white" href="#">
+<span class="mr-2">[ ]</span>
+<span class="text-2xl font-bold">MUSIC_CORE</span>
+</a>
+<a class="block group text-zinc-500 hover:text-white" href="#">
+<span class="mr-2">[ ]</span>
+<span class="text-2xl font-bold">VISUAL_LAB</span>
+</a>
+<a class="block group text-zinc-500 hover:text-white" href="#">
+<span class="mr-2">[ ]</span>
+<span class="text-2xl font-bold">PERFORMANCE</span>
+</a>
+</nav>
+<div class="space-y-8 pt-8 border-t border-zinc-800">
+<div class="mono">
+<p class="text-xs text-primary mb-4 font-bold">PRICE_THROTTLE [0 - 100]</p>
+<input class="w-full h-8 bg-zinc-900 border-2 border-white appearance-none cursor-crosshair accent-primary" type="range"/>
+</div>
+<div class="mono">
+<p class="text-xs text-primary mb-4 font-bold">TEMPORAL_LOC [DD/MM/YY]</p>
+<input class="w-full bg-black border-2 border-zinc-700 p-4 text-sm font-bold focus:border-primary outline-none" placeholder="00/00/00" type="text"/>
+</div>
+<button class="w-full bg-zinc-900 border-2 border-zinc-700 hover:bg-primary hover:text-black py-4 mono font-black text-xs transition-all uppercase">
+                            TERMINATE_FILTERS
+                        </button>
+</div>
+</div>
+</aside>
+<div class="flex-grow">
+<div class="mb-20 flex justify-between items-end mono border-b-[6px] border-white pb-4">
+<div class="flex items-baseline gap-4">
+<span class="text-8xl font-black leading-none">01</span>
+<span class="text-xl text-primary font-bold">ENTITY_FOUND</span>
+</div>
+<div class="text-right">
+<p class="text-[10px] text-zinc-500 uppercase">sort_order</p>
+<p class="text-lg font-bold">CHRONOLOGICAL</p>
+</div>
+</div>
+<div class="grid grid-cols-1 gap-32">
+<div class="relative group">
+<div class="absolute -top-10 -left-10 w-full h-full bg-primary/20 halftone -z-10 border-[6px] border-primary"></div>
+<div class="brutalist-border bg-black flex flex-col md:flex-row overflow-hidden">
+<div class="w-full md:w-1/2 relative h-[500px] overflow-hidden bg-zinc-800 border-r-[8px] border-white">
+<img alt="High contrast event" class="w-full h-full object-cover xerox-effect group-hover:scale-110 transition-transform duration-1000" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCsKtUU-1iSVyG729IGvrBImV9BSehjDGCqER_pLuIzPumS2aFTpnaujAS2bIrqUKnMb5VeNpcvTfSmcveVdYCfEcTAPU57H7n_qCCyjzbUS8zOqMQkKEmFfwp_eTDakEqf3LyIGOMae_bZ9Rinh0G_c44Flq33kmPMgBp1i0ocAWtObY8_UId1wL5zShWOGOnq7PTO5DAOiW78FkbnUiwizCPHz6tD76CyOI4NuR-MFDbc8gBqxp9_XYc5oAso2plB6kpDQZ2l5--z"/>
+<div class="absolute top-6 left-6 flex flex-col gap-2">
+<span class="industrial-tape text-xl">LIVE_FEED</span>
+<span class="bg-black text-white px-2 py-1 mono text-[10px]">BIT_RATE: 128KBPS</span>
+</div>
+</div>
+<div class="w-full md:w-1/2 p-10 flex flex-col justify-between relative torn-edge bg-black">
+<div class="space-y-6">
+<div class="flex justify-between items-start">
+<p class="mono text-primary font-bold tracking-tighter text-2xl italic">15_JUL / 17:48</p>
+<div class="barcode text-zinc-500 scale-50 origin-top-right">E-0992</div>
+</div>
+<h3 class="distorted-title text-8xl md:text-9xl text-white uppercase group-hover:text-primary transition-colors">
+                                        CONCIERTO<br/>ROCK
+                                    </h3>
+<div class="flex items-center gap-4 border-y-2 border-white/20 py-4 mono">
+<span class="material-symbols-outlined text-primary">location_on</span>
+<span class="text-sm font-bold uppercase">ARENA_STADIUM_ZONE_B</span>
+</div>
+</div>
+<div class="mt-12 flex flex-col sm:flex-row items-stretch sm:items-end gap-6">
+<div class="mono flex-grow">
+<p class="text-xs text-zinc-500 uppercase mb-1">admission_fee</p>
+<p class="text-5xl font-black text-primary">0,00 <span class="text-lg">COP</span></p>
+</div>
+<a class="bg-white text-black px-12 py-6 font-black text-2xl hover:bg-primary transition-all flex items-center justify-center gap-4 group/btn" href="#">
+                                        EXECUTE
+                                        <span class="material-symbols-outlined font-black group-hover/btn:translate-x-2 transition-transform">bolt</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+<div class="md:ml-40 max-w-xl">
+<div class="brutalist-border-orange bg-zinc-900 p-12 relative overflow-hidden">
+<div class="halftone absolute inset-0 opacity-20"></div>
+<div class="relative z-10 flex flex-col items-center text-center">
+<span class="barcode text-white/20 text-6xl mb-6">MORE_ENTITIES_PENDING</span>
+<h4 class="distorted-title text-6xl mb-4">SYSTEM_UPDATE_PENDING</h4>
+<p class="mono text-zinc-400 text-sm">ENCRYPTED DATA STREAM DETECTED. ADDITIONAL PARAMETERS REQUIRED FOR DECODING.</p>
+<div class="mt-8 industrial-tape bg-white text-black">ENCRYPTED_SIGNAL_009</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<footer class="mt-40 border-t-[10px] border-white bg-black p-12">
+<div class="max-w-[1400px] mx-auto flex flex-col md:flex-row justify-between items-start gap-12">
+<div class="space-y-6">
+<h2 class="distorted-title text-7xl">EVENTOS.EXE</h2>
+<p class="mono text-xs text-zinc-500 max-w-sm">
+                    UNDERGROUND BROADCASTING SYSTEM. NO WARRANTIES. NO REGRETS. UNAUTHORIZED ACCESS IS ENCOURAGED.
+                </p>
+<div class="barcode text-primary">COPYRIGHT_ERROR_404</div>
+</div>
+<div class="flex flex-wrap gap-12 mono text-2xl font-black italic">
+<a class="hover:text-primary hover:underline underline-offset-8" href="#">INSTAGRAM</a>
+<a class="hover:text-primary hover:underline underline-offset-8" href="#">TWITTER</a>
+<a class="hover:text-primary hover:underline underline-offset-8" href="#">RA_GUIDE</a>
+<a class="hover:text-primary hover:underline underline-offset-8" href="#">WAVEFORM</a>
+</div>
+</div>
+<div class="mt-20 border-t border-zinc-800 pt-8 flex justify-between items-center mono text-[10px] text-zinc-600">
+<p>TERMINAL_SESSION: 0x88921</p>
+<p>PACKETS_RECEIVED: 100%</p>
+<p>ENCRYPTION: AES-256</p>
+</div>
+</footer>
+
+</body></html>

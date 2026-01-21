@@ -1,0 +1,86 @@
+/* Import Brutalist Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Libre+Barcode+39+Text&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@1,700&display=swap');
+
+:host {
+  display: block;
+  background-color: #000000;
+  background-image: url("https://www.transparenttextures.com/patterns/carbon-fibre.png");
+}
+
+.distorted-title {
+  font-family: 'Bebas Neue', sans-serif;
+  line-height: 0.75;
+  letter-spacing: -0.05em;
+}
+
+.serif-italic {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-weight: 700;
+}
+
+.mono {
+  font-family: 'Space Mono', monospace;
+}
+
+.barcode {
+  font-family: 'Libre Barcode 39 Text', cursive;
+  font-size: 3rem;
+}
+
+.brutalist-border {
+  border: 8px solid white;
+  box-shadow: 12px 12px 0px #FF4D00;
+}
+
+.brutalist-border-orange {
+  border: 8px solid #FF4D00;
+  box-shadow: 12px 12px 0px white;
+}
+
+.grain-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.05;
+  background: url('https://upload.wikimedia.org/wikipedia/commons/7/76/1k_Studio_Noise_Texture.png');
+}
+
+.halftone {
+  background-image: radial-gradient(circle, #333 1px, transparent 1px);
+  background-size: 4px 4px;
+}
+
+.torn-edge {
+  clip-path: polygon(0% 0%, 5% 2%, 10% 0%, 15% 3%, 20% 0%, 25% 2%, 30% 0%, 35% 1%, 40% 0%, 45% 2%, 50% 0%, 55% 3%, 60% 0%, 65% 2%, 70% 0%, 75% 1%, 80% 0%, 85% 2%, 90% 0%, 95% 3%, 100% 0%, 100% 100%, 95% 98%, 90% 100%, 85% 97%, 80% 100%, 75% 98%, 70% 100%, 65% 97%, 60% 100%, 55% 98%, 50% 100%, 45% 97%, 40% 100%, 35% 98%, 30% 100%, 25% 97%, 20% 100%, 15% 98%, 10% 100%, 5% 97%, 0% 100%);
+}
+
+.industrial-tape {
+  background-color: #FF4D00;
+  color: black;
+  padding: 4px 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+  transform: rotate(-2deg);
+  box-shadow: 2px 2px 0px black;
+  display: inline-block;
+}
+
+.xerox-effect {
+  filter: contrast(300%) grayscale(100%) brightness(80%);
+  mix-blend-mode: screen;
+}
+
+.x-mark {
+  position: absolute;
+  font-size: 20rem;
+  color: rgba(255,255,255,0.05);
+  font-weight: 900;
+  line-height: 1;
+  z-index: -1;
+  pointer-events: none;
+}

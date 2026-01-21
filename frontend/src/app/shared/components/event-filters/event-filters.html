@@ -1,86 +1,83 @@
-<div class="space-y-12">
-  <!-- Filters Header -->
-  <section>
-    <h3 class="metadata-text text-primary mb-6 flex items-center gap-2">
-      Filters <span class="material-symbols-outlined text-sm">filter_list</span>
-    </h3>
-    <div class="space-y-4">
-      <!-- Category Filters -->
-      @for (cat of categories; track cat; let i = $index) {
-        <div
-          (click)="selectCategory(cat)"
-          class="group cursor-pointer flex justify-between items-center py-2 border-b transition-colors"
-          [class.border-primary]="selectedCategory === cat"
-          [class.border-white/5]="selectedCategory !== cat"
-          [class.hover:border-primary]="selectedCategory !== cat"
+<div class="border-l-2 border-primary pl-6 py-4 space-y-12">
+  <!-- Header -->
+  <div class="mono text-xs text-primary mb-8 border-b border-primary/30 pb-4">
+    <span class="barcode block mb-2">FILTER_MANIFEST</span>
+    <p class="font-bold">// CATEGORY_SELECTION</p>
+  </div>
+  
+  <!-- Categories -->
+  <nav class="space-y-4 mono">
+    @for (cat of categories; track cat) {
+      <a 
+        (click)="selectCategory(cat)" 
+        class="block group cursor-pointer"
+        [class.text-white]="selectedCategory === cat"
+        [class.text-zinc-500]="selectedCategory !== cat"
+        [class.hover:text-white]="selectedCategory !== cat"
+      >
+        <span class="mr-2" [class.text-primary]="selectedCategory === cat">
+          {{ selectedCategory === cat ? '[X]' : '[ ]' }}
+        </span>
+        <span 
+          class="text-2xl font-bold"
+          [class.line-through]="selectedCategory === cat"
+          [class.group-hover:no-underline]="selectedCategory === cat"
         >
-          <span
-            class="metadata-text transition-colors"
-            [class.text-primary]="selectedCategory === cat"
-            [class.text-white/60]="selectedCategory !== cat"
-            [class.group-hover:text-white]="selectedCategory !== cat"
-          >
-            {{ cat }}
-          </span>
-          <span
-            class="material-symbols-outlined text-xs transition-colors"
-            [class.text-primary]="selectedCategory === cat"
-            [class.text-white/20]="selectedCategory !== cat"
-          >
-            north_east
-          </span>
-        </div>
-      }
+          {{ cat === 'All' ? 'ALL_DEPT' : cat.toUpperCase().replace(' ', '_') }}
+        </span>
+      </a>
+    }
+  </nav>
+  
+  <!-- Additional Filters -->
+  <div class="space-y-8 pt-8 border-t border-zinc-800">
+    <!-- Price Range -->
+    <div class="mono">
+      <p class="text-xs text-primary mb-4 font-bold">PRICE_THROTTLE [0 - {{ priceMax }}]</p>
+      <input 
+        [(ngModel)]="priceMax"
+        (ngModelChange)="applyFilters()"
+        class="w-full h-8 bg-zinc-900 border-2 border-white appearance-none cursor-crosshair accent-primary" 
+        type="range"
+        min="0"
+        max="1000"
+        step="50"
+      />
+      <div class="flex justify-between mt-2 text-xs text-zinc-500">
+        <span>$0</span>
+        <span>${{ priceMax }}+</span>
+      </div>
     </div>
-  </section>
-
-  <!-- Price Range -->
-  <section>
-    <h3 class="metadata-text text-primary mb-6">Price Range</h3>
-    <input
-      type="range"
-      min="0"
-      max="500"
-      [(ngModel)]="priceMax"
-      (ngModelChange)="applyFilters()"
-      class="w-full h-1 bg-white/10 appearance-none cursor-pointer accent-primary"
-    />
-    <div class="flex justify-between mt-4">
-      <span class="metadata-text">$0</span>
-      <span class="metadata-text">${{ priceMax }}+</span>
+    
+    <!-- Date Filter -->
+    <div class="mono">
+      <p class="text-xs text-primary mb-4 font-bold">TEMPORAL_LOC [DD/MM/YY]</p>
+      <input 
+        [(ngModel)]="dateFrom"
+        (ngModelChange)="applyFilters()"
+        class="w-full bg-black border-2 border-zinc-700 p-4 text-sm font-bold focus:border-primary outline-none text-white" 
+        placeholder="00/00/00" 
+        type="date"
+      />
     </div>
-  </section>
-
-  <!-- Date Range -->
-  <section>
-    <h3 class="metadata-text text-primary mb-6 text-xs">Date Range</h3>
-    <input
-      type="date"
-      [(ngModel)]="dateFrom"
-      (ngModelChange)="applyFilters()"
-      class="w-full bg-transparent border border-white/10 px-4 py-3 text-xs uppercase tracking-widest text-white/60 focus:border-primary outline-none"
-    />
-  </section>
-
-  <!-- Location Search -->
-  <section>
-    <h3 class="metadata-text text-primary mb-6 text-xs">Location</h3>
-    <input
-      type="text"
-      [(ngModel)]="location"
-      (ngModelChange)="applyFilters()"
-      placeholder="City or venue..."
-      class="w-full bg-transparent border border-white/10 px-4 py-3 text-xs uppercase tracking-widest text-white/60 placeholder:text-white/20 focus:border-primary outline-none"
-    />
-  </section>
-
-  <!-- Clear Filters -->
-  <section>
-    <button
+    
+    <!-- Location Filter -->
+    <div class="mono">
+      <p class="text-xs text-primary mb-4 font-bold">LOCATION_VECTOR</p>
+      <input 
+        [(ngModel)]="location"
+        (ngModelChange)="applyFilters()"
+        class="w-full bg-black border-2 border-zinc-700 p-4 text-sm font-bold focus:border-primary outline-none text-white placeholder:text-zinc-700" 
+        placeholder="ZONE_QUERY..." 
+        type="text"
+      />
+    </div>
+    
+    <!-- Clear Button -->
+    <button 
       (click)="clearFilters()"
-      class="w-full bg-transparent border border-white/20 text-white px-5 py-3 metadata-text text-[10px] hover:bg-primary hover:border-primary transition-all"
-    >
-      Clear All Filters
+      class="w-full bg-zinc-900 border-2 border-zinc-700 hover:bg-primary hover:text-black py-4 mono font-black text-xs transition-all uppercase">
+      TERMINATE_FILTERS
     </button>
-  </section>
+  </div>
 </div>

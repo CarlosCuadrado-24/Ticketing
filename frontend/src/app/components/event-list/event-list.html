@@ -1,120 +1,98 @@
-<!-- Background Noise -->
-<div class="fixed inset-0 bg-noise pointer-events-none -z-10"></div>
+<!-- Grain Overlay -->
+<div class="grain-overlay"></div>
+
+<!-- Large X Marks Background -->
+<div class="x-mark top-0 left-[-5%]">X</div>
+<div class="x-mark bottom-0 right-[-5%]">X</div>
 
 <!-- Hero Header Section -->
-<header class="pt-32 pb-16 px-6 relative">
-  <div class="max-w-[1440px] mx-auto flex flex-col items-center">
-    <div class="flex items-center gap-4 mb-4">
-      <span class="w-12 h-[1px] bg-primary"></span>
-      <span class="metadata-text text-primary">Explora los mejores eventos</span>
-      <span class="w-12 h-[1px] bg-primary"></span>
+<header class="relative pt-32 pb-20 px-6 overflow-hidden">
+  <div class="max-w-[1400px] mx-auto relative">
+    <!-- System Info Top Right -->
+    <div class="absolute top-0 right-0 mono text-[10px] text-primary space-y-1">
+      <p>REF_ID: 992-AX-001</p>
+      <p>STATUS: SYSTEM_ACTIVE</p>
+      <p>MANIFEST: {{ 'now' | date: 'yyyy_MM_dd' }}</p>
     </div>
-    <h1 class="stylized-heading text-6xl md:text-8xl lg:text-9xl text-center leading-none mb-12">
-      PRÓXIMOS <br /> <span class="text-primary italic">EVENTOS</span>
-    </h1>
-    <div class="w-full max-w-3xl relative group">
-      <input
-        class="w-full bg-transparent border-b-2 border-white/20 focus:border-primary py-6 px-4 text-2xl font-heading uppercase placeholder:text-white/20 outline-none transition-all"
-        placeholder="Buscar evento, artista, ciudad..."
-        type="text"
-      />
-      <button class="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2 group">
-        <span class="metadata-text group-hover:text-primary">Buscar</span>
-        <span class="material-symbols-outlined text-primary group-hover:translate-x-1 transition-transform">arrow_right_alt</span>
-      </button>
+    
+    <!-- Main Title -->
+    <div class="flex flex-col items-start gap-0 relative">
+      <h1 class="distorted-title flex flex-col">
+        <span class="text-[14rem] md:text-[22rem] leading-[0.7] z-10 hover:skew-x-12 transition-transform">PRÓXIMOS</span>
+        <span class="serif-italic text-[10rem] md:text-[16rem] text-primary leading-[0.5] -mt-10 ml-20 md:ml-40 z-20 mix-blend-difference hover:-skew-x-12 transition-transform">EVENTOS</span>
+      </h1>
+    </div>
+    
+    <!-- Search Box -->
+    <div class="mt-20 max-w-4xl relative z-30">
+      <div class="bg-white p-2">
+        <div class="bg-black border-[10px] border-white p-6 flex items-center gap-4">
+          <input 
+            [(ngModel)]="searchQuery"
+            (input)="onSearchInput($event)"
+            class="w-full bg-transparent border-none focus:ring-0 text-4xl mono font-bold uppercase placeholder:text-zinc-800 text-white" 
+            placeholder="TYPE_SEARCH_QUERY..." 
+            type="text"
+          />
+          <button 
+            (click)="onSearch()"
+            class="bg-primary text-black px-10 py-4 font-black text-2xl hover:bg-white transition-colors">
+            SCAN
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </header>
 
 <!-- Main Content Area -->
-<main class="max-w-[1440px] mx-auto px-6 pb-24 grid grid-cols-1 lg:grid-cols-12 gap-12">
-  <!-- Filters Sidebar (Desktop) -->
-  <aside class="lg:col-span-3">
-    <div class="sticky top-28">
-      <app-event-filters></app-event-filters>
-    </div>
-  </aside>
-
-  <!-- Events Grid -->
-  <section class="lg:col-span-9">
-    <!-- Events Counter and Sort -->
-    <div class="flex justify-between items-end mb-12 border-b border-white/10 pb-4">
-      <div class="flex items-baseline gap-2">
-        <span class="stylized-heading text-4xl">{{ events().length }}</span>
-        <span class="metadata-text text-white/40">Eventos Encontrados</span>
-      </div>
-      <div class="flex items-center gap-4">
-        <span class="metadata-text text-white/40">Ordenar por</span>
-        <select
-          class="bg-transparent border-none text-xs uppercase font-bold tracking-widest text-primary focus:ring-0 cursor-pointer p-0"
-        >
-          <option class="bg-background">Recientes</option>
-          <option class="bg-background">Populares</option>
-          <option class="bg-background">Precio</option>
-        </select>
-      </div>
-    </div>
-
-    <!-- Loading State -->
-    @if (isLoading()) {
-      <div class="flex justify-center py-20">
-        <app-loading-spinner size="lg" message="Cargando eventos..."></app-loading-spinner>
-      </div>
-    } @else {
-      <!-- Events Grid -->
-      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-        @for (event of events(); track event.id) {
-          <app-event-card [event]="event"></app-event-card>
-        } @empty {
-          <p class="text-white/40 col-span-full text-center py-10 metadata-text">
-            No se encontraron eventos.
-          </p>
-        }
-      </div>
-    }
-  </section>
-</main>
-
-<!-- Mobile Filters Modal -->
-@if (showFilters()) {
-  <dialog class="fixed inset-0 z-50 lg:hidden" aria-labelledby="filters-title">
-    <!-- Backdrop -->
-    <div
-      class="absolute inset-0 bg-black/50 backdrop-blur-sm"
-      (click)="toggleFilters()"
-      aria-hidden="true"
-      (keydown)="toggleFilters()"
-    ></div>
-
-    <!-- Panel -->
-    <div
-      class="absolute right-0 top-0 h-full w-full max-w-sm bg-white shadow-xl overflow-y-auto animate-slide-in"
-    >
-      <!-- Header -->
-      <div
-        class="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between z-10"
-      >
-        <h2 id="filters-title" class="text-lg font-bold text-gray-900">Filtros de Búsqueda</h2>
-        <button
-          (click)="toggleFilters()"
-          (keydown.enter)="toggleFilters()"
-          (keydown.space)="$event.preventDefault(); toggleFilters()"
-          aria-label="Cerrar filtros"
-          class="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-        >
-          <span class="material-symbols-outlined text-gray-600">close</span>
-        </button>
-      </div>
-
-      <!-- Filters Content -->
-      <div class="p-6">
+<main class="max-w-[1400px] mx-auto px-6 py-12">
+  <div class="flex flex-col md:flex-row gap-16">
+    <!-- Filters Sidebar (Desktop) -->
+    <aside class="w-full md:w-80 flex-shrink-0">
+      <div class="sticky top-12">
         <app-event-filters></app-event-filters>
       </div>
-
-      <!-- Footer -->
-      <div class="sticky bottom-0 bg-white border-t border-gray-200 px-6 py-4">
-        <button (click)="toggleFilters()" class="btn-primary w-full">Ver Resultados</button>
+    </aside>
+    
+    <!-- Events Section -->
+    <div class="flex-grow">
+      <!-- Events Counter and Sort -->
+      <div class="mb-20 flex justify-between items-end mono border-b-[6px] border-white pb-4">
+        <div class="flex items-baseline gap-4">
+          <span class="text-8xl font-black leading-none">{{ events().length.toString().padStart(2, '0') }}</span>
+          <span class="text-xl text-primary font-bold">ENTITY_FOUND</span>
+        </div>
+        <div class="text-right">
+          <p class="text-[10px] text-zinc-500 uppercase">sort_order</p>
+          <p class="text-lg font-bold">CHRONOLOGICAL</p>
+        </div>
       </div>
+      
+      <!-- Loading State -->
+      @if (isLoading()) {
+        <div class="flex justify-center py-20">
+          <app-loading-spinner size="lg" message="LOADING_ENTITIES..."></app-loading-spinner>
+        </div>
+      } @else {
+        <!-- Events List -->
+        <div class="grid grid-cols-1 gap-32">
+          @for (event of events(); track event.id) {
+            <app-event-card [event]="event"></app-event-card>
+          } @empty {
+            <div class="md:ml-40 max-w-xl">
+              <div class="brutalist-border-orange bg-zinc-900 p-12 relative overflow-hidden">
+                <div class="halftone absolute inset-0 opacity-20"></div>
+                <div class="relative z-10 flex flex-col items-center text-center">
+                  <span class="barcode text-white/20 text-6xl mb-6">NO_ENTITIES_FOUND</span>
+                  <h4 class="distorted-title text-6xl mb-4">SEARCH_FAILED</h4>
+                  <p class="mono text-zinc-400 text-sm">NO DATA MATCHES YOUR QUERY PARAMETERS. TRY ADJUSTING FILTERS.</p>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      }
     </div>
-  </dialog>
-}
+  </div>
+</main>

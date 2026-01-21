@@ -1,52 +1,72 @@
-<div class="group border border-white/10 hover:border-primary transition-all bg-surface/30">
-  <div class="aspect-[4/5] relative overflow-hidden">
-    <!-- Event Image -->
-    <img
-      [src]="getEventImage()"
-      [alt]="event.name"
-      class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
-    />
-    
-    <!-- Gradient Overlay -->
-    <div class="absolute inset-0 bg-gradient-to-t from-background to-transparent opacity-80"></div>
-    
-    <!-- Live Badge -->
-    <div class="absolute top-4 left-4 flex items-center gap-1">
-      <span class="material-symbols-outlined text-primary text-sm">star</span>
-      <span class="metadata-text text-white">Live</span>
+<div class="relative group">
+  <!-- Halftone Background Shadow -->
+  <div class="absolute -top-10 -left-10 w-full h-full bg-primary/20 halftone -z-10 border-[6px] border-primary"></div>
+  
+  <!-- Main Card Container -->
+  <div class="brutalist-border bg-black flex flex-col md:flex-row overflow-hidden">
+    <!-- Image Section -->
+    <div class="w-full md:w-1/2 relative h-[500px] overflow-hidden bg-zinc-800 border-r-[8px] border-white">
+      <img 
+        [src]="getEventImage()" 
+        [alt]="event.name" 
+        class="w-full h-full object-cover xerox-effect group-hover:scale-110 transition-transform duration-1000"
+      />
+      
+      <!-- Live Badge -->
+      <div class="absolute top-6 left-6 flex flex-col gap-2">
+        <span class="industrial-tape text-xl">LIVE_FEED</span>
+        <span class="bg-black text-white px-2 py-1 mono text-[10px]">
+          {{ getTotalAvailableTickets() }} AVAILABLE
+        </span>
+      </div>
     </div>
     
-    <!-- Card Content -->
-    <div class="absolute bottom-6 left-6 right-6">
-      <!-- Date and Time -->
-      <p class="metadata-text text-primary mb-2">
-        {{ event.date | date: 'dd MMM / HH:mm' }}
-      </p>
-      
-      <!-- Event Title -->
-      <h4 class="stylized-heading text-3xl leading-tight mb-4 line-clamp-2">
-        {{ event.name }}
-      </h4>
-      
-      <!-- Location -->
-      <div class="flex items-center gap-2 mb-6">
-        <span class="material-symbols-outlined text-xs text-white/40">location_on</span>
-        <span class="metadata-text text-white/40 truncate">{{ event.location }}</span>
+    <!-- Content Section -->
+    <div class="w-full md:w-1/2 p-10 flex flex-col justify-between relative torn-edge bg-black">
+      <div class="space-y-6">
+        <!-- Date and Barcode -->
+        <div class="flex justify-between items-start">
+          <p class="mono text-primary font-bold tracking-tighter text-2xl italic">
+            {{ event.date | date: 'dd_MMM / HH:mm' }}
+          </p>
+          <div class="barcode text-zinc-500 scale-50 origin-top-right">
+            E-{{ event.id.toString().padStart(4, '0') }}
+          </div>
+        </div>
+        
+        <!-- Event Title -->
+        <h3 class="distorted-title text-8xl md:text-9xl text-white uppercase group-hover:text-primary transition-colors">
+          {{ event.name }}
+        </h3>
+        
+        <!-- Location -->
+        <div class="flex items-center gap-4 border-y-2 border-white/20 py-4 mono">
+          <span class="material-symbols-outlined text-primary">location_on</span>
+          <span class="text-sm font-bold uppercase">{{ event.location }}</span>
+        </div>
+        
+        <!-- Description Preview -->
+        @if (event.description) {
+          <p class="mono text-zinc-400 text-xs line-clamp-3">
+            {{ event.description }}
+          </p>
+        }
       </div>
       
-      <!-- Price and Button -->
-      <div class="flex items-center justify-between pt-4 border-t border-white/10">
-        <div>
-          <span class="metadata-text text-white/40 block mb-1">Desde</span>
-          <span class="stylized-heading text-xl text-primary">
+      <!-- Price and Action -->
+      <div class="mt-12 flex flex-col sm:flex-row items-stretch sm:items-end gap-6">
+        <div class="mono flex-grow">
+          <p class="text-xs text-zinc-500 uppercase mb-1">admission_fee</p>
+          <p class="text-5xl font-black text-primary">
             {{ getMinPrice() | currencyFormat }}
-          </span>
+            <span class="text-lg">COP</span>
+          </p>
         </div>
-        <a
+        <a 
           [routerLink]="['/event', event.id]"
-          class="bg-primary text-white py-3 px-6 metadata-text text-[10px] hover:bg-white hover:text-black transition-all"
-        >
-          VER EVENTO
+          class="bg-white text-black px-12 py-6 font-black text-2xl hover:bg-primary transition-all flex items-center justify-center gap-4 group/btn">
+          EXECUTE
+          <span class="material-symbols-outlined font-black group-hover/btn:translate-x-2 transition-transform">bolt</span>
         </a>
       </div>
     </div>

@@ -1,1 +1,46 @@
-/* Event Card Styles */
+/* Event Card Brutalist Styles */
+
+.brutalist-border {
+  border: 8px solid white;
+  box-shadow: 12px 12px 0px #FF4D00;
+}
+
+.halftone {
+  background-image: radial-gradient(circle, #333 1px, transparent 1px);
+  background-size: 4px 4px;
+}
+
+.torn-edge {
+  clip-path: polygon(0% 0%, 5% 2%, 10% 0%, 15% 3%, 20% 0%, 25% 2%, 30% 0%, 35% 1%, 40% 0%, 45% 2%, 50% 0%, 55% 3%, 60% 0%, 65% 2%, 70% 0%, 75% 1%, 80% 0%, 85% 2%, 90% 0%, 95% 3%, 100% 0%, 100% 100%, 95% 98%, 90% 100%, 85% 97%, 80% 100%, 75% 98%, 70% 100%, 65% 97%, 60% 100%, 55% 98%, 50% 100%, 45% 97%, 40% 100%, 35% 98%, 30% 100%, 25% 97%, 20% 100%, 15% 98%, 10% 100%, 5% 97%, 0% 100%);
+}
+
+.industrial-tape {
+  background-color: #FF4D00;
+  color: black;
+  padding: 4px 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+  transform: rotate(-2deg);
+  box-shadow: 2px 2px 0px black;
+  display: inline-block;
+}
+
+.xerox-effect {
+  filter: contrast(300%) grayscale(100%) brightness(80%);
+  mix-blend-mode: screen;
+}
+
+.distorted-title {
+  font-family: 'Bebas Neue', sans-serif;
+  line-height: 0.75;
+  letter-spacing: -0.05em;
+}
+
+.mono {
+  font-family: 'Space Mono', monospace;
+}
+
+.barcode {
+  font-family: 'Libre Barcode 39 Text', cursive;
+  font-size: 3rem;
+}
