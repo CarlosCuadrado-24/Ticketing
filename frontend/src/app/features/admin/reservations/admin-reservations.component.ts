@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AdminService } from '../../../services/admin.service';
 import { EventService } from '../../../services/event.service';
-import { AdminReservation, ReservationsQuery } from '../../../models/admin.model';
+import { AdminReservationData, ReservationsQuery } from '../../../models/admin.model';
 import { Event } from '../../../models/event.model';
 import { CurrencyFormatPipe } from '../../../shared/pipes/currency-format.pipe';
 
@@ -15,7 +15,7 @@ import { CurrencyFormatPipe } from '../../../shared/pipes/currency-format.pipe';
   styleUrl: './admin-reservations.component.css',
 })
 export class AdminReservationsComponent implements OnInit {
-  reservations: AdminReservation[] = [];
+  reservations: AdminReservationData[] = [];
   events: Event[] = [];
   filters: ReservationsQuery = { page: 1, limit: 10 };
   pagination: any = null;

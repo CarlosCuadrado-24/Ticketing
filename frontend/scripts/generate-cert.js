@@ -73,7 +73,7 @@ try {
   console.log('');
   console.log('💡 Uso:');
   console.log('   npm run start:ssl');
-  console.log('   https://localhost:4200');
+  console.log('   https://localhost');
   console.log('');
   console.log('📱 Para móvil, usa tu IP local:');
   console.log('   https://[TU_IP]:4200');

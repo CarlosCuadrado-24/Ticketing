@@ -999,7 +999,7 @@ export class EmailService {
     handlebars.registerHelper("qrCodeUrl", (qrToken: string) => {
       const baseUrl = this.configService.get<string>(
         "FRONTEND_URL",
-        "http://localhost:4200",
+        "https://localhost",
       );
       return `${baseUrl}/qr/${qrToken}`;
     });
@@ -1085,7 +1085,7 @@ export class EmailService {
         ),
         websiteUrl: this.configService.get<string>(
           "FRONTEND_URL",
-          "http://localhost:4200",
+          "https://localhost",
         ),
       };
 
@@ -1269,7 +1269,7 @@ export class EmailService {
         ),
         websiteUrl: this.configService.get<string>(
           "FRONTEND_URL",
-          "http://localhost:4200",
+          "https://localhost",
         ),
       };
 

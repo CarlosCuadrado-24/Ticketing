@@ -71,6 +71,10 @@ export class EventFormComponent implements OnInit {
           price: [''],
           quantity: [''],
         }),
+        early_bird: this.fb.group({
+          price: [''],
+          quantity: [''],
+        }),
       }),
     });
   }

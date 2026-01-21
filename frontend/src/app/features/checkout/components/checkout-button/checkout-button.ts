@@ -1,7 +1,8 @@
 import { Component, Input, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { CheckoutService, CartItem } from '../../services/checkout.service';
+import { CheckoutService } from '../../services/checkout.service';
+import { CartItem } from '../../services/cart.service';
 import { ToastService } from '../../../../core/services/toast.service';
 import { AuthService } from '../../../../core/services/auth.service';
 
@@ -35,7 +36,7 @@ export class CheckoutButton {
     if (!this.authService.isAuthenticated()) {
       this.toastService.show('Inicia sesión para continuar con el pago', 'info');
       // Save intended checkout so we can resume after login
-      this.checkoutService.savePendingCheckout(validItems, this.eventId, this.eventName);
+      this.checkoutService.savePendingCheckout();
       this.router.navigate(['/login'], { queryParams: { redirect: '/checkout' } });
       return;
     }

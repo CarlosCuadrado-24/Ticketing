@@ -89,7 +89,7 @@ export class AuthComponent {
         next: () => {
           const user = this.authService.currentUser();
           // Resume pending checkout if exists
-          if (this.checkoutService.resumePendingCheckout()) {
+          if (this.checkoutService.restorePendingCheckout()) {
             this.router.navigate(['/checkout']);
             return;
           }

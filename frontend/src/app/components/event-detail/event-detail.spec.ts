@@ -33,12 +33,20 @@ describe('EventDetail', () => {
 
   beforeEach(async () => {
     const selectedEventSignal = signal(mockEvent);
-    eventService = jasmine.createSpyObj('EventService', ['loadEventById', 'clearSelectedEvent'], {
-      selectedEvent: selectedEventSignal,
-      isLoading: signal(false),
+    const isLoadingSignal = signal(false);
+    
+    eventService = jasmine.createSpyObj('EventService', ['loadEventById', 'clearSelectedEvent']);
+    Object.defineProperty(eventService, 'selectedEvent', {
+      get: () => selectedEventSignal,
+      configurable: true
     });
-    orders = jasmine.createSpyObj('Orders', []);
-    checkoutService = jasmine.createSpyObj('CheckoutService', ['clearCart', 'addToCart']);
+    Object.defineProperty(eventService, 'isLoading', {
+      get: () => isLoadingSignal,
+      configurable: true
+    });
+    
+    orders = jasmine.createSpyObj('Orders', ['createOrder']);
+    checkoutService = jasmine.createSpyObj('CheckoutService', ['clearCart', 'addToCart', 'setEventInfo']);
     toastService = jasmine.createSpyObj('ToastService', ['show']);
     router = jasmine.createSpyObj('Router', ['navigate']);
     route = { snapshot: { paramMap: { get: () => '1' } } };
@@ -57,7 +65,7 @@ describe('EventDetail', () => {
 
     fixture = TestBed.createComponent(EventDetail);
     component = fixture.componentInstance;
-    await fixture.whenStable();
+    fixture.detectChanges();
   });
 
   it('should create', () => {

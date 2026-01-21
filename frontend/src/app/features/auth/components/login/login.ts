@@ -152,7 +152,7 @@ export class LoginComponent {
         next: () => {
           const user = this.authService.currentUser();
           // If there is a pending checkout, resume it and go to /checkout
-          if (this.checkoutService.resumePendingCheckout()) {
+          if (this.checkoutService.restorePendingCheckout()) {
             this.router.navigate(['/checkout']);
             return;
           }

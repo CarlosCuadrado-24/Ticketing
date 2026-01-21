@@ -32,7 +32,12 @@ describe('errorInterceptor', () => {
   });
 
   it('should handle 401 errors by logging out', async () => {
-    const logoutSpy = spyOn(authService, 'logout');
+    const logoutSpy = spyOn(authService, 'logout').and.returnValue({
+      subscribe: (callbacks: any) => {
+        callbacks.next();
+        return { unsubscribe: () => {} };
+      }
+    } as any);
 
     const promise = httpClient
       .get('/api/test')

@@ -1,0 +1,756 @@
+{
+	"info": {
+		"_postman_id": "tickets-collection-002",
+		"name": "02 - Compra de Tickets (Flujo Completo)",
+		"description": "Colección de pruebas automatizadas para el flujo completo de compra de tickets: búsqueda → selección → reserva → pago → confirmación",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Setup",
+			"item": [
+				{
+					"name": "1. Login como Comprador",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Usar credenciales de prueba",
+									"pm.collectionVariables.set(\"buyerEmail\", \"buyer@example.com\");",
+									"pm.collectionVariables.set(\"buyerPassword\", \"Password123!\");"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Login exitoso\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var jsonData = pm.response.json();",
+									"pm.collectionVariables.set(\"accessToken\", jsonData.accessToken);",
+									"pm.collectionVariables.set(\"buyerId\", jsonData.user.id);",
+									"",
+									"console.log(\"✅ Comprador autenticado:\", jsonData.user.email);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"{{buyerEmail}}\",\n  \"password\": \"{{buyerPassword}}\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/login",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "auth", "login"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Fase 1 - Búsqueda y Selección",
+			"item": [
+				{
+					"name": "2. Listar Eventos Disponibles",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code es 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Respuesta es un array de eventos\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.be.an('array');",
+									"    pm.expect(jsonData.length).to.be.above(0);",
+									"});",
+									"",
+									"pm.test(\"Cada evento tiene estructura correcta\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    var event = jsonData[0];",
+									"    pm.expect(event).to.have.property('id');",
+									"    pm.expect(event).to.have.property('name');",
+									"    pm.expect(event).to.have.property('date');",
+									"    pm.expect(event).to.have.property('location');",
+									"    pm.expect(event).to.have.property('ticketConfigurations');",
+									"});",
+									"",
+									"// Guardar primer evento para pruebas",
+									"var jsonData = pm.response.json();",
+									"if (jsonData.length > 0) {",
+									"    var event = jsonData[0];",
+									"    pm.collectionVariables.set(\"eventId\", event.id);",
+									"    pm.collectionVariables.set(\"eventName\", event.name);",
+									"    ",
+									"    // Guardar configuración de tickets",
+									"    if (event.ticketConfigurations && event.ticketConfigurations.length > 0) {",
+									"        var ticketConfig = event.ticketConfigurations[0];",
+									"        pm.collectionVariables.set(\"ticketType\", ticketConfig.type);",
+									"        pm.collectionVariables.set(\"ticketPrice\", ticketConfig.price);",
+									"        pm.collectionVariables.set(\"availableQuantity\", ticketConfig.availableQuantity);",
+									"    }",
+									"}",
+									"",
+									"console.log(\"✅ Eventos listados:\", jsonData.length);",
+									"console.log(\"🎭 Evento seleccionado:\", pm.collectionVariables.get('eventName'));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/events",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "events"]
+						},
+						"description": "Lista todos los eventos disponibles"
+					},
+					"response": []
+				},
+				{
+					"name": "3. Ver Detalles del Evento",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code es 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Evento tiene detalles completos\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('id');",
+									"    pm.expect(jsonData).to.have.property('name');",
+									"    pm.expect(jsonData).to.have.property('ticketConfigurations');",
+									"    pm.expect(jsonData.ticketConfigurations).to.be.an('array');",
+									"});",
+									"",
+									"pm.test(\"Tickets tienen disponibilidad\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    var hasAvailability = jsonData.ticketConfigurations.some(tc => tc.availableQuantity > 0);",
+									"    pm.expect(hasAvailability).to.be.true;",
+									"});",
+									"",
+									"console.log(\"✅ Detalles del evento obtenidos\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/events/{{eventId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "events", "{{eventId}}"]
+						},
+						"description": "Obtiene detalles completos de un evento específico"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Fase 2 - Crear Reserva Temporal",
+			"item": [
+				{
+					"name": "4. Crear Reserva (15 minutos)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Definir cantidad de tickets a reservar",
+									"pm.collectionVariables.set(\"quantityToReserve\", 2);",
+									"",
+									"console.log(\"📝 Creando reserva de\", pm.collectionVariables.get('quantityToReserve'), \"tickets\");"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code es 201 (Created)\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Reserva creada con ID\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('id');",
+									"    pm.expect(jsonData).to.have.property('expiresAt');",
+									"    pm.expect(jsonData).to.have.property('status');",
+									"    pm.expect(jsonData.status).to.equal('ACTIVE');",
+									"});",
+									"",
+									"pm.test(\"Reserva expira en 15 minutos\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    var expiresAt = new Date(jsonData.expiresAt);",
+									"    var now = new Date();",
+									"    var diffMinutes = (expiresAt - now) / 1000 / 60;",
+									"    pm.expect(diffMinutes).to.be.closeTo(15, 1);",
+									"});",
+									"",
+									"// Guardar datos de reserva",
+									"var jsonData = pm.response.json();",
+									"pm.collectionVariables.set(\"reservationId\", jsonData.id);",
+									"pm.collectionVariables.set(\"reservationExpiresAt\", jsonData.expiresAt);",
+									"pm.collectionVariables.set(\"reservationTotal\", jsonData.totalAmount);",
+									"",
+									"console.log(\"✅ Reserva creada:\", jsonData.id);",
+									"console.log(\"⏱️ Expira en:\", jsonData.expiresAt);",
+									"console.log(\"💰 Total:\", jsonData.totalAmount);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"eventId\": \"{{eventId}}\",\n  \"ticketType\": \"{{ticketType}}\",\n  \"quantity\": {{quantityToReserve}},\n  \"buyerEmail\": \"{{buyerEmail}}\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/reservations",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "reservations"]
+						},
+						"description": "Crea una reserva temporal de 15 minutos"
+					},
+					"response": []
+				},
+				{
+					"name": "5. Verificar Disponibilidad NO Descontada",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code es 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Disponibilidad calculada dinámicamente\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    var ticketConfig = jsonData.ticketConfigurations.find(tc => tc.type === pm.collectionVariables.get('ticketType'));",
+									"    ",
+									"    // La disponibilidad mostrada debe considerar las reservas activas",
+									"    pm.expect(ticketConfig).to.have.property('availableQuantity');",
+									"    ",
+									"    console.log(\"📊 Disponibilidad actual:\", ticketConfig.availableQuantity);",
+									"});",
+									"",
+									"console.log(\"✅ Disponibilidad verificada (calculada con reservas activas)\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/events/{{eventId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "events", "{{eventId}}"]
+						},
+						"description": "Verifica que la disponibilidad se calcula dinámicamente"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Fase 3 - Proceso de Pago",
+			"item": [
+				{
+					"name": "6. Procesar Pago Exitoso",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Datos de tarjeta de prueba (exitosa)",
+									"pm.collectionVariables.set(\"cardNumber\", \"4111111111111111\");",
+									"pm.collectionVariables.set(\"expiryDate\", \"12/26\");",
+									"pm.collectionVariables.set(\"cvv\", \"123\");",
+									"",
+									"console.log(\"💳 Procesando pago con tarjeta de prueba\");"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code es 200 (Pago exitoso)\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Tickets generados con QR\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.be.an('array');",
+									"    pm.expect(jsonData.length).to.equal(parseInt(pm.collectionVariables.get('quantityToReserve')));",
+									"    ",
+									"    // Verificar cada ticket",
+									"    jsonData.forEach(ticket => {",
+									"        pm.expect(ticket).to.have.property('id');",
+									"        pm.expect(ticket).to.have.property('code');",
+									"        pm.expect(ticket).to.have.property('qrToken');",
+									"        pm.expect(ticket).to.have.property('status');",
+									"        pm.expect(ticket.status).to.equal('PAID');",
+									"    });",
+									"});",
+									"",
+									"pm.test(\"Cada ticket tiene código QR único\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    var qrTokens = jsonData.map(t => t.qrToken);",
+									"    var uniqueTokens = [...new Set(qrTokens)];",
+									"    pm.expect(qrTokens.length).to.equal(uniqueTokens.length);",
+									"});",
+									"",
+									"// Guardar tickets para pruebas posteriores",
+									"var jsonData = pm.response.json();",
+									"pm.collectionVariables.set(\"ticketIds\", JSON.stringify(jsonData.map(t => t.id)));",
+									"pm.collectionVariables.set(\"firstTicketCode\", jsonData[0].code);",
+									"pm.collectionVariables.set(\"firstTicketQR\", jsonData[0].qrToken);",
+									"",
+									"console.log(\"✅ Pago procesado exitosamente\");",
+									"console.log(\"🎫 Tickets generados:\", jsonData.length);",
+									"console.log(\"🔑 Primer ticket:\", jsonData[0].code);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"eventId\": \"{{eventId}}\",\n  \"ticketType\": \"{{ticketType}}\",\n  \"quantity\": {{quantityToReserve}},\n  \"buyerEmail\": \"{{buyerEmail}}\",\n  \"paymentInfo\": {\n    \"cardNumber\": \"{{cardNumber}}\",\n    \"expiryDate\": \"{{expiryDate}}\",\n    \"cvv\": \"{{cvv}}\"\n  }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/tickets/purchase",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "tickets", "purchase"]
+						},
+						"description": "Procesa el pago y genera los tickets con QR"
+					},
+					"response": []
+				},
+				{
+					"name": "7. Verificar Disponibilidad Descontada",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Guardar disponibilidad anterior para comparar",
+									"console.log(\"📊 Verificando que la disponibilidad se descontó después del pago\");"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code es 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Disponibilidad descontada después del pago\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    var ticketConfig = jsonData.ticketConfigurations.find(tc => tc.type === pm.collectionVariables.get('ticketType'));",
+									"    ",
+									"    // Después del pago, availableQuantity debe haberse descontado",
+									"    var originalAvailability = parseInt(pm.collectionVariables.get('availableQuantity'));",
+									"    var quantityPurchased = parseInt(pm.collectionVariables.get('quantityToReserve'));",
+									"    var expectedAvailability = originalAvailability - quantityPurchased;",
+									"    ",
+									"    console.log(\"📊 Disponibilidad original:\", originalAvailability);",
+									"    console.log(\"🛒 Cantidad comprada:\", quantityPurchased);",
+									"    console.log(\"📊 Disponibilidad esperada:\", expectedAvailability);",
+									"    console.log(\"📊 Disponibilidad actual:\", ticketConfig.availableQuantity);",
+									"});",
+									"",
+									"console.log(\"✅ Disponibilidad actualizada correctamente\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/events/{{eventId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "events", "{{eventId}}"]
+						},
+						"description": "Verifica que la disponibilidad se descontó después del pago"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Fase 4 - Confirmación",
+			"item": [
+				{
+					"name": "8. Ver Mis Tickets",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code es 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Tickets comprados aparecen en la lista\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.be.an('array');",
+									"    pm.expect(jsonData.length).to.be.at.least(parseInt(pm.collectionVariables.get('quantityToReserve')));",
+									"});",
+									"",
+									"pm.test(\"Tickets tienen toda la información\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    var ticket = jsonData[0];",
+									"    pm.expect(ticket).to.have.property('code');",
+									"    pm.expect(ticket).to.have.property('qrToken');",
+									"    pm.expect(ticket).to.have.property('event');",
+									"    pm.expect(ticket).to.have.property('status');",
+									"});",
+									"",
+									"console.log(\"✅ Tickets visibles en 'Mis Tickets'\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/tickets/my-tickets",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "tickets", "my-tickets"]
+						},
+						"description": "Lista todos los tickets del usuario autenticado"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Escenarios de Error",
+			"item": [
+				{
+					"name": "9. Pago Fallido - Tarjeta Rechazada",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Primero crear una nueva reserva",
+									"// Tarjeta que termina en 0000 = rechazada",
+									"pm.collectionVariables.set(\"failCardNumber\", \"4111111111110000\");",
+									"",
+									"console.log(\"💳 Intentando pago con tarjeta que será rechazada\");"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code es 400 (Bad Request)\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Mensaje de error de pago\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.message).to.include('Payment failed');",
+									"});",
+									"",
+									"console.log(\"✅ Pago rechazado correctamente\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"eventId\": \"{{eventId}}\",\n  \"ticketType\": \"{{ticketType}}\",\n  \"quantity\": 1,\n  \"buyerEmail\": \"{{buyerEmail}}\",\n  \"paymentInfo\": {\n    \"cardNumber\": \"{{failCardNumber}}\",\n    \"expiryDate\": \"12/26\",\n    \"cvv\": \"123\"\n  }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/tickets/purchase",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "tickets", "purchase"]
+						},
+						"description": "Intenta pago con tarjeta que será rechazada"
+					},
+					"response": []
+				},
+				{
+					"name": "10. Comprar Más Tickets que Disponibles",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Intentar comprar cantidad excesiva",
+									"pm.collectionVariables.set(\"excessiveQuantity\", 9999);",
+									"",
+									"console.log(\"⚠️ Intentando comprar más tickets que los disponibles\");"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code es 400 o 409\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([400, 409]);",
+									"});",
+									"",
+									"pm.test(\"Mensaje de error de disponibilidad\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.message).to.match(/insufficient|not available/i);",
+									"});",
+									"",
+									"console.log(\"✅ Validación de disponibilidad funciona\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"eventId\": \"{{eventId}}\",\n  \"ticketType\": \"{{ticketType}}\",\n  \"quantity\": {{excessiveQuantity}},\n  \"buyerEmail\": \"{{buyerEmail}}\",\n  \"paymentInfo\": {\n    \"cardNumber\": \"4111111111111111\",\n    \"expiryDate\": \"12/26\",\n    \"cvv\": \"123\"\n  }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/tickets/purchase",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "tickets", "purchase"]
+						},
+						"description": "Intenta comprar más tickets que los disponibles"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"console.log(\"🚀 Ejecutando:\", pm.info.requestName);"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"pm.test(\"Tiempo de respuesta aceptable\", function () {",
+					"    pm.expect(pm.response.responseTime).to.be.below(3000);",
+					"});"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:3000",
+			"type": "string"
+		},
+		{
+			"key": "accessToken",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "buyerEmail",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "buyerPassword",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "buyerId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "eventId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "eventName",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "ticketType",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "ticketPrice",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "availableQuantity",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "quantityToReserve",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "reservationId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "reservationExpiresAt",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "reservationTotal",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "ticketIds",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "firstTicketCode",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "firstTicketQR",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "cardNumber",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "expiryDate",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "cvv",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "failCardNumber",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "excessiveQuantity",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

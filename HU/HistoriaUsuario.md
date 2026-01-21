@@ -1,4 +1,4 @@
-### **Historia de Usuario Refinada**
+### **Historia de Usuario**
 
 **Título Sugerido:** `Sugerencia inteligente de tickets alternativos y personalización de mensajes`
 

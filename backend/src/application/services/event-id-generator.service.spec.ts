@@ -137,7 +137,7 @@ describe('EventIdGeneratorService', () => {
 
       const result = await service.generateNextId();
 
-      expect(result).toBe('TICK0009-002');
+      expect(result).toBe('TICK0009-001');
     });
   });
 

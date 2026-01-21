@@ -1,0 +1,514 @@
+{
+	"info": {
+		"_postman_id": "auth-collection-001",
+		"name": "01 - Autenticación y Registro",
+		"description": "Colección de pruebas automatizadas para el flujo de autenticación y registro de usuarios",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. Obtener Token CSRF",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Test: Verificar respuesta exitosa",
+							"pm.test(\"Status code es 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"// Test: Verificar que se recibe el token CSRF",
+							"pm.test(\"Respuesta contiene csrfToken\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.have.property('csrfToken');",
+							"    pm.expect(jsonData.csrfToken).to.be.a('string');",
+							"    pm.expect(jsonData.csrfToken.length).to.be.above(0);",
+							"});",
+							"",
+							"// Guardar token CSRF en variable de colección",
+							"var jsonData = pm.response.json();",
+							"pm.collectionVariables.set(\"csrfToken\", jsonData.csrfToken);",
+							"",
+							"console.log(\"✅ Token CSRF obtenido y guardado:\", jsonData.csrfToken);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/csrf/token",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "csrf", "token"]
+				},
+				"description": "Obtiene el token CSRF necesario para operaciones POST/PUT/DELETE"
+			},
+			"response": []
+		},
+		{
+			"name": "2. Registro de Usuario - Exitoso",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Pre-request: Generar datos únicos para el usuario",
+							"const timestamp = Date.now();",
+							"const randomNum = Math.floor(Math.random() * 10000);",
+							"",
+							"pm.collectionVariables.set(\"testEmail\", `test.user.${timestamp}.${randomNum}@example.com`);",
+							"pm.collectionVariables.set(\"testPassword\", \"Password123!\");",
+							"pm.collectionVariables.set(\"testFirstName\", \"Test\");",
+							"pm.collectionVariables.set(\"testLastName\", \"User\");",
+							"",
+							"console.log(\"📧 Email generado:\", pm.collectionVariables.get(\"testEmail\"));"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Test: Verificar registro exitoso",
+							"pm.test(\"Status code es 201 (Created)\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"// Test: Verificar estructura de respuesta",
+							"pm.test(\"Respuesta contiene datos del usuario\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.have.property('user');",
+							"    pm.expect(jsonData.user).to.have.property('id');",
+							"    pm.expect(jsonData.user).to.have.property('email');",
+							"    pm.expect(jsonData.user).to.have.property('role');",
+							"});",
+							"",
+							"// Test: Verificar rol de usuario",
+							"pm.test(\"Usuario tiene rol BUYER\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.user.role).to.equal('BUYER');",
+							"});",
+							"",
+							"// Test: Verificar tokens JWT",
+							"pm.test(\"Respuesta contiene tokens JWT\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.have.property('accessToken');",
+							"    pm.expect(jsonData).to.have.property('refreshToken');",
+							"});",
+							"",
+							"// Guardar tokens y datos de usuario",
+							"var jsonData = pm.response.json();",
+							"pm.collectionVariables.set(\"accessToken\", jsonData.accessToken);",
+							"pm.collectionVariables.set(\"refreshToken\", jsonData.refreshToken);",
+							"pm.collectionVariables.set(\"userId\", jsonData.user.id);",
+							"",
+							"console.log(\"✅ Usuario registrado exitosamente:\", jsonData.user.email);",
+							"console.log(\"🔑 Access Token guardado\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-CSRF-Token",
+						"value": "{{csrfToken}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"email\": \"{{testEmail}}\",\n  \"password\": \"{{testPassword}}\",\n  \"firstName\": \"{{testFirstName}}\",\n  \"lastName\": \"{{testLastName}}\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/auth/register",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "auth", "register"]
+				},
+				"description": "Registra un nuevo usuario en el sistema"
+			},
+			"response": []
+		},
+		{
+			"name": "3. Registro - Email Duplicado",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Test: Verificar error de email duplicado",
+							"pm.test(\"Status code es 409 (Conflict)\", function () {",
+							"    pm.response.to.have.status(409);",
+							"});",
+							"",
+							"// Test: Verificar mensaje de error",
+							"pm.test(\"Mensaje de error correcto\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.message).to.include('already exists');",
+							"});",
+							"",
+							"console.log(\"✅ Validación de email duplicado funciona correctamente\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-CSRF-Token",
+						"value": "{{csrfToken}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"email\": \"{{testEmail}}\",\n  \"password\": \"{{testPassword}}\",\n  \"firstName\": \"{{testFirstName}}\",\n  \"lastName\": \"{{testLastName}}\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/auth/register",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "auth", "register"]
+				},
+				"description": "Intenta registrar el mismo email dos veces"
+			},
+			"response": []
+		},
+		{
+			"name": "4. Login - Exitoso",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Test: Verificar login exitoso",
+							"pm.test(\"Status code es 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"// Test: Verificar tokens",
+							"pm.test(\"Respuesta contiene tokens\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.have.property('accessToken');",
+							"    pm.expect(jsonData).to.have.property('refreshToken');",
+							"});",
+							"",
+							"// Test: Verificar datos de usuario",
+							"pm.test(\"Respuesta contiene datos de usuario\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.have.property('user');",
+							"    pm.expect(jsonData.user.email).to.equal(pm.collectionVariables.get('testEmail'));",
+							"});",
+							"",
+							"// Actualizar tokens",
+							"var jsonData = pm.response.json();",
+							"pm.collectionVariables.set(\"accessToken\", jsonData.accessToken);",
+							"pm.collectionVariables.set(\"refreshToken\", jsonData.refreshToken);",
+							"",
+							"console.log(\"✅ Login exitoso\");",
+							"console.log(\"🔑 Tokens actualizados\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-CSRF-Token",
+						"value": "{{csrfToken}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"email\": \"{{testEmail}}\",\n  \"password\": \"{{testPassword}}\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/auth/login",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "auth", "login"]
+				},
+				"description": "Inicia sesión con credenciales válidas"
+			},
+			"response": []
+		},
+		{
+			"name": "5. Login - Credenciales Incorrectas",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Test: Verificar error de credenciales",
+							"pm.test(\"Status code es 401 (Unauthorized)\", function () {",
+							"    pm.response.to.have.status(401);",
+							"});",
+							"",
+							"// Test: Verificar mensaje de error",
+							"pm.test(\"Mensaje de error correcto\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.message).to.include('Invalid credentials');",
+							"});",
+							"",
+							"console.log(\"✅ Validación de credenciales incorrectas funciona\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-CSRF-Token",
+						"value": "{{csrfToken}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"email\": \"{{testEmail}}\",\n  \"password\": \"WrongPassword123!\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/auth/login",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "auth", "login"]
+				},
+				"description": "Intenta login con contraseña incorrecta"
+			},
+			"response": []
+		},
+		{
+			"name": "6. Verificar Token JWT",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Test: Verificar acceso con token válido",
+							"pm.test(\"Status code es 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"// Test: Verificar datos de usuario",
+							"pm.test(\"Respuesta contiene datos de usuario autenticado\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.have.property('id');",
+							"    pm.expect(jsonData).to.have.property('email');",
+							"    pm.expect(jsonData.email).to.equal(pm.collectionVariables.get('testEmail'));",
+							"});",
+							"",
+							"console.log(\"✅ Token JWT válido y funcionando\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/api/auth/profile",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "auth", "profile"]
+				},
+				"description": "Verifica que el token JWT funciona correctamente"
+			},
+			"response": []
+		},
+		{
+			"name": "7. Refresh Token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Test: Verificar renovación de token",
+							"pm.test(\"Status code es 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"// Test: Verificar nuevo access token",
+							"pm.test(\"Respuesta contiene nuevo accessToken\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.have.property('accessToken');",
+							"    pm.expect(jsonData.accessToken).to.not.equal(pm.collectionVariables.get('accessToken'));",
+							"});",
+							"",
+							"// Actualizar access token",
+							"var jsonData = pm.response.json();",
+							"pm.collectionVariables.set(\"accessToken\", jsonData.accessToken);",
+							"",
+							"console.log(\"✅ Token renovado exitosamente\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/auth/refresh",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "auth", "refresh"]
+				},
+				"description": "Renueva el access token usando el refresh token"
+			},
+			"response": []
+		},
+		{
+			"name": "8. Logout",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Test: Verificar logout exitoso",
+							"pm.test(\"Status code es 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"// Test: Verificar mensaje de confirmación",
+							"pm.test(\"Mensaje de logout correcto\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.message).to.include('Logged out');",
+							"});",
+							"",
+							"console.log(\"✅ Logout exitoso\");",
+							"console.log(\"🔓 Sesión cerrada\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/api/auth/logout",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "auth", "logout"]
+				},
+				"description": "Cierra la sesión del usuario"
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Script global pre-request",
+					"console.log(\"🚀 Ejecutando request:\", pm.info.requestName);"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Script global de tests",
+					"pm.test(\"Tiempo de respuesta menor a 2000ms\", function () {",
+					"    pm.expect(pm.response.responseTime).to.be.below(2000);",
+					"});",
+					"",
+					"pm.test(\"Content-Type es application/json\", function () {",
+					"    pm.response.to.have.header(\"Content-Type\");",
+					"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+					"});"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:3000",
+			"type": "string"
+		},
+		{
+			"key": "csrfToken",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "accessToken",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "refreshToken",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "testEmail",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "testPassword",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "testFirstName",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "testLastName",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "userId",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

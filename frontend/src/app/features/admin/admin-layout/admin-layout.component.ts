@@ -29,8 +29,6 @@ export class AdminLayoutComponent {
     { path: '/admin/tickets', label: 'Tickets', icon: 'icon-tickets' },
     { path: '/admin/qr-scanner', label: 'Escáner QR', icon: 'icon-qr-scanner' },
     { path: '/admin/users', label: 'Usuarios', icon: 'icon-users', adminOnly: true },
-    { path: '/admin/reservations', label: 'Reservas', icon: 'icon-reservations', adminOnly: true },
-    { path: '/admin/reports', label: 'Reportes', icon: 'icon-reports', adminOnly: true },
   ];
 
   readonly visibleMenuItems = computed(() => {
@@ -49,7 +47,16 @@ export class AdminLayoutComponent {
   readonly isOrganizer = computed(() => this.currentUser()?.role === 'ORGANIZER');
 
   logout() {
-    this.authService.logout();
-    this.router.navigate(['/']);
+    this.authService.logout().subscribe({
+      next: () => {
+        console.log('[AdminLayout] Logout successful');
+        this.router.navigate(['/']);
+      },
+      error: (error) => {
+        console.error('[AdminLayout] Logout error:', error);
+        // Navigate anyway since auth data is cleared
+        this.router.navigate(['/']);
+      }
+    });
   }
 }

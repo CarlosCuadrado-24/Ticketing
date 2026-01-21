@@ -10,8 +10,8 @@ import {
   DashboardStats,
   EventStats,
   TicketStats,
-  AdminTicket,
-  AdminReservation,
+  AdminTicketData,
+  AdminReservationData,
   PaginatedResponse,
   UsersQuery,
   TicketsQuery,
@@ -80,7 +80,7 @@ export class AdminService {
   }
 
   // Ticket Management
-  getTickets(query: TicketsQuery = {}): Observable<PaginatedResponse<AdminTicket>> {
+  getTickets(query: TicketsQuery = {}): Observable<PaginatedResponse<AdminTicketData>> {
     let params = new HttpParams();
 
     console.log('[AdminService] getTickets called with query:', query);
@@ -102,7 +102,7 @@ export class AdminService {
     console.log('[AdminService] Final HTTP params:', params.toString());
     console.log('[AdminService] Making request to:', `${this.apiUrl}/tickets`);
 
-    return this.http.get<PaginatedResponse<AdminTicket>>(`${this.apiUrl}/tickets`, { params }).pipe(
+    return this.http.get<PaginatedResponse<AdminTicketData>>(`${this.apiUrl}/tickets`, { params }).pipe(
       tap((response) => console.log('[AdminService] Success response:', response)),
       catchError((error) => {
         console.error('[AdminService] HTTP Error:', error);
@@ -115,14 +115,14 @@ export class AdminService {
   }
 
   // Reservation Management
-  getReservations(query: ReservationsQuery = {}): Observable<PaginatedResponse<AdminReservation>> {
+  getReservations(query: ReservationsQuery = {}): Observable<PaginatedResponse<AdminReservationData>> {
     let params = new HttpParams();
 
     if (query.status) params = params.set('status', query.status);
     if (query.page) params = params.set('page', query.page.toString());
     if (query.limit) params = params.set('limit', query.limit.toString());
 
-    return this.http.get<PaginatedResponse<AdminReservation>>(`${this.apiUrl}/reservations`, {
+    return this.http.get<PaginatedResponse<AdminReservationData>>(`${this.apiUrl}/reservations`, {
       params,
     });
   }

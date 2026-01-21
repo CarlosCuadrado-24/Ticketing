@@ -91,7 +91,7 @@ export interface TicketStats {
   }>;
 }
 
-export interface AdminTicket {
+export interface AdminTicketData {
   id: string;
   code: string;
   eventId: string;
@@ -107,7 +107,7 @@ export interface AdminTicket {
   usedAt?: Date;
 }
 
-export interface AdminReservation {
+export interface AdminReservationData {
   id: string;
   eventId: string;
   eventName?: string;

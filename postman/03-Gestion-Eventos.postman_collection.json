@@ -1,0 +1,633 @@
+{
+	"info": {
+		"_postman_id": "events-collection-003",
+		"name": "03 - Gestión de Eventos (Organizador)",
+		"description": "Colección de pruebas automatizadas para crear y gestionar eventos como organizador",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Setup",
+			"item": [
+				{
+					"name": "1. Login como Organizador",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set(\"organizerEmail\", \"organizer@example.com\");",
+									"pm.collectionVariables.set(\"organizerPassword\", \"Password123!\");"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Login exitoso\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Usuario es ORGANIZER\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.user.role).to.equal('ORGANIZER');",
+									"});",
+									"",
+									"var jsonData = pm.response.json();",
+									"pm.collectionVariables.set(\"accessToken\", jsonData.accessToken);",
+									"pm.collectionVariables.set(\"organizerId\", jsonData.user.id);",
+									"",
+									"console.log(\"✅ Organizador autenticado:\", jsonData.user.email);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"{{organizerEmail}}\",\n  \"password\": \"{{organizerPassword}}\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/login",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "auth", "login"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2. Obtener Token CSRF",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Token CSRF obtenido\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('csrfToken');",
+									"});",
+									"",
+									"var jsonData = pm.response.json();",
+									"pm.collectionVariables.set(\"csrfToken\", jsonData.csrfToken);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/csrf/token",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "csrf", "token"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Crear Evento",
+			"item": [
+				{
+					"name": "3. Crear Evento Completo",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Generar datos únicos para el evento",
+									"const timestamp = Date.now();",
+									"const eventName = `Concierto Rock ${timestamp}`;",
+									"",
+									"// Fecha futura (30 días desde ahora)",
+									"const futureDate = new Date();",
+									"futureDate.setDate(futureDate.getDate() + 30);",
+									"",
+									"pm.collectionVariables.set(\"newEventName\", eventName);",
+									"pm.collectionVariables.set(\"newEventDate\", futureDate.toISOString());",
+									"pm.collectionVariables.set(\"newEventLocation\", \"Estadio Nacional\");",
+									"pm.collectionVariables.set(\"newEventVenue\", \"Estadio Nacional - Bogotá\");",
+									"",
+									"console.log(\"🎭 Creando evento:\", eventName);",
+									"console.log(\"📅 Fecha:\", futureDate.toISOString());"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code es 201 (Created)\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Evento creado con ID\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('id');",
+									"    pm.expect(jsonData).to.have.property('name');",
+									"    pm.expect(jsonData).to.have.property('ticketConfigurations');",
+									"});",
+									"",
+									"pm.test(\"Configuraciones de tickets creadas\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.ticketConfigurations).to.be.an('array');",
+									"    pm.expect(jsonData.ticketConfigurations.length).to.be.at.least(1);",
+									"    ",
+									"    // Verificar cada configuración",
+									"    jsonData.ticketConfigurations.forEach(config => {",
+									"        pm.expect(config).to.have.property('type');",
+									"        pm.expect(config).to.have.property('price');",
+									"        pm.expect(config).to.have.property('totalQuantity');",
+									"        pm.expect(config).to.have.property('availableQuantity');",
+									"        pm.expect(config.availableQuantity).to.equal(config.totalQuantity);",
+									"    });",
+									"});",
+									"",
+									"// Guardar ID del evento creado",
+									"var jsonData = pm.response.json();",
+									"pm.collectionVariables.set(\"createdEventId\", jsonData.id);",
+									"pm.collectionVariables.set(\"createdEventName\", jsonData.name);",
+									"",
+									"console.log(\"✅ Evento creado:\", jsonData.id);",
+									"console.log(\"🎫 Tipos de tickets:\", jsonData.ticketConfigurations.length);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							},
+							{
+								"key": "X-CSRF-Token",
+								"value": "{{csrfToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"{{newEventName}}\",\n  \"date\": \"{{newEventDate}}\",\n  \"location\": \"{{newEventLocation}}\",\n  \"venueName\": \"{{newEventVenue}}\",\n  \"ticketConfigurations\": [\n    {\n      \"type\": \"VIP\",\n      \"price\": 150,\n      \"currency\": \"USD\",\n      \"quantity\": 50\n    },\n    {\n      \"type\": \"GENERAL\",\n      \"price\": 75,\n      \"currency\": \"USD\",\n      \"quantity\": 200\n    },\n    {\n      \"type\": \"EARLY_BIRD\",\n      \"price\": 60,\n      \"currency\": \"USD\",\n      \"quantity\": 100\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/events",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "events"]
+						},
+						"description": "Crea un evento completo con múltiples tipos de tickets"
+					},
+					"response": []
+				},
+				{
+					"name": "4. Verificar Evento en Lista",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code es 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Evento creado aparece en la lista\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    var createdEventId = pm.collectionVariables.get('createdEventId');",
+									"    var eventFound = jsonData.some(event => event.id === createdEventId);",
+									"    pm.expect(eventFound).to.be.true;",
+									"});",
+									"",
+									"console.log(\"✅ Evento visible en la lista pública\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/events",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "events"]
+						},
+						"description": "Verifica que el evento creado aparece en la lista pública"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Validaciones",
+			"item": [
+				{
+					"name": "5. Crear Evento - Fecha Pasada (Error)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Fecha en el pasado",
+									"const pastDate = new Date('2023-01-01T20:00:00Z');",
+									"pm.collectionVariables.set(\"pastDate\", pastDate.toISOString());",
+									"",
+									"console.log(\"⚠️ Intentando crear evento con fecha pasada\");"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code es 400 (Bad Request)\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Mensaje de error de fecha\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.message).to.match(/date|past|future/i);",
+									"});",
+									"",
+									"console.log(\"✅ Validación de fecha pasada funciona\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							},
+							{
+								"key": "X-CSRF-Token",
+								"value": "{{csrfToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Evento con Fecha Pasada\",\n  \"date\": \"{{pastDate}}\",\n  \"location\": \"Estadio Nacional\",\n  \"venueName\": \"Estadio Nacional - Bogotá\",\n  \"ticketConfigurations\": [\n    {\n      \"type\": \"GENERAL\",\n      \"price\": 50,\n      \"currency\": \"USD\",\n      \"quantity\": 100\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/events",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "events"]
+						},
+						"description": "Intenta crear evento con fecha en el pasado"
+					},
+					"response": []
+				},
+				{
+					"name": "6. Crear Evento - Sin Tickets (Error)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code es 400 (Bad Request)\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Mensaje de error de tickets\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.message).to.match(/ticket|configuration/i);",
+									"});",
+									"",
+									"console.log(\"✅ Validación de tickets requeridos funciona\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							},
+							{
+								"key": "X-CSRF-Token",
+								"value": "{{csrfToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Evento Sin Tickets\",\n  \"date\": \"{{newEventDate}}\",\n  \"location\": \"Estadio Nacional\",\n  \"venueName\": \"Estadio Nacional - Bogotá\",\n  \"ticketConfigurations\": []\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/events",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "events"]
+						},
+						"description": "Intenta crear evento sin configuración de tickets"
+					},
+					"response": []
+				},
+				{
+					"name": "7. Crear Evento - Precio Negativo (Error)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code es 400 (Bad Request)\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Mensaje de error de precio\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.message).to.match(/price|negative/i);",
+									"});",
+									"",
+									"console.log(\"✅ Validación de precio negativo funciona\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							},
+							{
+								"key": "X-CSRF-Token",
+								"value": "{{csrfToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Evento con Precio Negativo\",\n  \"date\": \"{{newEventDate}}\",\n  \"location\": \"Estadio Nacional\",\n  \"venueName\": \"Estadio Nacional - Bogotá\",\n  \"ticketConfigurations\": [\n    {\n      \"type\": \"GENERAL\",\n      \"price\": -50,\n      \"currency\": \"USD\",\n      \"quantity\": 100\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/events",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "events"]
+						},
+						"description": "Intenta crear evento con precio negativo"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Gestión de Eventos",
+			"item": [
+				{
+					"name": "8. Ver Mis Eventos",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code es 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Lista contiene mis eventos\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.be.an('array');",
+									"    ",
+									"    // Verificar que el evento creado está en la lista",
+									"    var createdEventId = pm.collectionVariables.get('createdEventId');",
+									"    var myEvent = jsonData.find(e => e.id === createdEventId);",
+									"    pm.expect(myEvent).to.not.be.undefined;",
+									"});",
+									"",
+									"console.log(\"✅ Mis eventos listados correctamente\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/events/my-events",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "events", "my-events"]
+						},
+						"description": "Lista todos los eventos creados por el organizador"
+					},
+					"response": []
+				},
+				{
+					"name": "9. Ver Estadísticas del Evento",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code es 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Estadísticas contienen métricas\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('totalTicketsSold');",
+									"    pm.expect(jsonData).to.have.property('totalRevenue');",
+									"    pm.expect(jsonData).to.have.property('ticketsByType');",
+									"});",
+									"",
+									"console.log(\"✅ Estadísticas del evento obtenidas\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/events/{{createdEventId}}/stats",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "events", "{{createdEventId}}", "stats"]
+						},
+						"description": "Obtiene estadísticas detalladas del evento"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Seguridad",
+			"item": [
+				{
+					"name": "10. Crear Evento Sin Autenticación (Error)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code es 401 (Unauthorized)\", function () {",
+									"    pm.response.to.have.status(401);",
+									"});",
+									"",
+									"console.log(\"✅ Autenticación requerida para crear eventos\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Evento Sin Auth\",\n  \"date\": \"{{newEventDate}}\",\n  \"location\": \"Estadio Nacional\",\n  \"venueName\": \"Estadio Nacional - Bogotá\",\n  \"ticketConfigurations\": [\n    {\n      \"type\": \"GENERAL\",\n      \"price\": 50,\n      \"currency\": \"USD\",\n      \"quantity\": 100\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/events",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "events"]
+						},
+						"description": "Intenta crear evento sin token de autenticación"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"console.log(\"🚀 Ejecutando:\", pm.info.requestName);"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"pm.test(\"Tiempo de respuesta aceptable\", function () {",
+					"    pm.expect(pm.response.responseTime).to.be.below(3000);",
+					"});"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:3000",
+			"type": "string"
+		},
+		{
+			"key": "accessToken",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "csrfToken",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "organizerEmail",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "organizerPassword",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "organizerId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "newEventName",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "newEventDate",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "newEventLocation",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "newEventVenue",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "createdEventId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "createdEventName",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "pastDate",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

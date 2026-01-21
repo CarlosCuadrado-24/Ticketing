@@ -94,7 +94,7 @@ El archivo `auth.spec.ts` incluye tests para:
 
 ## Cómo Usar
 
-1. Navegar a `http://localhost:4200/auth`
+1. Navegar a `https://localhost/auth`
 2. Usar los tabs para cambiar entre Login y Register
 3. Completar el formulario correspondiente
 4. El sistema redirige automáticamente después de autenticar

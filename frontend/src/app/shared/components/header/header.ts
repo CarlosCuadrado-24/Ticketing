@@ -29,7 +29,16 @@ export class Header {
   }
 
   logout() {
-    this.authService.logout();
-    this.router.navigate(['/']);
+    this.authService.logout().subscribe({
+      next: () => {
+        console.log('[Header] Logout successful');
+        this.router.navigate(['/']);
+      },
+      error: (error) => {
+        console.error('[Header] Logout error:', error);
+        // Navigate anyway since auth data is cleared
+        this.router.navigate(['/']);
+      }
+    });
   }
 }

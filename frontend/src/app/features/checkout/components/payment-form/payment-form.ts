@@ -109,9 +109,11 @@ export class PaymentForm {
   }
 
   getFormData(): PaymentFormData & { expiryDate: string } {
+    // Extract last 2 digits of year (e.g., "2026" -> "26")
+    const shortYear = this.formData.expiryYear.slice(-2);
     return {
       ...this.formData,
-      expiryDate: `${this.formData.expiryMonth}/${this.formData.expiryYear}`,
+      expiryDate: `${this.formData.expiryMonth}/${shortYear}`,
     };
   }
 }

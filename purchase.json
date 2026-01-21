@@ -1,0 +1,11 @@
+﻿{
+  "eventId": "TICK0009-001",
+  "ticketType": "GENERAL",
+  "quantity": 1,
+  "buyerEmail": "admin@ticketapp.com",
+  "paymentInfo": {
+    "cardNumber": "4242424242424242",
+    "expiryDate": "12/26",
+    "cvv": "123"
+  }
+}

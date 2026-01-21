@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
 import { AdminService } from '../../../services/admin.service';
 import { EventService } from '../../../services/event.service';
-import { AdminTicket, TicketsQuery } from '../../../models/admin.model';
+import { AdminTicketData, TicketsQuery } from '../../../models/admin.model';
 import { Event } from '../../../models/event.model';
 import { CurrencyFormatPipe } from '../../../shared/pipes/currency-format.pipe';
 
@@ -16,7 +16,7 @@ import { CurrencyFormatPipe } from '../../../shared/pipes/currency-format.pipe';
   styleUrl: './admin-tickets.component.css',
 })
 export class AdminTicketsComponent implements OnInit {
-  tickets: AdminTicket[] = [];
+  tickets: AdminTicketData[] = [];
   events: Event[] = [];
   filters: TicketsQuery = {
     eventId: '',

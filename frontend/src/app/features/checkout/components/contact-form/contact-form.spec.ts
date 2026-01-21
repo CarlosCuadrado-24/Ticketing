@@ -35,35 +35,35 @@ describe('ContactForm', () => {
       component.formData.firstName = '';
       component.validate();
 
-      expect(component.errors['firstName']).toBe('First name is required');
+      expect(component.errors['firstName']).toBe('El nombre es obligatorio');
     });
 
     it('should validate lastName required', () => {
       component.formData.lastName = '';
       component.validate();
 
-      expect(component.errors['lastName']).toBe('Last name is required');
+      expect(component.errors['lastName']).toBe('El apellido es obligatorio');
     });
 
     it('should validate email required', () => {
       component.formData.email = '';
       component.validate();
 
-      expect(component.errors['email']).toBe('Email is required');
+      expect(component.errors['email']).toBe('El correo es obligatorio');
     });
 
     it('should validate email format', () => {
       component.formData.email = 'invalid-email';
       component.validate();
 
-      expect(component.errors['email']).toBe('Invalid email format');
+      expect(component.errors['email']).toBe('Formato de correo inválido');
     });
 
     it('should validate phone required', () => {
       component.formData.phone = '';
       component.validate();
 
-      expect(component.errors['phone']).toBe('Phone is required');
+      expect(component.errors['phone']).toBe('El teléfono es obligatorio');
     });
 
     it('should validate complete form as valid', () => {

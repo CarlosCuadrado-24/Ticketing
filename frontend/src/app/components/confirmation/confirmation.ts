@@ -8,22 +8,13 @@ import { TicketsService } from '../../core/services/tickets.service';
 import { AuthService } from '../../core/services/auth.service';
 import { EmailService } from '../../services/email.service';
 import { Events } from '../../services/events';
+import { ImageService } from '../../shared/services/image.service';
+import { TicketMappingService } from '../../shared/services/ticket-mapping.service';
 import { forkJoin } from 'rxjs';
 import { environment } from '../../../environments/environment';
-
-interface BackendTicket {
-  id: string;
-  code: string;
-  qrToken: string;
-  eventId: string;
-  type: string;
-  buyerEmail: string;
-  price: number;
-  currency: string;
-  status: string;
-  purchaseDate: string;
-  usedAt: string | null;
-}
+import { STORAGE_KEYS } from '../../config/storage.constants';
+import { BackendTicket, UserTicket } from '../../models/ticket.model';
+import { BaseEvent } from '../../models/event.model';
 
 interface EventInfo {
   id: string;
@@ -59,6 +50,8 @@ export class Confirmation implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly eventsService = inject(Events);
   private readonly emailService = inject(EmailService);
+  private readonly imageService = inject(ImageService);
+  private readonly ticketMappingService = inject(TicketMappingService);
   readonly router = inject(Router); // Make router public for template
   private readonly route = inject(ActivatedRoute);
 
@@ -101,16 +94,10 @@ export class Confirmation implements OnInit {
       this._buyerEmail.set(buyerInfo.email || '');
     }
 
-    // Prefer exact tickets from completed order
-    const completedOrder = this.checkoutService.completedOrder();
-    if (completedOrder) {
-      this._ticketCount.set(completedOrder.tickets.length);
-      this.loadTicketsFromCompletedOrder(completedOrder);
-      return;
-    }
+    this.loadTickets();
+  }
 
-    // Fallback: fetch recent tickets
-    this.loadRecentTickets();
+  private loadTickets(): void {
     // If ticket IDs were passed via query, prefer those
     this.route.queryParams.subscribe((params) => {
       const idsParam = params['t'];
@@ -380,16 +367,8 @@ export class Confirmation implements OnInit {
     });
   }
 
-  private getBuyerInfoFromStorage(): { name: string; email: string } | null {
-    try {
-      const stored = localStorage.getItem('currentBuyerInfo');
-      if (stored) {
-        return JSON.parse(stored);
-      }
-    } catch (e) {
-      console.warn('Failed to parse buyer info from storage:', e);
-    }
-    return null;
+  private getBuyerInfoFromStorage(): { name: string; email: string; phone: string } | null {
+    return this.checkoutService.getBuyerInfo();
   }
 
   /**

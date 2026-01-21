@@ -13,7 +13,12 @@ describe('AdminLayoutComponent', () => {
 
   beforeEach(async () => {
     const authServiceSpy = {
-      logout: jasmine.createSpy(),
+      logout: jasmine.createSpy('logout').and.returnValue({
+        subscribe: (callbacks: any) => {
+          callbacks.next();
+          return { unsubscribe: () => {} };
+        }
+      } as any),
       currentUser: signal({
         id: '1',
         email: 'admin@test.com',
@@ -24,6 +29,9 @@ describe('AdminLayoutComponent', () => {
     };
     const routerSpy = {
       navigate: jasmine.createSpy('navigate').and.returnValue(Promise.resolve(true)),
+      createUrlTree: jasmine.createSpy('createUrlTree').and.returnValue({}),
+      serializeUrl: jasmine.createSpy('serializeUrl').and.returnValue('/'),
+      events: { subscribe: () => ({ unsubscribe: () => {} }) },
     };
 
     await TestBed.configureTestingModule({

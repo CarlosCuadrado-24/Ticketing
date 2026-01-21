@@ -48,11 +48,12 @@ describe('AdminReportsComponent', () => {
 
   it('should handle export report', () => {
     spyOn(window.URL, 'createObjectURL').and.returnValue('blob:mock');
-    spyOn(document, 'createElement').and.returnValue({
-      href: '',
-      download: '',
-      click: jasmine.createSpy(),
-    } as any);
+    
+    const mockLink = document.createElement('a');
+    spyOn(mockLink, 'click');
+    spyOn(document, 'createElement').and.returnValue(mockLink);
+    spyOn(document.body, 'appendChild').and.stub();
+    spyOn(document.body, 'removeChild').and.stub();
 
     component.dashboardStats = {
       overview: {

@@ -27,15 +27,53 @@ export interface EventDetails {
   pregnantAccess?: boolean;
 }
 
-export interface Event {
+// Base event interface - core properties only
+export interface BaseEvent {
   id: string | number;
-  code?: string;
   name: string;
   date: string;
   location: string;
+}
+
+// Event with basic metadata
+export interface EventWithMetadata extends BaseEvent {
+  code?: string;
   imageUrl?: string | null;
   description?: string;
   createdBy?: string | null;
+}
+
+// Event with organizer information
+export interface EventWithOrganizer extends BaseEvent {
+  organizer: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+  };
+}
+
+// Event with venue details
+export interface EventWithVenue extends BaseEvent {
+  venueName: string;
+  startTime: string;
+  endTime: string;
+}
+
+// Event with tickets
+export interface EventWithTickets extends BaseEvent {
+  ticketTypes: TicketType[];
+  ticketConfigurations?: TicketConfiguration[];
+}
+
+// Event with additional details
+export interface EventWithDetails extends BaseEvent {
+  eventDetails: EventDetails[];
+  tags?: string[];
+}
+
+// Complete event interface - use sparingly, prefer specific interfaces
+export interface Event extends EventWithMetadata {
   organizer?: {
     id: string;
     firstName: string;

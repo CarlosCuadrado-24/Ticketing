@@ -43,3 +43,7 @@ docs
 # Logs
 logs
 *.log
+
+# SSL certificates (nginx handles HTTPS)
+ssl
+*.pem

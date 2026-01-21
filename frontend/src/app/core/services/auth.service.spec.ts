@@ -1,186 +1,329 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { Router } from '@angular/router';
-import { AuthService } from './auth.service';
+import { AuthService, LoginRequest, RegisterRequest, AuthResponse, User } from './auth.service';
 import { environment } from '../../../environments/environment';
 
 describe('AuthService', () => {
   let service: AuthService;
   let httpMock: HttpTestingController;
-  let router: Router;
+
+  const mockUser: User = {
+    id: '1',
+    email: 'test@test.com',
+    firstName: 'Test',
+    lastName: 'User',
+    role: 'BUYER'
+  };
+
+  const mockAuthResponse: AuthResponse = {
+    accessToken: 'mock-access-token',
+    refreshToken: 'mock-refresh-token',
+    user: mockUser
+  };
 
   beforeEach(() => {
-    const routerMock = {
-      navigate: jasmine.createSpy('navigate'),
-    };
-
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      providers: [AuthService, { provide: Router, useValue: routerMock }],
+      providers: [AuthService]
     });
-
     service = TestBed.inject(AuthService);
     httpMock = TestBed.inject(HttpTestingController);
-    router = TestBed.inject(Router);
 
-    // Clear localStorage before each test
+    // Clear storage before each test
+    sessionStorage.clear();
     localStorage.clear();
-  });
-
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
-
-  describe('login', () => {
-    it('should authenticate user and store token', async () => {
-      const mockResponse = {
-        user: { id: '1', email: 'test@example.com', firstName: 'Test', lastName: 'User' },
-        accessToken: 'mock-token',
-      };
-
-      const promise = service
-        .login({ email: 'test@example.com', password: 'password' })
-        .toPromise();
-      const req = httpMock.expectOne(`${environment.baseUrl}/auth/login`);
-      expect(req.request.method).toBe('POST');
-      req.flush(mockResponse);
-
-      await promise;
-
-      expect(service.isAuthenticated()).toBe(true);
-      expect(service.currentUser()?.email).toBe('test@example.com');
-      expect(localStorage.getItem('auth_token')).toBe('mock-token');
-    });
-
-    it('should handle login errors', async () => {
-      const promise = service
-        .login({ email: 'test@example.com', password: 'wrong-password' })
-        .toPromise()
-        .catch((err) => err);
-
-      const req = httpMock.expectOne(`${environment.baseUrl}/auth/login`);
-      req.flush({ message: 'Invalid credentials' }, { status: 401, statusText: 'Unauthorized' });
-
-      await promise;
-
-      expect(service.isAuthenticated()).toBe(false);
-      expect(service.currentUser()).toBeNull();
-    });
-  });
-
-  describe('register', () => {
-    it('should register user and authenticate', async () => {
-      const mockResponse = {
-        user: { id: '1', email: 'new@example.com', firstName: 'New', lastName: 'User' },
-        accessToken: 'new-token',
-      };
-
-      const promise = service
-        .register({
-          email: 'new@example.com',
-          password: 'password',
-          firstName: 'New',
-          lastName: 'User',
-        })
-        .toPromise();
-      const req = httpMock.expectOne(`${environment.baseUrl}/auth/register`);
-      expect(req.request.method).toBe('POST');
-      req.flush(mockResponse);
-
-      await promise;
-
-      expect(service.isAuthenticated()).toBe(true);
-      expect(service.currentUser()?.firstName).toBe('New');
-    });
-  });
-
-  describe('logout', () => {
-    it('should clear user data and navigate to login', () => {
-      // Setup: login first
-      localStorage.setItem('auth_token', 'test-token');
-      service['_currentUser'].set({
-        id: '1',
-        email: 'test@example.com',
-        firstName: 'Test',
-        lastName: 'User',
-        role: 'BUYER',
-      });
-      service['_accessToken'].set('test-token');
-
-      service.logout();
-
-      expect(service.isAuthenticated()).toBe(false);
-      expect(service.currentUser()).toBeNull();
-      expect(localStorage.getItem('auth_token')).toBeNull();
-      expect(router.navigate).toHaveBeenCalledWith(['/login']);
-    });
-  });
-
-  describe('getToken', () => {
-    it('should return access token', () => {
-      service['_accessToken'].set('test-token');
-      expect(service.getToken()).toBe('test-token');
-    });
-
-    it('should return null when no token', () => {
-      expect(service.getToken()).toBeNull();
-    });
-  });
-
-  describe('loadFromStorage', () => {
-    it('should restore auth state from localStorage', () => {
-      const mockUser = {
-        id: '1',
-        email: 'stored@example.com',
-        firstName: 'Stored',
-        lastName: 'User',
-        role: 'BUYER',
-      };
-      localStorage.setItem('auth_token', 'stored-token');
-      localStorage.setItem('auth_user', JSON.stringify(mockUser));
-
-      service['loadFromStorage']();
-
-      expect(service.isAuthenticated()).toBe(true);
-      expect(service.currentUser()).toEqual(mockUser);
-      expect(service.getToken()).toBe('stored-token');
-    });
-
-    it('should handle missing storage data gracefully', () => {
-      service['loadFromStorage']();
-
-      expect(service.isAuthenticated()).toBe(false);
-      expect(service.currentUser()).toBeNull();
-    });
-
-    it('should handle corrupted user data', () => {
-      localStorage.setItem('auth_token', 'token');
-      localStorage.setItem('auth_user', 'invalid-json');
-
-      service['loadFromStorage']();
-
-      expect(service.currentUser()).toBeNull();
-    });
-  });
-
-  describe('refreshToken', () => {
-    it('should refresh access token', async () => {
-      const mockResponse = {
-        accessToken: 'new-access-token',
-      };
-
-      const promise = service.refreshToken().toPromise();
-      const req = httpMock.expectOne(`${environment.baseUrl}/auth/refresh`);
-      expect(req.request.method).toBe('POST');
-      req.flush(mockResponse);
-
-      await promise;
-
-      expect(service.getToken()).toBe('new-access-token');
-    });
   });
 
   afterEach(() => {
     httpMock.verify();
+    sessionStorage.clear();
+    localStorage.clear();
+  });
+
+  describe('Authentication Flow', () => {
+    describe('when user logs in with valid credentials', () => {
+      it('should authenticate user and store tokens', (done) => {
+        // Given
+        const credentials: LoginRequest = { email: 'test@test.com', password: 'password' };
+
+        // When
+        service.login(credentials).subscribe({
+          next: (response) => {
+            // Then
+            expect(response).toEqual(mockAuthResponse);
+            expect(service.currentUser()).toEqual(mockUser);
+            expect(service.isAuthenticated()).toBe(true);
+            expect(sessionStorage.getItem('accessToken')).toBe('mock-access-token');
+            expect(sessionStorage.getItem('refreshToken')).toBe('mock-refresh-token');
+            expect(localStorage.getItem('user')).toBe(JSON.stringify(mockUser));
+            done();
+          },
+          error: done.fail
+        });
+
+        // Mock CSRF token request
+        const csrfReq = httpMock.expectOne(`${environment.apiUrl}/csrf/token`);
+        expect(csrfReq.request.method).toBe('GET');
+        csrfReq.flush({ csrfToken: 'mock-csrf-token' });
+
+        // Mock login request
+        const loginReq = httpMock.expectOne(`${environment.apiUrl}/auth/login`);
+        expect(loginReq.request.method).toBe('POST');
+        expect(loginReq.request.body).toEqual(credentials);
+        expect(loginReq.request.headers.get('X-CSRF-Token')).toBe('mock-csrf-token');
+        loginReq.flush(mockAuthResponse);
+      });
+    });
+
+    describe('when user logs in with invalid credentials', () => {
+      it('should reject authentication and clear any existing session', (done) => {
+        // Given
+        const credentials: LoginRequest = { email: 'test@test.com', password: 'wrong' };
+        
+        // Pre-populate storage to test cleanup
+        sessionStorage.setItem('accessToken', 'old-token');
+        localStorage.setItem('user', JSON.stringify(mockUser));
+
+        // When
+        service.login(credentials).subscribe({
+          next: () => done.fail('Should not succeed'),
+          error: (error) => {
+            // Then
+            expect(error.message).toBeDefined();
+            expect(service.isAuthenticated()).toBe(false);
+            expect(service.currentUser()).toBeNull();
+            done();
+          }
+        });
+
+        // Mock CSRF token request
+        const csrfReq = httpMock.expectOne(`${environment.apiUrl}/csrf/token`);
+        csrfReq.flush({ csrfToken: 'mock-csrf-token' });
+
+        // Mock failed login request
+        const loginReq = httpMock.expectOne(`${environment.apiUrl}/auth/login`);
+        loginReq.flush({ message: 'Invalid credentials' }, { status: 401, statusText: 'Unauthorized' });
+      });
+    });
+
+    describe('when user registers with valid data', () => {
+      it('should register user and authenticate', (done) => {
+        // Given
+        const registerData: RegisterRequest = {
+          email: 'new@test.com',
+          password: 'password',
+          firstName: 'New',
+          lastName: 'User'
+        };
+
+        // When
+        service.register(registerData).subscribe({
+          next: (response) => {
+            // Then
+            expect(response).toEqual(mockAuthResponse);
+            expect(service.isAuthenticated()).toBe(true);
+            done();
+          },
+          error: done.fail
+        });
+
+        // Mock CSRF token request
+        const csrfReq = httpMock.expectOne(`${environment.apiUrl}/csrf/token`);
+        csrfReq.flush({ csrfToken: 'mock-csrf-token' });
+
+        // Mock register request
+        const registerReq = httpMock.expectOne(`${environment.apiUrl}/auth/register`);
+        expect(registerReq.request.method).toBe('POST');
+        expect(registerReq.request.body).toEqual(registerData);
+        registerReq.flush(mockAuthResponse);
+      });
+    });
+  });
+
+  describe('Token Management', () => {
+    beforeEach(() => {
+      // Setup authenticated state
+      service['_currentUser'].set(mockUser);
+      sessionStorage.setItem('accessToken', 'mock-access-token');
+      sessionStorage.setItem('refreshToken', 'mock-refresh-token');
+      localStorage.setItem('user', JSON.stringify(mockUser));
+    });
+
+    it('should refresh expired tokens', (done) => {
+      // Given
+      const newTokenResponse: AuthResponse = {
+        accessToken: 'new-access-token',
+        refreshToken: 'new-refresh-token',
+        user: mockUser
+      };
+
+      // When
+      service.refreshToken().subscribe({
+        next: (response) => {
+          // Then
+          expect(response).toEqual(newTokenResponse);
+          expect(sessionStorage.getItem('accessToken')).toBe('new-access-token');
+          expect(sessionStorage.getItem('refreshToken')).toBe('new-refresh-token');
+          done();
+        },
+        error: done.fail
+      });
+
+      // Mock refresh request
+      const refreshReq = httpMock.expectOne(`${environment.apiUrl}/auth/refresh`);
+      expect(refreshReq.request.method).toBe('POST');
+      expect(refreshReq.request.body).toEqual({ refreshToken: 'mock-refresh-token' });
+      refreshReq.flush(newTokenResponse);
+    });
+
+    it('should logout and clear all session data', (done) => {
+      // When
+      service.logout().subscribe({
+        next: () => {
+          // Then
+          expect(service.isAuthenticated()).toBe(false);
+          expect(service.currentUser()).toBeNull();
+          expect(sessionStorage.getItem('accessToken')).toBeNull();
+          expect(sessionStorage.getItem('refreshToken')).toBeNull();
+          expect(localStorage.getItem('user')).toBeNull();
+          done();
+        },
+        error: done.fail
+      });
+
+      // Mock logout request
+      const logoutReq = httpMock.expectOne(`${environment.apiUrl}/auth/logout`);
+      expect(logoutReq.request.method).toBe('POST');
+      logoutReq.flush({});
+    });
+  });
+
+  describe('Session Management', () => {
+    it('should load user from storage on initialization', () => {
+      // Clear any existing service instance
+      TestBed.resetTestingModule();
+      
+      // Given
+      localStorage.setItem('user', JSON.stringify(mockUser));
+      sessionStorage.setItem('accessToken', 'stored-token');
+
+      // When - Reconfigure TestBed with fresh service
+      TestBed.configureTestingModule({
+        imports: [HttpClientTestingModule],
+        providers: [AuthService]
+      });
+      
+      const newService = TestBed.inject(AuthService);
+
+      // Then
+      expect(newService.currentUser()).toEqual(mockUser);
+      expect(newService.getToken()).toBe('stored-token');
+      expect(newService.isAuthenticated()).toBe(true);
+      
+      // Cleanup
+      localStorage.clear();
+      sessionStorage.clear();
+    });
+
+    it('should handle corrupted storage data gracefully', () => {
+      // Clear any existing service instance
+      TestBed.resetTestingModule();
+      
+      // Given
+      localStorage.setItem('user', 'invalid-json');
+      sessionStorage.setItem('accessToken', 'token');
+
+      // When - Reconfigure TestBed with fresh service
+      TestBed.configureTestingModule({
+        imports: [HttpClientTestingModule],
+        providers: [AuthService]
+      });
+      
+      const newService = TestBed.inject(AuthService);
+
+      // Then
+      expect(newService.currentUser()).toBeNull();
+      expect(newService.isAuthenticated()).toBe(false);
+      
+      // Cleanup
+      localStorage.clear();
+      sessionStorage.clear();
+    });
+
+    it('should get correct default route for user role', () => {
+      // Test ADMIN role
+      const adminUser = { ...mockUser, role: 'ADMIN' };
+      expect(service.getDefaultRouteForUser(adminUser)).toBe('/admin/dashboard');
+
+      // Test ORGANIZER role
+      const organizerUser = { ...mockUser, role: 'ORGANIZER' };
+      expect(service.getDefaultRouteForUser(organizerUser)).toBe('/admin/events');
+
+      // Test BUYER role
+      const buyerUser = { ...mockUser, role: 'BUYER' };
+      expect(service.getDefaultRouteForUser(buyerUser)).toBe('/');
+    });
+  });
+
+  describe('Error Handling', () => {
+    it('should handle network errors gracefully', (done) => {
+      // Given
+      const credentials: LoginRequest = { email: 'test@test.com', password: 'password' };
+
+      // When
+      service.login(credentials).subscribe({
+        next: () => done.fail('Should not succeed'),
+        error: (error) => {
+          // Then
+          expect(error).toBeDefined();
+          expect(service.isLoading()).toBe(false);
+          done();
+        }
+      });
+
+      // Mock network error
+      const csrfReq = httpMock.expectOne(`${environment.apiUrl}/csrf/token`);
+      csrfReq.error(new ErrorEvent('Network error'));
+    });
+
+    it('should handle server errors during refresh', (done) => {
+      // Given
+      sessionStorage.setItem('refreshToken', 'invalid-refresh-token');
+
+      // When
+      service.refreshToken().subscribe({
+        next: () => done.fail('Should not succeed'),
+        error: (error) => {
+          // Then
+          expect(error.status).toBe(401);
+          done();
+        }
+      });
+
+      // Mock server error
+      const refreshReq = httpMock.expectOne(`${environment.apiUrl}/auth/refresh`);
+      refreshReq.flush(null, { status: 401, statusText: 'Invalid refresh token' });
+    });
+  });
+
+  describe('Computed Properties', () => {
+    it('should correctly compute authentication status', () => {
+      // Initially not authenticated
+      expect(service.isAuthenticated()).toBe(false);
+
+      // Set user but no token
+      service['_currentUser'].set(mockUser);
+      expect(service.isAuthenticated()).toBe(false);
+
+      // Set token but no user
+      service['_currentUser'].set(null);
+      sessionStorage.setItem('accessToken', 'token');
+      expect(service.isAuthenticated()).toBe(false);
+
+      // Set both user and token
+      service['_currentUser'].set(mockUser);
+      sessionStorage.setItem('accessToken', 'token');
+      expect(service.isAuthenticated()).toBe(true);
+    });
   });
 });

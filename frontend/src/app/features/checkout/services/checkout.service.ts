@@ -1,546 +1,312 @@
 import { Injectable, signal, computed, inject, effect } from '@angular/core';
-import { Orders } from '../../../services/orders';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { AuthService } from '../../../core/services/auth.service';
 import { CacheInvalidationService } from '../../../core/services/cache-invalidation.service';
+import { CartService, CartItem } from './cart.service';
+import { ReservationService } from './reservation.service';
+import { PaymentService, PaymentData, ContactData, CompletedOrder } from './payment.service';
+import { STORAGE_KEYS } from '../../../config/storage.constants';
 
-export interface CartItem {
-  ticketTypeId: number;
-  ticketTypeName: string;
-  quantity: number;
-  price: number;
-}
-
-// HUMAN REVIEW: se agrgar campos necesarios para logica de reserva
-export interface Reservation {
-  id: string;
-  eventId: string;
-  ticketType: string;
-  quantity: number;
-  totalAmount: number;
-  expiresAt: Date;
-  status: string;
-}
-
-export interface Order {
-  id: string;
-  userId: string;
-  ticketIds: number[];
-  totalAmount: number;
-  status: 'pending' | 'confirmed' | 'cancelled';
-}
-
-export interface PurchasedTicket {
-  id: string;
-  ticketTypeName: string;
-  price: number;
-  qrCode: string;
-}
-
-export interface CompletedOrder {
-  orderId: string;
-  tickets: PurchasedTicket[];
-  cartItems: CartItem[];
-  subtotal: number;
-  tax: number;
-  processingFee: number;
-  total: number;
-  purchaseDate: string;
-  eventId?: string | number;
-  eventName?: string;
-}
-
-const CART_STORAGE_KEY = 'ticketing_cart';
-const PENDING_CHECKOUT_KEY = 'ticketing_pending_checkout';
-const RESERVATIONS_KEY = 'ticketing_reservations';
-
+/**
+ * Checkout Service - Refactored to use composition over inheritance
+ * Now orchestrates cart, reservation, and payment services
+ * Follows Single Responsibility Principle
+ */
 @Injectable({
   providedIn: 'root',
 })
 export class CheckoutService {
   private readonly http = inject(HttpClient);
-  private readonly ordersService = inject(Orders);
   private readonly authService = inject(AuthService);
   private readonly cacheInvalidationService = inject(CacheInvalidationService);
+  private readonly cartService = inject(CartService);
+  private readonly reservationService = inject(ReservationService);
+  private readonly paymentService = inject(PaymentService);
 
-  // Signals
-  private readonly _cart = signal<CartItem[]>(this.loadCart());
-  private readonly _reservation = signal<Reservation | null>(null);
-  private readonly _timeRemaining = signal<number>(0); // seconds
-  private readonly _isLoading = signal(false);
-  private readonly _completedOrder = signal<CompletedOrder | null>(null);
-  private readonly _eventId = signal<string | number | undefined>(undefined);
-  private readonly _eventName = signal<string | undefined>(undefined);
-  private readonly _reservationExpired = signal<boolean>(false);
+  // Delegate to composed services
+  readonly cart = this.cartService.cart;
+  readonly cartItemCount = this.cartService.cartItemCount;
+  readonly subtotal = this.cartService.subtotal;
+  readonly tax = this.cartService.tax;
+  readonly processingFee = this.cartService.processingFee;
+  readonly total = this.cartService.total;
+  readonly isEmpty = this.cartService.isEmpty;
+  readonly isValid = this.cartService.isValid;
 
-  // Timer interval reference
-  private timerInterval: ReturnType<typeof setInterval> | null = null;
+  readonly reservation = this.reservationService.reservation;
+  readonly timeRemaining = this.reservationService.timeRemaining;
+  readonly reservationExpired = this.reservationService.reservationExpired;
+  readonly hasActiveReservation = this.reservationService.hasActiveReservation;
+  readonly timeRemainingFormatted = this.reservationService.timeRemainingFormatted;
+  readonly isNearExpiration = this.reservationService.isNearExpiration;
 
-  // Public read-only signals
-  readonly cart = this._cart.asReadonly();
-  readonly reservation = this._reservation.asReadonly();
-  readonly timeRemaining = this._timeRemaining.asReadonly();
-  readonly isLoading = this._isLoading.asReadonly();
-  readonly completedOrder = this._completedOrder.asReadonly();
-  readonly reservationExpired = this._reservationExpired.asReadonly();
+  readonly isProcessing = this.paymentService.isProcessing;
+  readonly completedOrder = this.paymentService.completedOrder;
+  readonly isLoading = this.paymentService.isProcessing; // Alias for backward compatibility
 
-  // Computed signals
-  readonly subtotal = computed(() => {
-    return this._cart().reduce((total, item) => total + item.price * item.quantity, 0);
-  });
+  // Additional computed signals
+  readonly canProceedToCheckout = computed(() => 
+    !this.isEmpty() && this.isValid() && this.authService.isAuthenticated()
+  );
 
-  // Service fee (5%) to align with mock UI
-  readonly tax = computed(() => {
-    return Math.round(this.subtotal() * 0.05 * 100) / 100; // 5% service fee
-  });
-
-  // Fixed processing fee ($5)
-  readonly processingFee = computed(() => 5);
-
-  readonly total = computed(() => {
-    return Math.round((this.subtotal() + this.tax() + this.processingFee()) * 100) / 100;
-  });
-
-  readonly cartItemCount = computed(() => {
-    return this._cart().reduce((count, item) => count + item.quantity, 0);
-  });
+  readonly checkoutSummary = computed(() => ({
+    items: this.cart(),
+    subtotal: this.subtotal(),
+    tax: this.tax(),
+    processingFee: this.processingFee(),
+    total: this.total(),
+    itemCount: this.cartItemCount()
+  }));
 
   constructor() {
-    // Save cart to localStorage whenever it changes
+    // Watch for reservation expiration and clear cart
     effect(() => {
-      this.saveCart(this._cart());
+      if (this.reservationExpired()) {
+        console.log('[CheckoutService] Reservation expired, clearing cart');
+        this.clearCart();
+      }
     });
   }
 
-  /**
-   * Save intended checkout payload before authentication.
-   */
-  savePendingCheckout(items: CartItem[], eventId?: string | number, eventName?: string): void {
-    const payload = { items, eventId, eventName };
-    localStorage.setItem(PENDING_CHECKOUT_KEY, JSON.stringify(payload));
-  }
-
-  hasPendingCheckout(): boolean {
-    return !!localStorage.getItem(PENDING_CHECKOUT_KEY);
-  }
-
-  /**
-   * If there is a pending checkout, load it into the cart and set event info.
-   * Returns true if resumed, false otherwise.
-   */
-  resumePendingCheckout(): boolean {
-    const raw = localStorage.getItem(PENDING_CHECKOUT_KEY);
-    if (!raw) return false;
-    try {
-      const payload: { items: CartItem[]; eventId?: string | number; eventName?: string } =
-        JSON.parse(raw);
-
-      // Clear current cart and load pending items
-      this.clearCart();
-      (payload.items || []).forEach((item) => {
-        if (item && item.quantity > 0) {
-          this.addToCart(item.ticketTypeId, item.ticketTypeName, item.quantity, item.price);
-        }
-      });
-
-      // Set event info
-      this.setEventInfo(payload.eventId, payload.eventName);
-
-      // Remove pending flag
-      localStorage.removeItem(PENDING_CHECKOUT_KEY);
-      return true;
-    } catch (e) {
-      // Invalidate corrupted payload
-      localStorage.removeItem(PENDING_CHECKOUT_KEY);
-      return false;
-    }
-  }
-
-  setEventInfo(eventId: string | number | undefined, eventName: string | undefined): void {
-    this._eventId.set(eventId);
-    this._eventName.set(eventName);
-  }
-
-  /**
-   * Creates reservations for all items in the cart.
-   * This should be called when the user starts checkout (is authenticated).
-   * Reservations expire after 15 minutes if payment is not completed.
-   */
-  async createReservations(): Promise<boolean> {
-    const cart = this._cart();
-    const eventId = this._eventId();
-    const email = this.authService.currentUser()?.email;
-
-    if (!eventId || !email || cart.length === 0) {
-      console.warn(
-        '[CheckoutService] Cannot create reservations: missing eventId, email, or cart is empty',
-      );
-      return false;
-    }
-
-    this._isLoading.set(true);
-    const reservations: Reservation[] = [];
-
-    try {
-      // Create a reservation for each ticket type in the cart
-      for (const item of cart) {
-        const reservationDto = {
-          eventId: String(eventId),
-          ticketType: this.mapTicketTypeName(item.ticketTypeName),
-          quantity: item.quantity,
-          buyerEmail: email,
-        };
-
-        console.log('📤 [CheckoutService] Creating reservation:', reservationDto);
-
-        const response = await this.http
-          .post<any>(`${environment.apiUrl}/reservations`, reservationDto)
-          .toPromise();
-
-        console.log('✅ [CheckoutService] Reservation created:', response);
-
-        reservations.push({
-          id: response.id,
-          eventId: response.eventId,
-          ticketType: response.ticketType,
-          quantity: response.quantity,
-          totalAmount: response.totalAmount,
-          expiresAt: new Date(response.expiresAt),
-          status: response.status,
-        });
-      }
-
-      // Store reservations
-      localStorage.setItem(RESERVATIONS_KEY, JSON.stringify(reservations));
-
-      // Set the first reservation for the timer (all should have same expiration)
-      if (reservations.length > 0) {
-        this._reservation.set(reservations[0]);
-        this.startReservationTimer();
-      }
-
-      this._isLoading.set(false);
-      return true;
-    } catch (error: any) {
-      console.error('❌ [CheckoutService] Error creating reservations:', error);
-      this._isLoading.set(false);
-
-      // If reservation fails due to insufficient tickets, show error
-      if (error?.error?.message?.includes('Insufficient')) {
-        throw new Error(error.error.message);
-      }
-
-      return false;
-    }
-  }
-
-  /**
-   * Gets the stored reservations
-   */
-  getReservations(): Reservation[] {
-    const stored = localStorage.getItem(RESERVATIONS_KEY);
-    if (!stored) return [];
-    try {
-      return JSON.parse(stored);
-    } catch (e) {
-      return [];
-    }
-  }
-
-  /**
-   * Clears stored reservations
-   */
-  clearReservations(): void {
-    localStorage.removeItem(RESERVATIONS_KEY);
-    this._reservation.set(null);
-    this._timeRemaining.set(0);
-  }
-
+  // Cart operations - delegate to CartService
   addToCart(ticketTypeId: number, ticketTypeName: string, quantity: number, price: number): void {
-    const cart = this._cart();
-    const existingItem = cart.find((item) => item.ticketTypeId === ticketTypeId);
-
-    if (existingItem) {
-      // Create a new array reference to trigger signal update
-      const updatedCart = cart.map((item) =>
-        item.ticketTypeId === ticketTypeId ? { ...item, quantity: item.quantity + quantity } : item,
-      );
-      this._cart.set(updatedCart);
-    } else {
-      this._cart.set([...cart, { ticketTypeId, ticketTypeName, quantity, price }]);
-    }
-  }
-
-  removeFromCart(ticketTypeId: number): void {
-    this._cart.set(this._cart().filter((item) => item.ticketTypeId !== ticketTypeId));
+    this.cartService.addToCart(ticketTypeId, ticketTypeName, quantity, price);
   }
 
   updateQuantity(ticketTypeId: number, quantity: number): void {
-    if (quantity <= 0) {
-      this.removeFromCart(ticketTypeId);
-      return;
-    }
-    const cart = this._cart();
-    const updatedCart = cart.map((item) => {
-      if (item.ticketTypeId === ticketTypeId) {
-        return { ...item, quantity: quantity };
-      }
-      return item;
-    });
-    this._cart.set(updatedCart);
+    this.cartService.updateQuantity(ticketTypeId, quantity);
+  }
+
+  removeFromCart(ticketTypeId: number): void {
+    this.cartService.removeFromCart(ticketTypeId);
   }
 
   clearCart(): void {
-    this.stopReservationTimer();
-    this._cart.set([]);
-    this._reservation.set(null);
-    this._reservationExpired.set(false);
-    this.clearReservations();
-    localStorage.removeItem(CART_STORAGE_KEY);
+    this.cartService.clearCart();
+    this.reservationService.clearReservations();
+    this.clearPendingCheckout();
   }
 
-  setReservation(reservation: Reservation): void {
-    this._reservation.set(reservation);
-    this._reservationExpired.set(false);
-    this.startReservationTimer();
+  setEventInfo(eventId: string | number | undefined, eventName: string | undefined): void {
+    this.cartService.setEventInfo(eventId, eventName);
   }
 
-  private startReservationTimer(): void {
-    // Clear any existing timer
-    this.stopReservationTimer();
+  getCartItem(ticketTypeId: number): CartItem | undefined {
+    return this.cartService.getCartItem(ticketTypeId);
+  }
 
-    const reservation = this._reservation();
-    if (!reservation) return;
+  isInCart(ticketTypeId: number): boolean {
+    return this.cartService.isInCart(ticketTypeId);
+  }
 
-    const expiresAt = new Date(reservation.expiresAt).getTime();
+  getQuantity(ticketTypeId: number): number {
+    return this.cartService.getQuantity(ticketTypeId);
+  }
 
-    // Initial calculation
-    const now = Date.now();
-    const remaining = Math.max(0, Math.floor((expiresAt - now) / 1000));
-    this._timeRemaining.set(remaining);
+  // Reservation operations - delegate to ReservationService
+  async createReservations(): Promise<boolean> {
+    const cartItems = this.cart();
+    const eventId = this.cartService.eventId();
+    const userEmail = this.authService.currentUser()?.email;
 
-    console.log(
-      `⏱️ [CheckoutService] Timer started. Expires at: ${new Date(expiresAt).toISOString()}, Remaining: ${remaining}s`,
-    );
-
-    if (remaining <= 0) {
-      this.handleReservationExpired();
-      return;
+    if (!eventId || !userEmail || cartItems.length === 0) {
+      return false;
     }
 
-    // Use setInterval for consistent updates
-    this.timerInterval = setInterval(() => {
-      const currentTime = Date.now();
-      const secondsLeft = Math.max(0, Math.floor((expiresAt - currentTime) / 1000));
-      this._timeRemaining.set(secondsLeft);
-
-      if (secondsLeft <= 0) {
-        this.handleReservationExpired();
+    try {
+      const success = await this.reservationService.createReservations(cartItems, eventId, userEmail);
+      if (success) {
+        this.cacheInvalidationService.invalidateEvent(String(eventId));
       }
-    }, 1000);
-  }
-
-  private stopReservationTimer(): void {
-    if (this.timerInterval) {
-      clearInterval(this.timerInterval);
-      this.timerInterval = null;
+      return success;
+    } catch (error) {
+      console.error('[CheckoutService] Error creating reservations:', error);
+      throw error;
     }
   }
 
-  private handleReservationExpired(): void {
-    console.log('⏰ [CheckoutService] Reservation expired!');
-    this.stopReservationTimer();
-    this._reservationExpired.set(true);
-    this._timeRemaining.set(0);
-    // Don't clear cart immediately - let the component handle the redirect
+  async cancelReservations(): Promise<void> {
+    await this.reservationService.cancelReservations();
   }
 
-  /**
-   * Reset the expired state (used when user wants to try again)
-   */
-  resetExpiredState(): void {
-    this._reservationExpired.set(false);
-  }
+  // Payment operations - delegate to PaymentService
+  async processPayment(contactData: ContactData, paymentData: PaymentData): Promise<CompletedOrder> {
+    const cartItems = this.cart();
+    const eventId = this.cartService.eventId();
+    const eventName = this.cartService.eventName();
 
-  confirmOrder(
-    paymentMethodId: string,
-    buyerEmail?: string,
-    paymentInfo?: { cardNumber: string; expiryDate: string; cvv: string },
-  ): void {
-    this._isLoading.set(true);
+    console.log('[CheckoutService] processPayment called with:', { 
+      cartItemsCount: cartItems.length, 
+      eventId, 
+      eventName,
+      contactEmail: contactData.email
+    });
 
-    const cart = this._cart();
-    const eventId = this._eventId();
-    // Use authenticated user email if available, otherwise use provided email
-    const email = this.authService.currentUser()?.email || buyerEmail;
-
-    console.log('=== CONFIRMACIÓN DE ORDEN ===');
-    console.log('EventId:', eventId);
-    console.log('Email:', email);
-    console.log('Carrito:', cart);
-    console.log('PaymentInfo:', paymentInfo);
-
-    // Try to call backend for each ticket type in the cart
-    if (eventId && email && paymentInfo) {
-      console.log('✅ Condición cumplida: yendo al backend');
-      this.purchaseFromBackend(cart, String(eventId), email, paymentInfo);
-    } else {
-      // Fallback to local-only processing if no backend info provided
-      console.warn('❌ Falta data para backend purchase:');
-      console.warn('  - eventId:', !!eventId);
-      console.warn('  - email:', !!email);
-      console.warn('  - paymentInfo:', !!paymentInfo);
-      this.processLocalOrder();
+    if (cartItems.length === 0) {
+      throw new Error('Cart is empty');
     }
-  }
 
-  private purchaseFromBackend(
-    cart: CartItem[],
-    eventId: string,
-    buyerEmail: string,
-    paymentInfo: { cardNumber: string; expiryDate: string; cvv: string },
-  ): void {
-    // Call backend for each ticket type
-    const purchasePromises = cart.map((item) => {
-      // Match the backend DTO: eventId (UUID), ticketType (enum), quantity, buyerEmail, paymentInfo
-      const purchaseDto = {
+    try {
+      const completedOrder = await this.paymentService.processPayment(
+        cartItems,
+        contactData,
+        paymentData,
+        this.subtotal(),
+        this.tax(),
+        this.processingFee(),
         eventId,
-        ticketType: this.mapTicketTypeName(item.ticketTypeName),
-        quantity: item.quantity,
-        buyerEmail,
-        paymentInfo: {
-          cardNumber: paymentInfo.cardNumber,
-          expiryDate: paymentInfo.expiryDate,
-          cvv: paymentInfo.cvv,
-        },
-      };
+        eventName
+      );
 
-      console.log('📤 Enviando POST /tickets/purchase:', purchaseDto);
-      return this.http.post<any>(`${environment.apiUrl}/tickets/purchase`, purchaseDto).toPromise();
-    });
-
-    Promise.all(purchasePromises)
-      .then((results) => {
-        console.log('✅ Respuesta del backend:', results);
-        // Combine all tickets from backend responses
-        const allTickets: PurchasedTicket[] = [];
-        results.forEach((tickets: any[]) => {
-          if (Array.isArray(tickets)) {
-            tickets.forEach((t) => {
-              allTickets.push({
-                id: t.id || t.code,
-                ticketTypeName: t.type || t.ticketType,
-                price: t.price,
-                qrCode: `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${t.qrToken || t.id}`,
-              });
-            });
-          }
-        });
-
-        this.finalizeOrder(allTickets);
-      })
-      .catch((error) => {
-        console.error('Backend purchase failed, falling back to local:', error);
-        // Fallback to local processing
-        this.processLocalOrder();
-      });
-  }
-
-  private processLocalOrder(): void {
-    // Generate unique order ID
-    const orderId = 'ORD-' + Date.now();
-
-    // Generate individual tickets with unique QR codes
-    const tickets: PurchasedTicket[] = [];
-    const cart = this._cart();
-
-    cart.forEach((item) => {
-      for (let i = 0; i < item.quantity; i++) {
-        const ticketId = `TKT-${Date.now()}-${item.ticketTypeId}-${i}`;
-        tickets.push({
-          id: ticketId,
-          ticketTypeName: item.ticketTypeName,
-          price: item.price,
-          qrCode: `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${ticketId}`,
-        });
-      }
-    });
-
-    this.finalizeOrder(tickets);
-  }
-
-  private finalizeOrder(tickets: PurchasedTicket[]): void {
-    const cart = this._cart();
-    const orderId = 'ORD-' + Date.now();
-
-    // Create completed order (in memory only, not persisted to localStorage)
-    const completedOrder: CompletedOrder = {
-      orderId,
-      tickets,
-      cartItems: [...cart],
-      subtotal: this.subtotal(),
-      tax: this.tax(),
-      processingFee: this.processingFee(),
-      total: this.total(),
-      purchaseDate: new Date().toISOString(),
-      eventId: this._eventId(),
-      eventName: this._eventName(),
-    };
-
-    // Save completed order to signal (for confirmation page)
-    this._completedOrder.set(completedOrder);
-
-    // Invalidate cache for event availability
-    const eventId = this._eventId();
-    if (eventId) {
-      // Invalidate cache for each ticket type purchased
-      cart.forEach((item) => {
-        this.cacheInvalidationService.invalidateAfterPurchase(String(eventId), item.ticketTypeName);
-      });
-
-      // Also invalidate the general event cache
-      this.cacheInvalidationService.invalidateEvent(String(eventId));
-
-      console.log('🔄 [CheckoutService] Cache invalidated after purchase for event:', eventId);
-    }
-
-    // Clear the cart after saving
-    setTimeout(() => {
-      this._isLoading.set(false);
+      // Clear cart and reservations after successful payment
       this.clearCart();
-    }, 1000);
+      
+      // Invalidate caches
+      if (eventId) {
+        this.cacheInvalidationService.invalidateEvent(String(eventId));
+      }
+
+      return completedOrder;
+    } catch (error) {
+      console.error('[CheckoutService] Payment processing failed:', error);
+      throw error;
+    }
+  }
+
+  // Utility methods
+  getBuyerInfo(): { name: string; email: string; phone: string } | null {
+    return this.paymentService.getBuyerInfo();
+  }
+
+  clearBuyerInfo(): void {
+    this.paymentService.clearBuyerInfo();
   }
 
   clearCompletedOrder(): void {
-    this._completedOrder.set(null);
-  }
-
-  private loadCart(): CartItem[] {
-    const savedCart = localStorage.getItem(CART_STORAGE_KEY);
-    if (!savedCart) return [];
-    try {
-      return JSON.parse(savedCart);
-    } catch (e) {
-      return [];
-    }
-  }
-
-  private saveCart(cart: CartItem[]): void {
-    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+    this.paymentService.clearCompletedOrder();
   }
 
   /**
-   * Maps ticket type name to the enum format expected by the backend
-   * Frontend might use different naming (e.g., "VIP", "General") than the enum
+   * Save checkout state for recovery
    */
-  private mapTicketTypeName(typeName: string): string {
-    const normalized = typeName.toUpperCase().trim();
-    // Backend expects: VIP, GENERAL, EARLY_BIRD
-    if (normalized.includes('VIP')) return 'VIP';
-    if (normalized.includes('EARLY')) return 'EARLY_BIRD';
-    if (normalized.includes('GENERAL')) return 'GENERAL';
-    // Default fallback
-    return normalized;
+  savePendingCheckout(): void {
+    try {
+      const checkoutData = {
+        cart: this.cart(),
+        eventId: this.cartService.eventId(),
+        eventName: this.cartService.eventName(),
+        timestamp: Date.now()
+      };
+      
+      localStorage.setItem(STORAGE_KEYS.PENDING_CHECKOUT, JSON.stringify(checkoutData));
+    } catch (error) {
+      console.error('[CheckoutService] Error saving pending checkout:', error);
+    }
+  }
+
+  /**
+   * Restore checkout state
+   */
+  restorePendingCheckout(): boolean {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEYS.PENDING_CHECKOUT);
+      if (!stored) return false;
+
+      const checkoutData = JSON.parse(stored);
+      const age = Date.now() - checkoutData.timestamp;
+      
+      // Don't restore if older than 1 hour
+      if (age > 60 * 60 * 1000) {
+        this.clearPendingCheckout();
+        return false;
+      }
+
+      // Restore cart items
+      checkoutData.cart.forEach((item: CartItem) => {
+        this.addToCart(item.ticketTypeId, item.ticketTypeName, item.quantity, item.price);
+      });
+
+      // Restore event info
+      if (checkoutData.eventId) {
+        this.setEventInfo(checkoutData.eventId, checkoutData.eventName);
+      }
+
+      this.clearPendingCheckout();
+      return true;
+    } catch (error) {
+      console.error('[CheckoutService] Error restoring pending checkout:', error);
+      this.clearPendingCheckout();
+      return false;
+    }
+  }
+
+  /**
+   * Clear pending checkout data
+   */
+  private clearPendingCheckout(): void {
+    try {
+      localStorage.removeItem(STORAGE_KEYS.PENDING_CHECKOUT);
+    } catch (error) {
+      console.error('[CheckoutService] Error clearing pending checkout:', error);
+    }
+  }
+
+  /**
+   * Confirm order - backward compatibility method
+   */
+  async confirmOrder(paymentMethod: string, contactData: ContactData, paymentData: PaymentData): Promise<void> {
+    try {
+      await this.processPayment(contactData, paymentData);
+    } catch (error) {
+      console.error('[CheckoutService] Order confirmation failed:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Reset expired state - backward compatibility method
+   */
+  resetExpiredState(): void {
+    this.reservationService.clearReservations();
+  }
+
+  /**
+   * Get checkout progress
+   */
+  getCheckoutProgress(): {
+    step: 'cart' | 'reservation' | 'payment' | 'complete';
+    canProceed: boolean;
+    nextAction: string;
+  } {
+    if (this.completedOrder()) {
+      return {
+        step: 'complete',
+        canProceed: false,
+        nextAction: 'View confirmation'
+      };
+    }
+
+    if (this.hasActiveReservation()) {
+      return {
+        step: 'payment',
+        canProceed: true,
+        nextAction: 'Complete payment'
+      };
+    }
+
+    if (!this.isEmpty() && this.authService.isAuthenticated()) {
+      return {
+        step: 'reservation',
+        canProceed: true,
+        nextAction: 'Create reservation'
+      };
+    }
+
+    return {
+      step: 'cart',
+      canProceed: this.canProceedToCheckout(),
+      nextAction: this.authService.isAuthenticated() ? 'Add items to cart' : 'Login to continue'
+    };
   }
 }

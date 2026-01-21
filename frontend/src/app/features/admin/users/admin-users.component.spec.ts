@@ -91,7 +91,7 @@ describe('AdminUsersComponent', () => {
     fixture.detectChanges();
 
     await new Promise((resolve) => setTimeout(resolve, 100));
-    expect(component.error()).toBe('Network error');
+    expect(component.error()).toBe('Error al cargar los usuarios');
     expect(component.loading()).toBeFalsy();
   });
 

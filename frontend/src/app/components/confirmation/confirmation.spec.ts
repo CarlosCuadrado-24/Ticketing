@@ -21,6 +21,7 @@ describe('Confirmation', () => {
       cartItemCount: signal(2),
       clearCart: jasmine.createSpy('clearCart'),
       completedOrder: signal(null),
+      getBuyerInfo: jasmine.createSpy('getBuyerInfo').and.returnValue(null),
     };
 
     await TestBed.configureTestingModule({

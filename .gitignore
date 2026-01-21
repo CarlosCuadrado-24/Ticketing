@@ -78,3 +78,6 @@ temp/
 .nest/
 
 docs/
+
+# pruebas e2e
+PruebasAutomatizadas

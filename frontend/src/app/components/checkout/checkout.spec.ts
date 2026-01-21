@@ -108,7 +108,7 @@ describe('Checkout', () => {
         validate: jasmine.createSpy().and.returnValue(true),
         getFormData: jasmine
           .createSpy()
-          .and.returnValue({ cardNumber: '1234', expiryDate: '12/25', cvv: '123' }),
+          .and.returnValue({ cardNumber: '4111111111111111', expiryDate: '12/28', cvv: '123', cardholderName: 'John Doe' }),
       } as any;
       (component as any).contactData = {
         firstName: 'John',
@@ -120,9 +120,10 @@ describe('Checkout', () => {
       component.nextStep();
 
       expect(checkoutService.confirmOrder).toHaveBeenCalledWith('stripe', 'john@example.com', {
-        cardNumber: '1234',
-        expiryDate: '12/25',
+        cardNumber: '4111111111111111',
+        expiryDate: '12/28',
         cvv: '123',
+        cardholderName: 'John Doe',
       });
     });
 
@@ -142,13 +143,6 @@ describe('Checkout', () => {
   });
 
   describe('confirmOrder', () => {
-    beforeEach(() => {
-      jasmine.clock().install();
-    });
-    afterEach(() => {
-      jasmine.clock().uninstall();
-    });
-
     it('should confirm order and navigate to confirmation', async () => {
       (component as any).contactData = {
         firstName: 'John',
@@ -156,17 +150,26 @@ describe('Checkout', () => {
         email: 'john@example.com',
         phone: '123456789',
       };
-      (component as any).paymentData = { cardNumber: '1234', expiryDate: '12/25', cvv: '123' };
+      (component as any).paymentData = { 
+        cardNumber: '4111111111111111', 
+        expiryDate: '12/28', // Fecha futura válida
+        cvv: '123', 
+        cardholderName: 'John Doe' 
+      };
 
-      component.confirmOrder();
+      (checkoutService.confirmOrder as jasmine.Spy).and.returnValue(Promise.resolve());
+
+      await component.confirmOrder();
 
       expect(checkoutService.confirmOrder).toHaveBeenCalledWith('stripe', 'john@example.com', {
-        cardNumber: '1234',
-        expiryDate: '12/25',
+        cardNumber: '4111111111111111',
+        expiryDate: '12/28',
         cvv: '123',
+        cardholderName: 'John Doe',
       });
 
-      jasmine.clock().tick(1000);
+      // Wait for navigation
+      await new Promise(resolve => setTimeout(resolve, 100));
 
       expect(router.navigate).toHaveBeenCalledWith(['/confirmation'], { queryParams: {} });
     });

@@ -1,8 +1,12 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { tap, switchMap, catchError } from 'rxjs/operators';
+import { tap, switchMap, catchError, map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
+import { STORAGE_KEYS } from '../../config/storage.constants';
+import { API_ENDPOINTS } from '../../config/api.constants';
+import { CsrfService } from './csrf.service';
+import { TokenService } from './token.service';
 
 export interface LoginRequest {
   email: string;
@@ -30,227 +34,298 @@ export interface User {
   role: string;
 }
 
+/**
+ * Authentication Service - Refactored for better maintainability
+ * Follows Single Responsibility Principle and eliminates long methods
+ */
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   private readonly http = inject(HttpClient);
+  private readonly csrfService = inject(CsrfService);
+  private readonly tokenService = inject(TokenService);
 
   // Signals
   private readonly _currentUser = signal<User | null>(null);
   private readonly _isLoading = signal(false);
-  private readonly _accessToken = signal<string | null>(null);
 
   // Public read-only signals
   readonly currentUser = this._currentUser.asReadonly();
   readonly isLoading = this._isLoading.asReadonly();
-  readonly accessToken = this._accessToken.asReadonly();
 
   // Computed signals
-  readonly isAuthenticated = computed(() => !!this._currentUser() && !!this._accessToken());
+  readonly isAuthenticated = computed(() => {
+    const user = this._currentUser();
+    const hasToken = this.tokenService.hasAccessToken();
+    return !!user && hasToken;
+  });
+
+  readonly userRole = computed(() => this._currentUser()?.role || null);
+  readonly userName = computed(() => {
+    const user = this._currentUser();
+    return user ? `${user.firstName} ${user.lastName}` : null;
+  });
 
   constructor() {
-    this.loadFromStorage();
+    this.initializeFromStorage();
+  }
+
+  /**
+   * Initialize user state from storage
+   */
+  private initializeFromStorage(): void {
+    try {
+      const storedUser = localStorage.getItem(STORAGE_KEYS.USER);
+      if (storedUser && this.tokenService.hasAccessToken()) {
+        const user = JSON.parse(storedUser);
+        this._currentUser.set(user);
+      }
+    } catch (error) {
+      console.error('[AuthService] Error loading user from storage:', error);
+      this.clearAuthData();
+    }
   }
 
   /**
    * Get the default redirect route based on user role
    */
   getDefaultRouteForUser(user: User): string {
-    switch (user.role) {
-      case 'ADMIN':
-        return '/admin/dashboard';
-      case 'ORGANIZER':
-        return '/admin/events';
-      case 'BUYER':
-      default:
-        return '/';
-    }
+    const roleRoutes: Record<string, string> = {
+      'ADMIN': '/admin/dashboard',
+      'ORGANIZER': '/admin/events',
+      'BUYER': '/'
+    };
+    
+    return roleRoutes[user.role] || '/';
   }
 
+  /**
+   * Login user with credentials
+   */
   login(credentials: LoginRequest): Observable<AuthResponse> {
-    console.log('[AuthService.login] ===== LOGIN START =====');
-    console.log('[AuthService.login] Email:', credentials.email);
     this._isLoading.set(true);
-    return this.http.get<{ csrfToken: string }>(`${environment.apiUrl}/csrf/token`).pipe(
-      switchMap(({ csrfToken }) => {
-        console.log('[AuthService.login] CSRF token received, posting to /auth/login');
-        return this.http.post<AuthResponse>(`${environment.apiUrl}/auth/login`, credentials, {
-          headers: {
-            'X-CSRF-Token': csrfToken,
-          },
-        });
-      }),
-      tap((response) => {
-        console.log('[AuthService.login] 📨 RESPONSE RECEIVED:', {
-          email: response.user?.email,
-          tokenLength: response.accessToken?.length,
-        });
-        this._currentUser.set(response.user);
-        console.log('[AuthService.login] ✓ User set in signal');
-        this._accessToken.set(response.accessToken);
-        console.log('[AuthService.login] ✓ AccessToken set in signal');
-        localStorage.setItem('user', JSON.stringify(response.user));
-        console.log('[AuthService.login] ✓ User saved to localStorage');
-        sessionStorage.setItem('accessToken', response.accessToken);
-        console.log('[AuthService.login] ✓ AccessToken saved to sessionStorage');
-        if (response.refreshToken) {
-          sessionStorage.setItem('refreshToken', response.refreshToken);
-          console.log('[AuthService.login] ✓ RefreshToken saved to sessionStorage');
-        }
-        const storedToken = sessionStorage.getItem('accessToken');
-        console.log(
-          '[AuthService.login] 🔍 VERIFICATION: Token in storage?',
-          !!storedToken,
-          storedToken?.substring(0, 30) + '...',
-        );
-        console.log('[AuthService.login] 🔍 isAuthenticated():', this.isAuthenticated());
-        console.log('[AuthService.login] ===== LOGIN SUCCESS =====\n');
-        this._isLoading.set(false);
-      }),
-      catchError((error) => {
-        this._isLoading.set(false);
-        throw error;
-      }),
+    
+    return this.csrfService.getToken().pipe(
+      switchMap(csrfToken => this.performLogin(credentials, csrfToken)),
+      tap(response => this.handleSuccessfulAuth(response)),
+      catchError(error => this.handleAuthError(error, 'login'))
     );
   }
 
-  register(data: RegisterRequest): Observable<AuthResponse> {
+  /**
+   * Register new user
+   */
+  register(userData: RegisterRequest): Observable<AuthResponse> {
     this._isLoading.set(true);
-    // First, get CSRF token
-    return this.http.get<{ csrfToken: string }>(`${environment.apiUrl}/csrf/token`).pipe(
-      switchMap(({ csrfToken }) => {
-        // Then, register with CSRF token in header
-        return this.http.post<AuthResponse>(`${environment.apiUrl}/auth/register`, data, {
-          headers: {
-            'X-CSRF-Token': csrfToken,
-          },
-        });
-      }),
-      tap((response) => {
-        console.log('[AuthService.register] Response:', {
-          email: response.user?.email,
-          hasToken: !!response.accessToken,
-        });
-        this._currentUser.set(response.user);
-        this._accessToken.set(response.accessToken);
-        localStorage.setItem('user', JSON.stringify(response.user));
-        sessionStorage.setItem('accessToken', response.accessToken);
-        if (response.refreshToken) {
-          sessionStorage.setItem('refreshToken', response.refreshToken);
-        }
-        console.log(
-          '[AuthService.register] Saved token. Verify:',
-          sessionStorage.getItem('accessToken')?.substring(0, 20) + '...',
-        );
-        this._isLoading.set(false);
-      }),
-      catchError((error) => {
-        this._isLoading.set(false);
-        throw error;
-      }),
+    
+    return this.csrfService.getToken().pipe(
+      switchMap(csrfToken => this.performRegistration(userData, csrfToken)),
+      tap(response => this.handleSuccessfulAuth(response)),
+      catchError(error => this.handleAuthError(error, 'register'))
     );
   }
 
-  logout(): void {
-    this._currentUser.set(null);
-    this._accessToken.set(null);
-    // Clear from sessionStorage (secure storage for token)
-    sessionStorage.removeItem('accessToken');
-    sessionStorage.removeItem('tokenExpiration');
-    // Clear from localStorage (user info)
-    localStorage.removeItem('user');
+  /**
+   * Logout user
+   */
+  logout(): Observable<void> {
+    this._isLoading.set(true);
+    
+    return this.http.post<void>(`${environment.apiUrl}${API_ENDPOINTS.AUTH.LOGOUT}`, {}).pipe(
+      tap(() => this.clearAuthData()),
+      catchError(error => {
+        // Clear auth data even if logout request fails
+        this.clearAuthData();
+        console.error('[AuthService] Logout error:', error);
+        return new Observable<void>(observer => {
+          observer.next();
+          observer.complete();
+        });
+      })
+    );
   }
 
+  /**
+   * Logout user immediately (synchronous)
+   * Use this when you need immediate logout without HTTP request
+   */
+  logoutImmediate(): void {
+    this.clearAuthData();
+    console.log('[AuthService] Immediate logout completed');
+  }
+
+  /**
+   * Refresh authentication token
+   */
   refreshToken(): Observable<AuthResponse> {
-    this._isLoading.set(true);
-    // Get CSRF token first
-    return this.http.get<{ csrfToken: string }>(`${environment.apiUrl}/csrf/token`).pipe(
-      switchMap(({ csrfToken }) => {
-        // Then refresh with CSRF token
-        return this.http.post<AuthResponse>(
-          `${environment.apiUrl}/auth/refresh`,
-          {},
-          {
-            headers: {
-              'X-CSRF-Token': csrfToken,
-            },
-          },
-        );
-      }),
-      tap(() => {
-        this._isLoading.set(false);
-      }),
-      catchError((error) => {
-        this._isLoading.set(false);
+    const refreshToken = this.tokenService.getRefreshToken();
+    
+    if (!refreshToken) {
+      this.clearAuthData();
+      throw new Error('No refresh token available');
+    }
+
+    return this.http.post<AuthResponse>(`${environment.apiUrl}${API_ENDPOINTS.AUTH.REFRESH}`, {
+      refreshToken
+    }).pipe(
+      tap(response => this.handleSuccessfulAuth(response)),
+      catchError(error => {
+        this.clearAuthData();
         throw error;
-      }),
+      })
     );
   }
 
-  private persistToken(token: string): void {
-    // Tokens are now stored in HttpOnly cookies by the server
-    // Frontend doesn't need to store them
-    // Only store user info in localStorage
-    if (this._currentUser()) {
-      localStorage.setItem('user', JSON.stringify(this._currentUser()));
+  /**
+   * Check if current token is expired and refresh if needed
+   */
+  ensureValidToken(): Observable<boolean> {
+    const accessToken = this.tokenService.getAccessToken();
+    
+    if (!accessToken) {
+      return new Observable(observer => {
+        observer.next(false);
+        observer.complete();
+      });
     }
-  }
 
-  private loadFromStorage(): void {
-    // Load user info from localStorage (tokens are in sessionStorage for security)
-    const userStr = localStorage.getItem('user');
-    const accessToken = sessionStorage.getItem('accessToken');
+    if (this.tokenService.isTokenExpired(accessToken)) {
+      return this.refreshToken().pipe(
+        map(() => true), // Convert AuthResponse to boolean
+        catchError(() => {
+          this.clearAuthData();
+          return [false];
+        })
+      );
+    }
 
-    console.log('[AuthService] Loading from storage:', {
-      hasUser: !!userStr,
-      hasToken: !!accessToken,
+    return new Observable(observer => {
+      observer.next(true);
+      observer.complete();
     });
-
-    if (userStr) {
-      try {
-        const user = JSON.parse(userStr);
-        this._currentUser.set(user);
-        console.log('[AuthService] User loaded:', user.email);
-      } catch (e) {
-        console.error('Failed to parse stored user', e);
-        localStorage.removeItem('user');
-      }
-    }
-
-    if (accessToken) {
-      this._accessToken.set(accessToken);
-      console.log('[AuthService] Token loaded from sessionStorage');
-    }
   }
 
+  /**
+   * Get current access token
+   */
   getToken(): string | null {
-    // Always try to get fresh token from sessionStorage first
-    const storedToken = sessionStorage.getItem('accessToken');
-    console.log('[AuthService.getToken] Checking sessionStorage:', {
-      hasStoredToken: !!storedToken,
-      tokenLength: storedToken ? storedToken.length : 0,
-      tokenPreview: storedToken ? storedToken.substring(0, 30) + '...' : 'null',
+    return this.tokenService.getAccessToken();
+  }
+
+  /**
+   * Perform login HTTP request
+   */
+  private performLogin(credentials: LoginRequest, csrfToken: string): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${environment.apiUrl}${API_ENDPOINTS.AUTH.LOGIN}`, credentials, {
+      headers: { 'X-CSRF-Token': csrfToken }
     });
+  }
 
-    if (storedToken) {
-      console.log('[AuthService.getToken] ✓ Token found in sessionStorage');
-      return storedToken;
-    }
-
-    // Fallback to signal value
-    const signalToken = this._accessToken();
-    console.log('[AuthService.getToken] Checking signal:', {
-      hasSignalToken: !!signalToken,
-      tokenLength: signalToken ? signalToken.length : 0,
+  /**
+   * Perform registration HTTP request
+   */
+  private performRegistration(userData: RegisterRequest, csrfToken: string): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${environment.apiUrl}${API_ENDPOINTS.AUTH.REGISTER}`, userData, {
+      headers: { 'X-CSRF-Token': csrfToken }
     });
+  }
 
-    if (signalToken) {
-      console.log('[AuthService.getToken] ✓ Token found in signal');
-      return signalToken;
+  /**
+   * Handle successful authentication response
+   */
+  private handleSuccessfulAuth(response: AuthResponse): void {
+    this._currentUser.set(response.user);
+    this.tokenService.setAccessToken(response.accessToken);
+    
+    if (response.refreshToken) {
+      this.tokenService.setRefreshToken(response.refreshToken);
     }
+    
+    this.saveUserToStorage(response.user);
+    this._isLoading.set(false);
+    
+    console.log('[AuthService] Authentication successful for user:', response.user.email);
+  }
 
-    console.log('[AuthService.getToken] ✗ No token found anywhere');
-    return null;
+  /**
+   * Handle authentication errors
+   */
+  private handleAuthError(error: any, operation: string): Observable<never> {
+    this._isLoading.set(false);
+    console.error(`[AuthService] ${operation} error:`, error);
+    
+    let errorMessage = 'Authentication failed';
+    
+    if (error?.error?.message) {
+      errorMessage = error.error.message;
+    } else if (error?.status === 401) {
+      errorMessage = 'Invalid credentials';
+    } else if (error?.status === 429) {
+      errorMessage = 'Too many attempts. Please try again later';
+    }
+    
+    throw new Error(errorMessage);
+  }
+
+  /**
+   * Save user data to localStorage
+   */
+  private saveUserToStorage(user: User): void {
+    try {
+      localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(user));
+    } catch (error) {
+      console.error('[AuthService] Error saving user to storage:', error);
+    }
+  }
+
+  /**
+   * Clear all authentication data
+   */
+  private clearAuthData(): void {
+    this._currentUser.set(null);
+    this._isLoading.set(false);
+    this.tokenService.clearTokens();
+    this.csrfService.clearCache();
+    
+    try {
+      localStorage.removeItem(STORAGE_KEYS.USER);
+    } catch (error) {
+      console.error('[AuthService] Error clearing user storage:', error);
+    }
+  }
+
+  /**
+   * Check if user has specific role
+   */
+  hasRole(role: string): boolean {
+    return this._currentUser()?.role === role;
+  }
+
+  /**
+   * Check if user has any of the specified roles
+   */
+  hasAnyRole(roles: string[]): boolean {
+    const userRole = this._currentUser()?.role;
+    return userRole ? roles.includes(userRole) : false;
+  }
+
+  /**
+   * Get current user ID
+   */
+  getCurrentUserId(): string | null {
+    return this._currentUser()?.id || null;
+  }
+
+  /**
+   * Update current user data
+   */
+  updateCurrentUser(userData: Partial<User>): void {
+    const currentUser = this._currentUser();
+    if (currentUser) {
+      const updatedUser = { ...currentUser, ...userData };
+      this._currentUser.set(updatedUser);
+      this.saveUserToStorage(updatedUser);
+    }
   }
 }

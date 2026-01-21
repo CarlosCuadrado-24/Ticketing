@@ -66,7 +66,7 @@ docker-compose exec backend npm test                  # Unit tests
 
 **Local development** (if not using Docker):
 - Backend: `cd backend && npm run start:dev` (requires local Postgres + MinIO)
-- Frontend: `cd frontend && npm start` (→ http://localhost:4200)
+- Frontend: `cd frontend && npm start` (→ https://localhost)
 
 ### Testing Strategy (3 Layers)
 1. **Unit Tests**: `npm test` (Jest, colocated with source: `*.spec.ts`)
@@ -115,7 +115,7 @@ Migrations live in `backend/src/infrastructure/persistence/migrations/`
 
 ### Build, Run, Test
 - Dev server:
-  - `npm start` (alias for `ng serve`) → http://localhost:4200
+  - `npm start` (alias for `ng serve`) → https://localhost
   - VS Code task: “npm: start” is available in this workspace.
 - Build:
   - `npm run build` (alias for `ng build`)
