@@ -33,6 +33,8 @@ export class CheckoutService {
   readonly total = this.cartService.total;
   readonly isEmpty = this.cartService.isEmpty;
   readonly isValid = this.cartService.isValid;
+  readonly eventName = this.cartService.eventName;
+  readonly eventImageUrl = this.cartService.eventImageUrl;
 
   readonly reservation = this.reservationService.reservation;
   readonly timeRemaining = this.reservationService.timeRemaining;
@@ -88,8 +90,8 @@ export class CheckoutService {
     this.clearPendingCheckout();
   }
 
-  setEventInfo(eventId: string | number | undefined, eventName: string | undefined): void {
-    this.cartService.setEventInfo(eventId, eventName);
+  setEventInfo(eventId: string | number | undefined, eventName: string | undefined, eventImageUrl?: string): void {
+    this.cartService.setEventInfo(eventId, eventName, eventImageUrl);
   }
 
   getCartItem(ticketTypeId: number): CartItem | undefined {

@@ -27,8 +27,8 @@ import { ToastService } from '../../core/services/toast.service';
   styleUrl: './checkout.css',
 })
 export class Checkout implements OnInit, OnDestroy {
-  private readonly checkoutService = inject(CheckoutService);
-  private readonly router = inject(Router);
+  readonly checkoutService = inject(CheckoutService);
+  readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly toastService = inject(ToastService);
 
@@ -71,8 +71,9 @@ export class Checkout implements OnInit, OnDestroy {
     this.route.queryParams.subscribe(async (params) => {
       this.eventId = params['eventId'];
       const eventName = params['eventName'];
+      const eventImageUrl = params['eventImageUrl'];
       if (this.eventId) {
-        this.checkoutService.setEventInfo(this.eventId, eventName);
+        this.checkoutService.setEventInfo(this.eventId, eventName, eventImageUrl);
 
         // Create reservations when checkout starts (if authenticated)
         if (!this.reservationCreated) {

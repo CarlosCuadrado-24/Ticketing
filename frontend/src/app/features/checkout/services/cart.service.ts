@@ -21,11 +21,13 @@ export class CartService {
   private readonly _cart = signal<CartItem[]>(this.loadCart());
   private readonly _eventId = signal<string | number | undefined>(undefined);
   private readonly _eventName = signal<string | undefined>(undefined);
+  private readonly _eventImageUrl = signal<string | undefined>(undefined);
 
   // Public read-only signals
   readonly cart = this._cart.asReadonly();
   readonly eventId = this._eventId.asReadonly();
   readonly eventName = this._eventName.asReadonly();
+  readonly eventImageUrl = this._eventImageUrl.asReadonly();
 
   // Computed signals
   readonly cartItemCount = computed(() => 
@@ -43,7 +45,7 @@ export class CartService {
   readonly processingFee = computed(() => BUSINESS_RULES.PROCESSING_FEE);
 
   readonly total = computed(() => 
-    this.subtotal() + this.tax() + this.processingFee()
+    this.subtotal() // Solo el subtotal, sin tarifas adicionales
   );
 
   readonly isEmpty = computed(() => this._cart().length === 0);
@@ -152,9 +154,10 @@ export class CartService {
   /**
    * Set event information for the cart
    */
-  setEventInfo(eventId: string | number | undefined, eventName: string | undefined): void {
+  setEventInfo(eventId: string | number | undefined, eventName: string | undefined, eventImageUrl?: string): void {
     this._eventId.set(eventId);
     this._eventName.set(eventName);
+    this._eventImageUrl.set(eventImageUrl);
   }
 
   /**

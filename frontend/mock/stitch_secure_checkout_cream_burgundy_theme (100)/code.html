@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SECURE CHECKOUT | UNDERGROUND</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&amp;family=Space+Mono:wght@400;700&amp;family=Inter:wght@900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#FF4D00",
+                        brutal: "#ffffff",
+                    },
+                    fontFamily: {
+                        distressed: ["UnifrakturMaguntia", "serif"],
+                        mono: ["Space Mono", "monospace"],
+                        impact: ["Inter", "sans-serif"],
+                    },
+                },
+            },
+        };
+    </script>
+<style type="text/tailwindcss">
+        @layer base {
+            body {
+                @apply bg-black text-white selection:bg-primary selection:text-black;
+                background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+                background-repeat: repeat;
+                background-size: 150px 150px;
+                background-blend-mode: overlay;
+            }
+        }
+        .brutal-border {
+            border: 6px solid #ffffff;
+        }
+        .input-brutal {
+            @apply w-full bg-black border-2 border-white focus:border-primary focus:ring-0 text-white placeholder:text-zinc-800 p-4 transition-none uppercase font-mono text-sm;
+        }
+        .glitch-line {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #fff, transparent, #fff, transparent);
+            width: 100%;
+            opacity: 0.3;
+        }
+    </style>
+</head>
+<body class="min-h-screen overflow-x-hidden">
+<header class="border-b-[6px] border-white bg-black sticky top-0 z-50">
+<div class="max-w-[1400px] mx-auto px-6 h-24 flex items-center justify-between">
+<div class="flex items-center gap-8">
+<img alt="Logo" class="h-10 w-auto brightness-0 invert" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBEc9QtcqI_r4YFJutl9i5_Yq5pirKvGaKCOmv3DdLktO2-YnUq_nrwWAh1DsRU8utS-30nku-wT9I7b2kmH6-vMpQvvfudzlK6dWbJcoiLrSPzLeIEmJ0NENNSa0pcQMGjNpLMKV43wIfh5eJLtpQ-yGdGXVf-k1C6-uH1SXIaqSeEVC29VqqR1qf3PN2wXYDdaSK8girl07MEg7ox2jjz6ucyb6SGHB7M4LKipWFBsnwXTem4UW3zbMf5iYxXx9He9B-HCy95gBrI"/>
+<div class="hidden md:flex gap-4 items-center">
+<span class="text-[10px] font-mono border border-white px-2 py-1">SN: 8829-X-2024</span>
+<div class="h-8 w-[1px] bg-white/20"></div>
+<span class="text-[10px] font-mono">STATUS: UNCONFIRMED</span>
+</div>
+</div>
+<div class="flex gap-2">
+<div class="w-4 h-4 bg-primary"></div>
+<div class="w-4 h-4 bg-white"></div>
+<div class="w-4 h-4 bg-zinc-800"></div>
+</div>
+</div>
+</header>
+<main class="max-w-[1400px] mx-auto px-6 py-12">
+<div class="mb-16 flex flex-col md:flex-row md:items-end justify-between gap-8">
+<div>
+<span class="font-mono text-xs uppercase tracking-[0.5em] mb-4 block text-zinc-500">System / Checkout / Process</span>
+<h1 class="text-7xl md:text-9xl font-distressed leading-none">Secure Checkout</h1>
+</div>
+<div class="brutal-border p-8 bg-black flex flex-col items-center min-w-[300px]">
+<span class="font-mono text-[10px] uppercase tracking-widest text-zinc-400 mb-2">Reservation expires in</span>
+<div class="text-7xl font-mono font-bold text-primary tabular-nums tracking-tighter" style="text-shadow: 0 0 20px rgba(255, 77, 0, 0.4);">
+                12:30
+            </div>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+<div class="lg:col-span-8 space-y-12">
+<section class="brutal-border bg-black p-10 relative">
+<div class="absolute -top-4 -left-1 bg-white text-black px-4 py-1 text-xs font-bold uppercase font-mono">
+                    01. CONTACT_INFO
+                </div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+<div class="space-y-4">
+<label class="block text-xs font-mono font-bold uppercase tracking-widest">First Name</label>
+<input class="input-brutal" placeholder="JOHN" type="text"/>
+</div>
+<div class="space-y-4">
+<label class="block text-xs font-mono font-bold uppercase tracking-widest">Last Name</label>
+<input class="input-brutal" placeholder="DOE" type="text"/>
+</div>
+<div class="space-y-4 md:col-span-2">
+<label class="block text-xs font-mono font-bold uppercase tracking-widest">Email Address</label>
+<input class="input-brutal" placeholder="JOHN@EXAMPLE.COM" type="email"/>
+</div>
+<div class="space-y-4 md:col-span-2">
+<label class="block text-xs font-mono font-bold uppercase tracking-widest">Phone Number</label>
+<input class="input-brutal" placeholder="+1 (555) 000-0000" type="tel"/>
+</div>
+</div>
+</section>
+<section class="brutal-border bg-black p-10 relative">
+<div class="absolute -top-4 -left-1 bg-white text-black px-4 py-1 text-xs font-bold uppercase font-mono">
+                    02. PAYMENT_METHOD
+                </div>
+<div class="space-y-10">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-0 border-2 border-white">
+<label class="p-6 cursor-pointer flex items-center gap-4 bg-white text-black font-bold uppercase font-mono">
+<input checked="" class="w-6 h-6 border-4 border-black text-black focus:ring-0" name="pay" type="radio"/>
+                            Credit Card
+                        </label>
+<label class="p-6 cursor-pointer flex items-center gap-4 hover:bg-zinc-900 transition-none font-bold uppercase font-mono border-l-2 border-white md:border-l-2">
+<input class="w-6 h-6 border-2 border-white bg-black text-primary focus:ring-0" name="pay" type="radio"/>
+                            PayPal
+                        </label>
+</div>
+<div class="space-y-8">
+<div class="space-y-4">
+<label class="block text-xs font-mono font-bold uppercase tracking-widest">Card Number</label>
+<input class="input-brutal" placeholder="0000 0000 0000 0000" type="text"/>
+</div>
+<div class="grid grid-cols-2 gap-10">
+<div class="space-y-4">
+<label class="block text-xs font-mono font-bold uppercase tracking-widest">Expiry Date</label>
+<input class="input-brutal" placeholder="MM / YY" type="text"/>
+</div>
+<div class="space-y-4">
+<label class="block text-xs font-mono font-bold uppercase tracking-widest">CVV</label>
+<input class="input-brutal" placeholder="***" type="password"/>
+</div>
+</div>
+</div>
+</div>
+</section>
+<div class="flex flex-col md:flex-row gap-6 pt-4">
+<button class="w-full md:w-1/3 brutal-border bg-black text-white hover:bg-zinc-900 p-8 font-mono font-bold uppercase text-xl transition-none flex items-center justify-center gap-4 group">
+<span class="material-symbols-outlined transition-transform group-hover:-translate-x-2">arrow_back</span>
+                    Back
+                </button>
+<button class="w-full md:w-2/3 bg-primary text-black p-8 font-impact font-black uppercase text-4xl italic tracking-tighter hover:bg-white transition-none border-[6px] border-primary hover:border-white">
+                    Next Step →
+                </button>
+</div>
+</div>
+<div class="lg:col-span-4">
+<div class="sticky top-32">
+<div class="brutal-border bg-black p-8 space-y-10 relative overflow-hidden">
+<div class="absolute top-0 right-10 bottom-0 w-12 flex flex-col justify-around items-center opacity-10 pointer-events-none">
+<div class="w-1 h-20 bg-white"></div>
+<div class="w-1 h-10 bg-white"></div>
+<div class="w-1 h-32 bg-white"></div>
+<div class="w-1 h-8 bg-white"></div>
+</div>
+<div class="flex justify-between items-start">
+<h2 class="text-3xl font-impact uppercase italic leading-none tracking-tighter">Order<br/>Summary</h2>
+<div class="flex flex-col items-end">
+<span class="text-[8px] font-mono text-zinc-500">ID: #FEST-9921-X</span>
+<div class="w-12 h-4 bg-white/20"></div>
+</div>
+</div>
+<div class="space-y-6">
+<div class="flex gap-4">
+<div class="w-20 h-20 bg-white brutal-border border-2 overflow-hidden flex-shrink-0">
+<img alt="Event" class="w-full h-full object-cover grayscale contrast-150" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC9u_gfZcUNB5gxnQSrTZdPAMMUzXFi4rz_Dd7kTfvzSzaxl6fvjk-1RA7SU0UEfu_JwOQCS3IlTddQtwaR9yEcoww8aNgHp7yuYK0fIOGz3-rTcYdzNctk-376jxXIkvcBWEsZFmeHI8wunTVh7urrWIGPI3y2edqiYpJGrADrYJfS3LqvbWpbJ-WIVNh0fdezV5b_TSVJ4qdOuvLJPEN0d14B2Raat_I8_YoCwtdeAj0kFA1L95Eu5BIyFIqCmx2Ee6y5URWcxTST"/>
+</div>
+<div>
+<h3 class="font-mono font-bold text-sm uppercase leading-tight mb-1">Concierto Sinfónico de Gala</h3>
+<p class="text-[10px] font-mono text-zinc-500">General Admission (x2)</p>
+</div>
+</div>
+</div>
+<div class="glitch-line"></div>
+<div class="space-y-4 font-mono text-xs uppercase">
+<div class="flex justify-between">
+<span class="text-zinc-500">Subtotal</span>
+<span>150.00 EUR</span>
+</div>
+<div class="flex justify-between">
+<span class="text-zinc-500">Service Fee</span>
+<span>04.50 EUR</span>
+</div>
+<div class="flex justify-between">
+<span class="text-zinc-500">Tax</span>
+<span>31.50 EUR</span>
+</div>
+</div>
+<div class="pt-6 border-t-[6px] border-white flex flex-col items-end gap-2">
+<span class="font-mono text-[10px] font-bold uppercase tracking-[0.4em] text-zinc-500">Amount Due</span>
+<div class="text-7xl font-impact font-black text-primary tracking-tighter leading-none italic">
+                            186.00
+                        </div>
+<span class="font-mono text-xl font-bold">EUR</span>
+</div>
+<div class="pt-8 flex flex-col items-center gap-6">
+<div class="flex gap-4 opacity-50 grayscale">
+<img alt="Visa" class="h-3" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBuaUhPTZcC0AB1XDDCnzfkz2aqZ-WFTz1dAjp2qWINVvCH0kC-0ANnwrYM8lyiUlUTnJZ-RUiy8Cg35Z_dy-8SH9B7pHMQtEMSPSoe35O4mNkkMXCi1V7OMUz90nFBDFHpKYB-1wx2rO_L7MEOczQCI4S7X5lUJUB9dJchyj_4-BveOfcGJLfEgmqElrTkfUrrDC3HRzC7G7l1454r66nIOrmIhofZVY7Zjt6DzsxsTRJmLANnHKdRKcYuZ35aQcVrhfWX-ewirZ_6"/>
+<img alt="Mastercard" class="h-3" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC0fb84xtNRivabrEo8Xob2h9prFkUjfyfbd1m7GomMKZW5qLlvcxp_kvh-8zvJ1KGqK_vO5sGXDdvRkZu6BcKfEq3qXfCqZsYwSoCc9cCKoKUY6RzCt2tZc36QE2nQ6W9z4nmi4wQJ_Apq2kYsgAvncyG2Mejo-ZWSZFOf1qE48QlY0c-NM__oqPTv3ti-OGLZKfEd_ghbVMWJyyoGqc6-XsbUHgAMPKwm2-E-r8dPU70hP5cwjiwEeBYIeJ39YTh5LGkdABjA_K_s"/>
+<img alt="PayPal" class="h-3" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA4KRfbMlwFvvUJf4M57slrp3Y2lMP42NR-0sNsKRSJTo_lBKgqX7xFZ22WtMpBdF6IzYeJJvfYtIr46dLSEPOvpsw79903CVcwaH1QYAz_jyDIDcUfuAWcXCxgufwjAzk9TeDAuNP1Q7it4Hlze4PDNxJ3hfd1feAB8uY4KO-5ksixdizR-q7IPWx1K4fNXU8Eb4ecCvxIqRQavoVepdNkjfKFI0BA0_k-m14FeucNzmPsug3Abe6NHUkeoKHY1ZvIqNQ8tiCTh7fl"/>
+</div>
+<div class="flex flex-col items-center gap-2">
+<div class="h-8 w-[100px] bg-[repeating-linear-gradient(90deg,#fff,#fff_2px,transparent_2px,transparent_6px)]"></div>
+<span class="text-[8px] font-mono text-zinc-600">ENCRYPTED_DATA_TRANSMISSION_256BIT</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<footer class="mt-32 border-t-[6px] border-white bg-black py-20">
+<div class="max-w-[1400px] mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-12 items-end">
+<div class="space-y-4">
+<img alt="Logo" class="h-6 w-auto brightness-0 invert opacity-20" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDq9lm1McAbh-O03eGFle1g-tTgIubwuQmMyDZoRExtSEQArRcCcihwc4zWPbZvGH76lFCe9mFNBFW9kaI6pcsoOee-2YLmWhv1b8G4TdvYI_V0Bq7RsQsi_hlW5r8uEaMnUtsufDEfcCkjJGlqivkWNZ5MfvuO4oT7ZpGt49hpVbGPOkzPAQxdd-m22cHfZEOaKthApmHhuohgcJU3XezTtk0M9RMRsZBqkct1t5JloO4T2RnDBM2E4WTDA0k5eRPhp0bvHwb2YoAU"/>
+<p class="text-[10px] font-mono text-zinc-600 leading-relaxed">
+                © 2024 TICKETING PREMIUM SL<br/>
+                REG_ID: B88294022<br/>
+                ALL RIGHTS RESERVED.
+            </p>
+</div>
+<div class="md:col-span-2 flex flex-col md:flex-row justify-end gap-12 text-[10px] font-mono font-bold uppercase tracking-widest text-zinc-500">
+<a class="hover:text-white transition-none" href="#">Terms_of_Service</a>
+<a class="hover:text-white transition-none" href="#">Privacy_Policy</a>
+<a class="hover:text-white transition-none" href="#">System_Support</a>
+<a class="text-primary" href="#">Contact_Us</a>
+</div>
+</div>
+</footer>
+
+</body></html>

@@ -26,6 +26,9 @@ module.exports = {
         display: ['"Playfair Display"', 'serif'],
         sans: ['"Inter"', 'sans-serif'],
         heading: ['"Syne"', 'sans-serif'],
+        distressed: ['"UnifrakturMaguntia"', 'serif'],
+        mono: ['"Space Mono"', 'monospace'],
+        impact: ['"Inter"', 'sans-serif'],
       },
       borderRadius: {
         'card': '0.75rem',    // 12px - for cards

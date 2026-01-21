@@ -284,7 +284,11 @@ export class EventDetail implements OnInit, OnDestroy {
     }
 
     this.router.navigate(['/checkout'], {
-      queryParams: { eventId: currentEvent.id, eventName: currentEvent.name },
+      queryParams: { 
+        eventId: currentEvent.id, 
+        eventName: currentEvent.name,
+        eventImageUrl: currentEvent.imageUrl || this.getEventImage()
+      },
     });
   }
 

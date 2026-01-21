@@ -11,7 +11,7 @@ import { CurrencyFormatPipe } from '../../../../shared/pipes/currency-format.pip
   styleUrl: './order-summary.css',
 })
 export class OrderSummary {
-  private readonly checkoutService = inject(CheckoutService);
+  readonly checkoutService = inject(CheckoutService);
 
   readonly cart = this.checkoutService.cart;
   readonly subtotal = this.checkoutService.subtotal;

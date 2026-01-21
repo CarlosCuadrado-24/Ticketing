@@ -7,6 +7,7 @@ export interface PaymentFormData {
   cardNumber: string;
   expiryMonth: string;
   expiryYear: string;
+  expiryDate: string;
   cvv: string;
 }
 
@@ -23,6 +24,7 @@ export class PaymentForm {
     cardNumber: '',
     expiryMonth: '',
     expiryYear: '',
+    expiryDate: '',
     cvv: '',
   };
 
