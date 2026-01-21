@@ -1,50 +1,79 @@
-<!-- Hero Swiper Section -->
-<app-hero-swiper></app-hero-swiper>
+<!-- Background Noise -->
+<div class="fixed inset-0 bg-noise pointer-events-none -z-10"></div>
+
+<!-- Hero Header Section -->
+<header class="pt-32 pb-16 px-6 relative">
+  <div class="max-w-[1440px] mx-auto flex flex-col items-center">
+    <div class="flex items-center gap-4 mb-4">
+      <span class="w-12 h-[1px] bg-primary"></span>
+      <span class="metadata-text text-primary">Explora los mejores eventos</span>
+      <span class="w-12 h-[1px] bg-primary"></span>
+    </div>
+    <h1 class="stylized-heading text-6xl md:text-8xl lg:text-9xl text-center leading-none mb-12">
+      PRÓXIMOS <br /> <span class="text-primary italic">EVENTOS</span>
+    </h1>
+    <div class="w-full max-w-3xl relative group">
+      <input
+        class="w-full bg-transparent border-b-2 border-white/20 focus:border-primary py-6 px-4 text-2xl font-heading uppercase placeholder:text-white/20 outline-none transition-all"
+        placeholder="Buscar evento, artista, ciudad..."
+        type="text"
+      />
+      <button class="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2 group">
+        <span class="metadata-text group-hover:text-primary">Buscar</span>
+        <span class="material-symbols-outlined text-primary group-hover:translate-x-1 transition-transform">arrow_right_alt</span>
+      </button>
+    </div>
+  </div>
+</header>
 
 <!-- Main Content Area -->
-<div class="max-w-[1440px] mx-auto w-full px-4 sm:px-6 md:px-8 lg:px-10 py-4 sm:py-6 md:py-8">
-  <div class="flex flex-col lg:flex-row gap-6 lg:gap-8">
-    <!-- Filters Sidebar (Desktop) -->
-    <aside class="hidden lg:block w-64 shrink-0">
-      <div class="sticky top-24">
-        <app-event-filters></app-event-filters>
-      </div>
-    </aside>
+<main class="max-w-[1440px] mx-auto px-6 pb-24 grid grid-cols-1 lg:grid-cols-12 gap-12">
+  <!-- Filters Sidebar (Desktop) -->
+  <aside class="lg:col-span-3">
+    <div class="sticky top-28">
+      <app-event-filters></app-event-filters>
+    </div>
+  </aside>
 
-    <!-- Events Grid -->
-    <main class="flex-1">
-      <!-- Mobile Filters Button -->
-      <div class="lg:hidden mb-4 sm:mb-6">
-        <button
-          (click)="toggleFilters()"
-          (keydown.enter)="toggleFilters()"
-          (keydown.space)="$event.preventDefault(); toggleFilters()"
-          class="btn-primary w-full h-12 flex items-center justify-center gap-2 text-base font-semibold"
-          aria-label="Filtros y Búsqueda"
-        >
-          <span class="material-symbols-outlined text-[20px]">tune</span>
-          <span>Filtros y Búsqueda</span>
-        </button>
+  <!-- Events Grid -->
+  <section class="lg:col-span-9">
+    <!-- Events Counter and Sort -->
+    <div class="flex justify-between items-end mb-12 border-b border-white/10 pb-4">
+      <div class="flex items-baseline gap-2">
+        <span class="stylized-heading text-4xl">{{ events().length }}</span>
+        <span class="metadata-text text-white/40">Eventos Encontrados</span>
       </div>
-
-      @if (isLoading()) {
-        <div class="flex justify-center py-20">
-          <app-loading-spinner size="lg" message="Cargando eventos..."></app-loading-spinner>
-        </div>
-      } @else {
-        <div
-          class="grid grid-cols-1 xs:grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6"
+      <div class="flex items-center gap-4">
+        <span class="metadata-text text-white/40">Ordenar por</span>
+        <select
+          class="bg-transparent border-none text-xs uppercase font-bold tracking-widest text-primary focus:ring-0 cursor-pointer p-0"
         >
-          @for (event of events(); track event.id) {
-            <app-event-card [event]="event"></app-event-card>
-          } @empty {
-            <p class="text-gray-500 col-span-full text-center py-10">No se encontraron eventos.</p>
-          }
-        </div>
-      }
-    </main>
-  </div>
-</div>
+          <option class="bg-background">Recientes</option>
+          <option class="bg-background">Populares</option>
+          <option class="bg-background">Precio</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    @if (isLoading()) {
+      <div class="flex justify-center py-20">
+        <app-loading-spinner size="lg" message="Cargando eventos..."></app-loading-spinner>
+      </div>
+    } @else {
+      <!-- Events Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+        @for (event of events(); track event.id) {
+          <app-event-card [event]="event"></app-event-card>
+        } @empty {
+          <p class="text-white/40 col-span-full text-center py-10 metadata-text">
+            No se encontraron eventos.
+          </p>
+        }
+      </div>
+    }
+  </section>
+</main>
 
 <!-- Mobile Filters Modal -->
 @if (showFilters()) {

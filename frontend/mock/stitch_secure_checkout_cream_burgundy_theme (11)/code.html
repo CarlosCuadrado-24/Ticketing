@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html class="scroll-smooth dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Validation Success - Staff Feedback</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,900;1,600;1,900&amp;family=Inter:wght@300;400;600;800&amp;family=Syne:wght@400;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#FF4D00",
+                        success: "#00FF66",
+                        background: "#000000",
+                        surface: "#0D0D0D",
+                    },
+                    fontFamily: {
+                        display: ["'Playfair Display'", "serif"],
+                        sans: ["'Inter'", "sans-serif"],
+                        heading: ["'Syne'", "sans-serif"],
+                    },
+                },
+            },
+        };
+    </script>
+<style type="text/tailwindcss">
+        :root {
+            --primary-color: #FF4D00;
+            --success-color: #00FF66;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: "FILL" 0, "wght" 300, "GRAD" 0, "opsz" 48;
+        }
+        .stylized-heading {
+            font-family: "Playfair Display", serif;
+            font-weight: 900;
+            letter-spacing: -0.02em;
+        }
+        .metadata-text {
+            font-family: "Inter", sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+        .bg-noise {
+            background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuB-hmW25YhmWzd9qu6cnJCSyv0CRccY99ALTzo5Kue_4bF_1NJLeLcNBTYJ3jVF3zTMKSlXa0cgeWgGdFLuZrYyDm99MezNLZ1w103KGng6RuWCwj2YX5l_KI2nCzlz5pHQPVC-Y7nnku9JRnuh6vaQoH0p01MYcJXy3k67nMP8TJ-uWSxMkMj-Idg7SJZ0TZLDcP_R5v1otBIxk4jB4GRGDWQbgpj9YhDbiqwWAPCmfMfMH3VISPMcClInTfuNcN1BmMzePjli4Kyg);
+            opacity: 0.08;
+            mix-blend-mode: overlay;
+        }
+        .glow-success {
+            filter: drop-shadow(0 0 20px rgba(0, 255, 102, 0.4));
+        }
+        .ticket-card {
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+        }
+        .ticket-card::before, .ticket-card::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: black;
+            border-radius: 50%;
+            top: 50%;
+            transform: translateY(-50%);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .ticket-card::before { left: -11px; border-left: none; }
+        .ticket-card::after { right: -11px; border-right: none; }
+    </style>
+</head>
+<body class="bg-background text-white font-sans selection:bg-primary selection:text-white min-h-screen flex flex-col items-center justify-center p-6 overflow-hidden">
+<div class="fixed inset-0 bg-noise pointer-events-none z-0"></div>
+<div class="fixed top-10 left-10 opacity-20 z-0">
+<span class="material-symbols-outlined text-6xl">star</span>
+</div>
+<div class="fixed bottom-10 right-10 opacity-20 z-0 rotate-180">
+<span class="material-symbols-outlined text-6xl">star</span>
+</div>
+<main class="relative z-10 w-full max-w-xl flex flex-col items-center">
+<div class="mb-8 relative">
+<div class="absolute inset-0 bg-success/20 blur-3xl rounded-full"></div>
+<span class="material-symbols-outlined text-success text-[120px] glow-success leading-none">
+                check_circle
+            </span>
+</div>
+<h1 class="stylized-heading text-6xl md:text-7xl lg:text-8xl text-center mb-12 tracking-tighter">
+            TICKET <br/>
+<span class="italic">VÁLIDO</span>
+</h1>
+<div class="ticket-card w-full bg-surface p-10 mb-12 flex flex-col gap-8 shadow-2xl">
+<div class="flex justify-between items-start border-b border-white/10 pb-6">
+<div>
+<span class="metadata-text text-white/40 block mb-2">Asistente</span>
+<h2 class="text-3xl font-heading font-extrabold uppercase tracking-tight">ALEXANDRA V. SMITH</h2>
+</div>
+<div class="bg-white text-black px-4 py-1">
+<span class="metadata-text !text-[10px]">VIP PASS</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-8">
+<div>
+<span class="metadata-text text-white/40 block mb-2">Evento</span>
+<p class="font-heading font-bold text-sm uppercase">NEON WASTELAND 2024</p>
+</div>
+<div>
+<span class="metadata-text text-white/40 block mb-2">Zona</span>
+<p class="font-heading font-bold text-sm uppercase">FRONT STAGE A</p>
+</div>
+<div>
+<span class="metadata-text text-white/40 block mb-2">Fecha</span>
+<p class="font-heading font-bold text-sm uppercase">15 OCT / 20:00</p>
+</div>
+<div>
+<span class="metadata-text text-white/40 block mb-2">ID Ticket</span>
+<p class="font-heading font-bold text-sm uppercase text-white/60">#TX-99281-B</p>
+</div>
+</div>
+</div>
+<div class="w-full flex flex-col gap-4">
+<button class="w-full bg-primary text-white py-5 px-8 metadata-text text-sm hover:bg-white hover:text-black transition-all flex items-center justify-center gap-3">
+                MARCAR COMO USADO
+                <span class="material-symbols-outlined text-base">verified</span>
+</button>
+<button class="w-full bg-transparent border border-white text-white py-5 px-8 metadata-text text-sm hover:bg-white/10 transition-all flex items-center justify-center gap-3">
+                ESCANEAR SIGUIENTE
+                <span class="material-symbols-outlined text-base">qr_code_scanner</span>
+</button>
+</div>
+<div class="mt-12 flex items-center gap-4">
+<span class="w-8 h-[1px] bg-white/20"></span>
+<span class="metadata-text text-white/20">Staff Console v2.04</span>
+<span class="w-8 h-[1px] bg-white/20"></span>
+</div>
+</main>
+<div class="fixed left-6 top-1/2 -translate-y-1/2 h-64 w-[1px] bg-gradient-to-b from-transparent via-white/20 to-transparent"></div>
+<div class="fixed right-6 top-1/2 -translate-y-1/2 h-64 w-[1px] bg-gradient-to-b from-transparent via-white/20 to-transparent"></div>
+
+</body></html>

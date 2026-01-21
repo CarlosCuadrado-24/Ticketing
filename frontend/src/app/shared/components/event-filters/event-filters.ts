@@ -16,10 +16,12 @@ export class EventFiltersComponent implements OnInit, OnDestroy {
   // Filter form model
   searchQuery = '';
   location = '';
-  selectedCategory = '';
+  selectedCategory = 'All';
+  priceMax = 500;
+  dateFrom = '';
 
-  // Available categories (could come from API)
-  categories = ['All Categories', 'Concerts', 'Workshops', 'Conferences', 'Sports', 'Theater'];
+  // Available categories
+  categories = ['All', 'Music', 'Arts & Theater', 'Sports', 'Technology', 'Business'];
 
   ngOnInit(): void {
     // Initialize from service filters if they exist
@@ -29,14 +31,16 @@ export class EventFiltersComponent implements OnInit, OnDestroy {
     if (currentFilters.category) this.selectedCategory = currentFilters.category;
   }
 
+  selectCategory(category: string): void {
+    this.selectedCategory = category;
+    this.applyFilters();
+  }
+
   applyFilters(): void {
     const filters: IEventFilters = {
       searchQuery: this.searchQuery || undefined,
       location: this.location || undefined,
-      category:
-        this.selectedCategory && this.selectedCategory !== 'All Categories'
-          ? this.selectedCategory
-          : undefined,
+      category: this.selectedCategory && this.selectedCategory !== 'All' ? this.selectedCategory : undefined,
     };
     this.eventService.updateFilters(filters);
   }
@@ -44,7 +48,9 @@ export class EventFiltersComponent implements OnInit, OnDestroy {
   clearFilters(): void {
     this.searchQuery = '';
     this.location = '';
-    this.selectedCategory = '';
+    this.selectedCategory = 'All';
+    this.priceMax = 500;
+    this.dateFrom = '';
     this.eventService.clearFilters();
   }
 

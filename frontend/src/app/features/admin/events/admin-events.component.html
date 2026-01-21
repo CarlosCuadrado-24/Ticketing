@@ -1,112 +1,168 @@
-<div class="admin-events">
-  <div class="header">
-    <h2>Gestión de Eventos</h2>
-    <button class="btn btn-primary" routerLink="/admin/events/create">+ Crear Evento</button>
-  </div>
-
-  <div class="filters">
-    <div class="filter-group">
-      <label for="category">Categoría:</label>
-      <select
-        id="category"
-        [ngModel]="selectedCategory()"
-        (change)="onCategoryChange($event)"
-        (ngModelChange)="selectedCategory.set($event)"
-      >
-        <option value="">Todas las categorías</option>
-        <option *ngFor="let category of categories" [value]="category">
-          {{ category }}
-        </option>
-      </select>
+<div class="flex flex-col min-h-screen bg-background-dark text-white">
+  <!-- Page Heading Section -->
+  <div class="flex flex-col md:flex-row items-end justify-between gap-6 mb-8">
+    <div class="flex flex-col gap-2">
+      <h1 class="text-white text-5xl font-black leading-tight tracking-tight">Manage My Events</h1>
+      <p class="text-[#bba49b] text-lg font-normal">Real-time overview of your nightlife and summit events.</p>
     </div>
-
-    <div class="filter-group">
-      <label for="search">Buscar:</label>
-      <input
-        id="search"
-        type="text"
-        [ngModel]="searchTerm()"
-        (ngModelChange)="searchTerm.set($event)"
-        (input)="filterEvents()"
-        placeholder="Buscar por nombre o ubicación..."
-      />
+    
+    <!-- Search Bar with Thick White Outline -->
+    <div class="w-full md:w-96">
+      <label class="flex flex-col w-full">
+        <div class="flex items-center rounded-lg h-12 border-2 border-white bg-transparent px-4">
+          <span class="material-symbols-outlined text-white mr-3">search</span>
+          <input 
+            class="bg-transparent border-none focus:ring-0 text-white placeholder-white/50 w-full text-base font-normal p-0 outline-none"
+            placeholder="Search events..."
+            [ngModel]="searchTerm()"
+            (ngModelChange)="searchTerm.set($event)"
+            (input)="filterEvents()"
+          />
+        </div>
+      </label>
     </div>
   </div>
 
-  <div class="events-table" *ngIf="!loading()">
-    <table>
-      <thead>
-        <tr>
-          <th>Nombre</th>
-          <th>Fecha</th>
-          <th>Ubicación</th>
-          <th>Categoría</th>
-          <th>Tickets Vendidos</th>
-          <th>Ingresos</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let event of filteredEvents()">
-          <td>
-            <div class="event-name">
-              <strong>{{ event.name }}</strong>
-              <small>ID: {{ event.id }}</small>
-            </div>
-          </td>
-          <td>{{ event.date | date: 'short' }}</td>
-          <td>
-            <div class="location">
-              <div>{{ event.location }}</div>
-              <small>{{ event.venueName }}</small>
-            </div>
-          </td>
-          <td>
-            <span class="category-badge">
-              {{ event.eventDetails?.[0]?.category || 'Sin categoría' }}
-            </span>
-          </td>
-          <td class="text-center">
-            <strong>
-              {{ getTicketsSoldByEvent(event) }}
-            </strong>
-          </td>
-          <td class="text-center">
-            <strong class="revenue">${{ calculateEventRevenue(event) | number: '1.2-2' }}</strong>
-          </td>
-          <td>
-            <div class="actions">
-              <button class="btn btn-sm btn-info" [routerLink]="['/admin/events', event.id]">
-                Ver
-              </button>
-              <button
-                class="btn btn-sm btn-warning"
-                [routerLink]="['/admin/events', event.id, 'edit']"
-              >
-                Editar
-              </button>
-              <button
-                class="btn btn-sm btn-danger"
-                (click)="deleteEvent(event.id.toString(), event.name)"
-              >
-                Eliminar
-              </button>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-
-    <div class="no-events" *ngIf="filteredEvents().length === 0">
-      <p>No se encontraron eventos.</p>
+  <!-- Loading State -->
+  @if (loading()) {
+    <div class="flex justify-center items-center py-20">
+      <div class="text-center">
+        <div class="inline-block animate-spin rounded-full h-16 w-16 border-b-4 border-primary mb-4"></div>
+        <p class="text-white/60 text-lg">Loading events...</p>
+      </div>
     </div>
-  </div>
+  }
 
-  <div class="loading" *ngIf="loading()">
-    <p>Cargando eventos...</p>
-  </div>
+  <!-- Error State -->
+  @if (error() && !loading()) {
+    <div class="bg-red-500/10 border border-red-400/30 p-6 rounded-xl">
+      <p class="text-red-400">{{ error() }}</p>
+    </div>
+  }
 
-  <div class="error" *ngIf="error()">
-    <p>Error: {{ error() }}</p>
-  </div>
+  <!-- Event Table Container -->
+  @if (!loading() && !error()) {
+    <div class="w-full">
+      <div class="overflow-hidden rounded-xl border border-white/10 bg-[#141414]">
+        <table class="w-full border-collapse">
+          <thead>
+            <tr class="bg-white/5 border-b border-white/10">
+              <th class="px-6 py-4 text-center w-16">
+                <input class="custom-checkbox inline-block" type="checkbox"/>
+              </th>
+              <th class="px-6 py-4 text-left text-white text-sm font-bold uppercase tracking-wider">
+                <div class="flex items-center gap-1">
+                  Event
+                  <span class="material-symbols-outlined text-primary text-xs cursor-pointer">arrow_downward</span>
+                </div>
+              </th>
+              <th class="px-6 py-4 text-left text-white text-sm font-bold uppercase tracking-wider">Status</th>
+              <th class="px-6 py-4 text-left text-white text-sm font-bold uppercase tracking-wider">Ticket Sales</th>
+              <th class="px-6 py-4 text-left text-white text-sm font-bold uppercase tracking-wider">Date</th>
+              <th class="px-6 py-4 text-right text-white text-sm font-bold uppercase tracking-wider">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-white/5">
+            @for (event of filteredEvents(); track event.id) {
+              <tr class="hover:bg-white/[0.03] transition-colors group">
+                <td class="px-6 py-5 text-center">
+                  <input class="custom-checkbox inline-block" type="checkbox"/>
+                </td>
+                <td class="px-6 py-5">
+                  <div class="flex items-center gap-4">
+                    <div 
+                      class="size-12 rounded bg-cover bg-center border border-white/10"
+                      [style.background-image]="'url(' + getEventImage(event) + ')'"
+                    ></div>
+                    <span class="text-white text-lg font-bold">{{ event.name }}</span>
+                  </div>
+                </td>
+                <td class="px-6 py-5">
+                  <span 
+                    class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest glow-badge"
+                    [ngClass]="{
+                      'bg-primary/20 text-primary border border-primary/30': isPublished(event),
+                      'bg-white/10 text-white/60 border border-white/10': !isPublished(event)
+                    }"
+                  >
+                    {{ isPublished(event) ? 'Publicado' : 'Draft' }}
+                  </span>
+                </td>
+                <td class="px-6 py-5">
+                  <div class="flex flex-col gap-1.5 min-w-[120px]">
+                    <div class="flex justify-between text-[11px] font-bold text-white/60">
+                      <span>{{ getTicketsSoldByEvent(event) }} / {{ getTotalCapacity(event) }}</span>
+                      <span>{{ getTicketPercentage(event) }}%</span>
+                    </div>
+                    <div class="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
+                      <div 
+                        class="h-full bg-primary transition-all"
+                        [style.width.%]="getTicketPercentage(event)"
+                      ></div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-6 py-5 text-[#bba49b] text-sm">
+                  {{ event.date | date: 'MMM dd, yyyy' }}
+                </td>
+                <td class="px-6 py-5 text-right">
+                  <div class="flex justify-end gap-3 text-white/50 group-hover:text-white transition-colors">
+                    <button 
+                      [routerLink]="['/admin/events', event.id, 'edit']"
+                      class="hover:text-primary transition-colors" 
+                      title="Edit"
+                    >
+                      <span class="material-symbols-outlined">edit_note</span>
+                    </button>
+                    <button 
+                      [routerLink]="['/admin/events', event.id]"
+                      class="hover:text-primary transition-colors" 
+                      title="Analytics"
+                    >
+                      <span class="material-symbols-outlined">bar_chart_4_bars</span>
+                    </button>
+                    <button 
+                      (click)="deleteEvent(event.id.toString(), event.name)"
+                      class="hover:text-primary transition-colors" 
+                      title="More"
+                    >
+                      <span class="material-symbols-outlined">more_vert</span>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="6" class="px-6 py-12 text-center">
+                  <div class="flex flex-col items-center gap-4">
+                    <span class="material-symbols-outlined text-white/20 text-6xl">event_busy</span>
+                    <p class="text-white/40 text-lg">No events found</p>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Pagination Section -->
+    <div class="flex items-center justify-between mt-8 p-4 bg-[#141414] rounded-xl border border-white/5">
+      <p class="text-white/40 text-sm italic">
+        Showing {{ filteredEvents().length > 0 ? 1 : 0 }} to {{ filteredEvents().length }} of {{ events().length }} events
+      </p>
+      <div class="flex items-center gap-2">
+        <a class="flex size-10 items-center justify-center rounded-lg border border-white/10 hover:bg-white/5 transition-all cursor-pointer" href="#">
+          <span class="material-symbols-outlined text-white text-sm">chevron_left</span>
+        </a>
+        <a class="text-sm font-bold flex size-10 items-center justify-center text-white rounded-lg bg-primary shadow-glow-orange cursor-pointer" href="#">1</a>
+        <a class="text-sm font-normal flex size-10 items-center justify-center text-white/60 hover:text-white rounded-lg hover:bg-white/5 transition-all cursor-pointer" href="#">2</a>
+        <a class="text-sm font-normal flex size-10 items-center justify-center text-white/60 hover:text-white rounded-lg hover:bg-white/5 transition-all cursor-pointer" href="#">3</a>
+        <span class="text-white/20 px-2">...</span>
+        <a class="flex size-10 items-center justify-center rounded-lg border border-white/10 hover:bg-white/5 transition-all cursor-pointer" href="#">
+          <span class="material-symbols-outlined text-white text-sm">chevron_right</span>
+        </a>
+      </div>
+    </div>
+  }
 </div>

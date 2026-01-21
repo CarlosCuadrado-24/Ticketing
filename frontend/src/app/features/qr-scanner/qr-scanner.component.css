@@ -11,13 +11,13 @@
   text-align: center;
   margin-bottom: 24px;
   padding: 20px;
-  background: white;
+  background: #1A1A1A;
   border-radius: 16px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .scanner-header h2 {
-  color: #2c3e50;
+  color: #FFFFFF;
   margin-bottom: 8px;
   font-size: 1.75rem;
   font-weight: 700;
@@ -33,7 +33,7 @@
 .event-selection {
   margin-bottom: 20px;
   padding: 20px;
-  background: white;
+  background: #1A1A1A;
   border-radius: 16px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
@@ -52,7 +52,7 @@
   border: 2px solid #dee2e6;
   border-radius: 12px;
   font-size: 1rem;
-  background: white;
+  background: #1A1A1A;
   transition: all 0.2s ease;
 }
 
@@ -78,7 +78,7 @@
   padding: 20px;
   border-radius: 16px;
   margin-bottom: 20px;
-  background: white;
+  background: #1A1A1A;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
@@ -268,7 +268,7 @@
 
 .results-header h3 {
   margin: 0;
-  color: #2c3e50;
+  color: #FFFFFF;
 }
 
 .results-list {
@@ -522,13 +522,13 @@
 .info-value {
   font-size: 0.95rem;
   font-weight: 600;
-  color: #2c3e50;
+  color: #FFFFFF;
   word-break: break-word;
 }
 
 /* Quick Instructions (Mobile) */
 .quick-instructions {
-  background: white;
+  background: #1A1A1A;
   border-radius: 16px;
   padding: 24px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -538,7 +538,7 @@
 .quick-instructions h4 {
   margin-top: 0;
   margin-bottom: 20px;
-  color: #2c3e50;
+  color: #FFFFFF;
   font-size: 1.2rem;
 }
 
@@ -588,7 +588,7 @@
 
 .instructions h4,
 .instructions h5 {
-  color: #2c3e50;
+  color: #FFFFFF;
   margin-top: 0;
 }
 

@@ -4,12 +4,11 @@ import { EventService } from '../../services/event.service';
 import { LoadingSpinner } from '../../shared/components/loading-spinner/loading-spinner';
 import { EventCard } from '../../shared/components/event-card/event-card';
 import { EventFiltersComponent } from '../../shared/components/event-filters/event-filters';
-import { HeroSwiperComponent } from '../hero-swiper/hero-swiper.component';
 
 @Component({
   selector: 'app-event-list',
   standalone: true,
-  imports: [CommonModule, LoadingSpinner, EventCard, EventFiltersComponent, HeroSwiperComponent],
+  imports: [CommonModule, LoadingSpinner, EventCard, EventFiltersComponent],
   templateUrl: './event-list.html',
   styleUrl: './event-list.css',
 })

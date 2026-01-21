@@ -1,89 +1,86 @@
-<footer class="bg-white border-t border-gray-200 py-8 mt-auto">
-  <div class="max-w-7xl mx-auto px-4">
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-      <!-- Brand -->
-      <div class="flex flex-col gap-4">
-        <div class="flex items-center gap-2">
-          <svg class="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 48 48">
-            <path d="M6 6H42L36 24L42 42H6L12 24L6 6Z"></path>
-          </svg>
-          <h2 class="text-lg font-bold text-gray-900">TicketMastery</h2>
+<footer class="bg-black py-20 border-t border-white/5 relative overflow-hidden">
+  <div class="max-w-[1440px] mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12 relative z-10">
+    <!-- Brand -->
+    <div class="md:col-span-2">
+      <div class="flex items-center gap-2 mb-8">
+        <div class="w-6 h-6 flex items-center justify-center relative">
+          <span class="material-symbols-outlined text-primary text-2xl">star</span>
         </div>
-        <p class="text-sm text-gray-600">Tu puerta de entrada a los eventos más emocionantes.</p>
+        <span class="stylized-heading text-3xl tracking-tighter italic">
+          Ticket<span class="text-primary">Mastery</span>
+        </span>
       </div>
-
-      <!-- Company -->
-      <div>
-        <h3 class="text-sm font-semibold text-gray-900 mb-3">Compañía</h3>
-        <ul class="space-y-2">
-          <li>
-            <a href="#" class="text-sm text-gray-600 hover:text-blue-600 transition-colors"
-              >Sobre nosotros</a
-            >
-          </li>
-          <li>
-            <a href="#" class="text-sm text-gray-600 hover:text-blue-600 transition-colors"
-              >Empleos</a
-            >
-          </li>
-          <li>
-            <a href="#" class="text-sm text-gray-600 hover:text-blue-600 transition-colors"
-              >Prensa</a
-            >
-          </li>
-        </ul>
-      </div>
-
-      <!-- Support -->
-      <div>
-        <h3 class="text-sm font-semibold text-gray-900 mb-3">Soporte</h3>
-        <ul class="space-y-2">
-          <li>
-            <a href="#" class="text-sm text-gray-600 hover:text-blue-600 transition-colors"
-              >Centro de ayuda</a
-            >
-          </li>
-          <li>
-            <a href="#" class="text-sm text-gray-600 hover:text-blue-600 transition-colors"
-              >Contáctanos</a
-            >
-          </li>
-          <li>
-            <a href="#" class="text-sm text-gray-600 hover:text-blue-600 transition-colors"
-              >Preguntas frecuentes</a
-            >
-          </li>
-        </ul>
-      </div>
-
-      <!-- Legal -->
-      <div>
-        <h3 class="text-sm font-semibold text-gray-900 mb-3">Legal</h3>
-        <ul class="space-y-2">
-          <li>
-            <a href="#" class="text-sm text-gray-600 hover:text-blue-600 transition-colors"
-              >Política de privacidad</a
-            >
-          </li>
-          <li>
-            <a href="#" class="text-sm text-gray-600 hover:text-blue-600 transition-colors"
-              >Términos del servicio</a
-            >
-          </li>
-          <li>
-            <a href="#" class="text-sm text-gray-600 hover:text-blue-600 transition-colors"
-              >Política de cookies</a
-            >
-          </li>
-        </ul>
+      <p class="metadata-text text-white/40 max-w-sm mb-8 leading-relaxed">
+        El destino definitivo para eventos emocionantes y experiencias únicas. Sin filtros, auténtico
+        y exclusivo.
+      </p>
+      <div class="flex gap-6">
+        <span
+          class="material-symbols-outlined text-white/40 hover:text-primary cursor-pointer transition-colors"
+          >share</span
+        >
+        <span
+          class="material-symbols-outlined text-white/40 hover:text-primary cursor-pointer transition-colors"
+          >hub</span
+        >
+        <span
+          class="material-symbols-outlined text-white/40 hover:text-primary cursor-pointer transition-colors"
+          >interests</span
+        >
       </div>
     </div>
 
-    <!-- Copyright -->
-    <div class="border-t border-gray-200 mt-8 pt-6">
-      <p class="text-xs text-gray-500">
-        © {{ currentYear }} TicketMastery Inc. Todos los derechos reservados.
-      </p>
+    <!-- Navigation -->
+    <div>
+      <h4 class="metadata-text text-white mb-6">Navegación</h4>
+      <div class="flex flex-col gap-4">
+        <a
+          href="#"
+          class="metadata-text text-white/40 hover:text-primary transition-colors"
+          >Explorar</a
+        >
+        <a
+          href="#"
+          class="metadata-text text-white/40 hover:text-primary transition-colors"
+          >Precios</a
+        >
+        <a
+          href="#"
+          class="metadata-text text-white/40 hover:text-primary transition-colors"
+          >Artistas</a
+        >
+        <a href="#" class="metadata-text text-white/40 hover:text-primary transition-colors">FAQ</a>
+      </div>
+    </div>
+
+    <!-- Newsletter -->
+    <div>
+      <h4 class="metadata-text text-white mb-6">Newsletter</h4>
+      <div class="relative border-b border-white/20 pb-2">
+        <input
+          class="bg-transparent border-none p-0 w-full metadata-text placeholder:text-white/20 focus:ring-0"
+          placeholder="tu@email.com"
+          type="email"
+        />
+        <button class="absolute right-0 top-0 text-primary hover:text-white transition-colors">
+          <span class="material-symbols-outlined text-sm">arrow_forward</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Bar -->
+  <div
+    class="max-w-[1440px] mx-auto px-6 mt-20 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4"
+  >
+    <p class="metadata-text text-white/20">
+      © 2024 TICKETMASTERY. TODOS LOS DERECHOS RESERVADOS.
+    </p>
+    <div class="flex gap-8">
+      <a href="#" class="metadata-text text-white/20 hover:text-white transition-colors">Términos</a>
+      <a href="#" class="metadata-text text-white/20 hover:text-white transition-colors"
+        >Privacidad</a
+      >
     </div>
   </div>
 </footer>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html class="scroll-smooth dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Validation Error - Staff Feedback</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,900;1,600;1,900&amp;family=Inter:wght@300;400;600;800&amp;family=Syne:wght@400;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#FF4D00", // Vibrant Orange-Red
+                        error: "#FF0000",
+                        background: "#000000", // Solid Black for error state
+                        surface: "#0D0D0D",
+                    },
+                    fontFamily: {
+                        display: ["'Playfair Display'", "serif"],
+                        sans: ["'Inter'", "sans-serif"],
+                        heading: ["'Syne'", "sans-serif"],
+                    },
+                },
+            },
+        };
+    </script>
+<style type="text/tailwindcss">
+        :root {
+            --primary-color: #FF4D00;
+            --error-color: #FF0000;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: "FILL" 0, "wght" 300, "GRAD" 0, "opsz" 24
+        }
+        .stylized-heading {
+            font-family: "Playfair Display", serif;
+            font-weight: 900;
+            letter-spacing: -0.02em
+        }
+        .metadata-text {
+            font-family: "Inter", sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-size: 0.75rem;
+            font-weight: 600
+        }
+        .aggressive-heading {
+            font-family: "Syne", sans-serif;
+            font-weight: 800;
+            letter-spacing: -0.05em;
+            text-transform: uppercase;
+        }
+        .neon-glow {
+            text-shadow: 0 0 20px rgba(255, 0, 0, 0.7), 0 0 40px rgba(255, 0, 0, 0.4);
+        }
+        .bg-noise {
+            background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuB-hmW25YhmWzd9qu6cnJCSyv0CRccY99ALTzo5Kue_4bF_1NJLeLcNBTYJ3jVF3zTMKSlXa0cgeWgGdFLuZrYyDm99MezNLZ1w103KGng6RuWCwj2YX5l_KI2nCzlz5pHQPVC-Y7nnku9JRnuh6vaQoH0p01MYcJXy3k67nMP8TJ-uWSxMkMj-Idg7SJZ0TZLDcP_R5v1otBIxk4jB4GRGDWQbgpj9YhDbiqwWAPCmfMfMH3VISPMcClInTfuNcN1BmMzePjli4Kyg);
+            opacity: 0.05
+        }
+        .industrial-border {
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+        .industrial-border::before {
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: -1px;
+            width: 10px;
+            height: 10px;
+            border-top: 2px solid #FF4D00;
+            border-left: 2px solid #FF4D00;
+        }
+        .industrial-border::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            right: -1px;
+            width: 10px;
+            height: 10px;
+            border-bottom: 2px solid #FF4D00;
+            border-right: 2px solid #FF4D00;
+        }
+    </style>
+</head>
+<body class="bg-background text-white font-sans selection:bg-primary selection:text-white min-h-screen flex flex-col items-center justify-center overflow-hidden">
+<div class="fixed inset-0 bg-noise pointer-events-none -z-10"></div>
+<div class="fixed top-10 left-10 opacity-20 hidden md:block">
+<div class="text-[10px] tracking-[0.5em] uppercase vertical-text rotate-180" style="writing-mode: vertical-rl;">ERROR_CODE_409</div>
+</div>
+<div class="fixed bottom-10 right-10 opacity-20 hidden md:block">
+<div class="text-[10px] tracking-[0.5em] uppercase vertical-text" style="writing-mode: vertical-rl;">SYSTEM_AUTH_DENIED</div>
+</div>
+<main class="w-full max-w-2xl px-6 py-12 flex flex-col items-center text-center">
+<div class="mb-12 relative">
+<div class="absolute inset-0 blur-3xl bg-error/20 rounded-full"></div>
+<div class="relative flex items-center justify-center">
+<span class="material-symbols-outlined text-9xl md:text-[12rem] text-error neon-glow font-light">close</span>
+</div>
+<div class="absolute -top-4 -left-4 w-8 h-8 border-t border-l border-white/20"></div>
+<div class="absolute -bottom-4 -right-4 w-8 h-8 border-b border-r border-white/20"></div>
+</div>
+<div class="space-y-6 mb-16">
+<h1 class="aggressive-heading text-5xl md:text-7xl lg:text-8xl leading-none">
+                TICKET <br/> <span class="text-white">YA USADO</span>
+</h1>
+<div class="flex flex-col items-center gap-4">
+<div class="h-[1px] w-24 bg-error"></div>
+<p class="metadata-text text-white/60 text-lg">
+                    Usado el <span class="text-white font-bold">15 Oct, 20:15</span>
+</p>
+<div class="flex items-center gap-2 px-4 py-1 bg-error/10 border border-error/30">
+<span class="material-symbols-outlined text-error text-xs">warning</span>
+<span class="metadata-text text-error text-[10px]">Acceso denegado</span>
+</div>
+</div>
+</div>
+<div class="w-full max-w-md flex flex-col gap-4">
+<button class="w-full bg-primary text-white py-6 md:py-8 aggressive-heading text-xl md:text-2xl hover:bg-white hover:text-black transition-all duration-300 flex items-center justify-center gap-4 group">
+                ESCANEAR SIGUIENTE
+                <span class="material-symbols-outlined group-hover:translate-x-2 transition-transform">arrow_forward</span>
+</button>
+<button class="w-full bg-white text-black py-4 aggressive-heading text-sm md:text-base hover:bg-error hover:text-white transition-all duration-300">
+                REINTENTAR
+            </button>
+</div>
+<div class="mt-20 pt-8 border-t border-white/10 w-full flex justify-between items-center opacity-40">
+<div class="flex items-center gap-3">
+<div class="w-2 h-2 bg-error animate-pulse"></div>
+<span class="metadata-text text-[9px]">Validation Node 04</span>
+</div>
+<div class="flex items-center gap-4">
+<span class="metadata-text text-[9px]">ID: 982-FX-44</span>
+<span class="material-symbols-outlined text-sm">qr_code_scanner</span>
+</div>
+</div>
+</main>
+<div class="fixed top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-error/50 to-transparent"></div>
+<div class="fixed bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/50 to-transparent"></div>
+
+</body></html>

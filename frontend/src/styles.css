@@ -3,6 +3,15 @@
 /* Material Symbols Icons */
 @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
 
+/* Material Symbols configuration */
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* Reset and base styles */
 *,
 *::before,
@@ -14,6 +23,7 @@ html {
   -webkit-text-size-adjust: 100%;
   -moz-text-size-adjust: 100%;
   text-size-adjust: 100%;
+  scroll-behavior: smooth;
 }
 
 html,
@@ -21,11 +31,17 @@ body {
   height: 100%;
   margin: 0;
   padding: 0;
-  font-family:
-    system-ui,
-    -apple-system,
-    sans-serif;
-  overflow-x: hidden; /* Prevenir scroll horizontal */
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  overflow-x: hidden;
+  @apply bg-background text-white;
+}
+
+/* Dark theme is default */
+.dark,
+:root {
+  --primary-color: #FF4D00;
+  --background-color: #0D0D0D;
+  --surface-color: #1A1A1A;
 }
 
 /* Responsive text sizes */
@@ -45,7 +61,7 @@ body {
 
 /* Accessibility improvements */
 *:focus-visible {
-  outline: 2px solid #1313ec;
+  outline: 2px solid #FF4D00;
   outline-offset: 2px;
 }
 
@@ -57,15 +73,39 @@ body {
 }
 
 .btn-primary {
-  @apply btn-base bg-primary-600 text-white;
-  @apply hover:bg-primary-700 active:bg-primary-800;
-  @apply focus:ring-primary-600;
+  @apply btn-base bg-primary text-white;
+  @apply hover:bg-white hover:text-black;
+  @apply focus:ring-primary;
 }
 
 .btn-secondary {
-  @apply btn-base bg-gray-200 text-gray-900;
-  @apply hover:bg-gray-300 active:bg-gray-400;
-  @apply focus:ring-gray-400;
+  @apply btn-base border border-white/20 text-white;
+  @apply hover:bg-white hover:text-black;
+  @apply focus:ring-white/20;
+}
+
+/* Dark theme utilities */
+.stylized-heading {
+  font-family: 'Playfair Display', serif;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+}
+
+.metadata-text {
+  font-family: 'Inter', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.65rem;
+  font-weight: 600;
+}
+
+.edgy-border {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.bg-noise {
+  background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuB-hmW25YhmWzd9qu6cnJCSyv0CRccY99ALTzo5Kue_4bF_1NJLeLcNBTYJ3jVF3zTMKSlXa0cgeWgGdFLuZrYyDm99MezNLZ1w103KGng6RuWCwj2YX5l_KI2nCzlz5pHQPVC-Y7nnku9JRnuh6vaQoH0p01MYcJXy3k67nMP8TJ-uWSxMkMj-Idg7SJZ0TZLDcP_R5v1otBIxk4jB4GRGDWQbgpj9YhDbiqwWAPCmfMfMH3VISPMcClInTfuNcN1BmMzePjli4Kyg);
+  opacity: 0.05;
 }
 
 /* Animation utilities */

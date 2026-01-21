@@ -1,62 +1,54 @@
-<div
-  class="group flex flex-col bg-white rounded-card overflow-hidden shadow-card hover:shadow-card-hover border border-gray-100 transition-all duration-300 hover:-translate-y-1"
->
-  <div class="relative h-48 overflow-hidden">
-    <div
-      class="absolute top-3 right-3 z-10 bg-white/90 backdrop-blur rounded-md px-2 py-1 text-xs font-bold text-primary-600 shadow-sm"
-    >
-      Desde {{ getMinPrice() | currencyFormat }}
+<div class="group border border-white/10 hover:border-primary transition-all bg-surface/30">
+  <div class="aspect-[4/5] relative overflow-hidden">
+    <!-- Event Image -->
+    <img
+      [src]="getEventImage()"
+      [alt]="event.name"
+      class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
+    />
+    
+    <!-- Gradient Overlay -->
+    <div class="absolute inset-0 bg-gradient-to-t from-background to-transparent opacity-80"></div>
+    
+    <!-- Live Badge -->
+    <div class="absolute top-4 left-4 flex items-center gap-1">
+      <span class="material-symbols-outlined text-primary text-sm">star</span>
+      <span class="metadata-text text-white">Live</span>
     </div>
-    @if (event.ticketTypes && event.ticketTypes.length > 0) {
-      <div
-        class="absolute top-3 left-3 z-10 bg-white/90 backdrop-blur rounded-md px-2 py-1 text-xs font-bold shadow-sm"
-      >
-        @if (getTotalAvailableTickets() > 50) {
-          <span class="text-green-600">● Disponible</span>
-        } @else if (getTotalAvailableTickets() > 0) {
-          <span class="text-orange-600">● Pocas entradas</span>
-        } @else {
-          <span class="text-red-600">● Agotado</span>
-        }
+    
+    <!-- Card Content -->
+    <div class="absolute bottom-6 left-6 right-6">
+      <!-- Date and Time -->
+      <p class="metadata-text text-primary mb-2">
+        {{ event.date | date: 'dd MMM / HH:mm' }}
+      </p>
+      
+      <!-- Event Title -->
+      <h4 class="stylized-heading text-3xl leading-tight mb-4 line-clamp-2">
+        {{ event.name }}
+      </h4>
+      
+      <!-- Location -->
+      <div class="flex items-center gap-2 mb-6">
+        <span class="material-symbols-outlined text-xs text-white/40">location_on</span>
+        <span class="metadata-text text-white/40 truncate">{{ event.location }}</span>
       </div>
-    }
-    <div
-      class="absolute top-14 left-3 z-10 bg-white/90 backdrop-blur rounded-md size-10 flex flex-col items-center justify-center shadow-sm"
-    >
-      <span class="text-[10px] font-bold text-red-500 uppercase">{{
-        event.date | dateFormat: 'short'
-      }}</span>
-      <span class="text-lg font-bold text-gray-900 leading-none">{{
-        event.date | date: 'dd'
-      }}</span>
-    </div>
-    <div
-      class="w-full h-full bg-cover bg-center group-hover:scale-105 transition-transform duration-500"
-      [style.backgroundImage]="getBackgroundImageUrl()"
-    ></div>
-  </div>
-  <div class="p-5 flex flex-col flex-1">
-    <h3
-      class="text-lg font-bold text-gray-900 mb-1 line-clamp-2 group-hover:text-primary-600 transition-colors"
-    >
-      {{ event.name }}
-    </h3>
-    <p class="text-sm text-gray-500 mb-4 flex items-center gap-1">
-      <span class="material-symbols-outlined text-[16px]">schedule</span>
-      {{ event.date | date: 'shortTime' }}
-    </p>
-    <div class="flex items-center gap-2 text-sm text-gray-600 mb-6">
-      <span class="material-symbols-outlined text-[18px] text-gray-400">location_on</span>
-      <span class="truncate">{{ event.location }}</span>
-    </div>
-    <div class="mt-auto">
-      <a
-        [routerLink]="['/event', event.id]"
-        class="btn-primary w-full h-10 flex items-center justify-center gap-2"
-      >
-        Ver detalles
-        <span class="material-symbols-outlined text-[16px]" aria-hidden="true">arrow_forward</span>
-      </a>
+      
+      <!-- Price and Button -->
+      <div class="flex items-center justify-between pt-4 border-t border-white/10">
+        <div>
+          <span class="metadata-text text-white/40 block mb-1">Desde</span>
+          <span class="stylized-heading text-xl text-primary">
+            {{ getMinPrice() | currencyFormat }}
+          </span>
+        </div>
+        <a
+          [routerLink]="['/event', event.id]"
+          class="bg-primary text-white py-3 px-6 metadata-text text-[10px] hover:bg-white hover:text-black transition-all"
+        >
+          VER EVENTO
+        </a>
+      </div>
     </div>
   </div>
 </div>

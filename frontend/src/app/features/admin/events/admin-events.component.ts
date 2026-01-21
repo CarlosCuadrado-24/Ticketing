@@ -150,6 +150,41 @@ export class AdminEventsComponent implements OnInit {
   }
 
   /**
+   * Calcula la capacidad total del evento
+   */
+  getTotalCapacity(event: Event): number {
+    if (!event.ticketConfigurations || !event.ticketConfigurations[0]) {
+      return 0;
+    }
+    return event.ticketConfigurations[0].totalQuantity || 0;
+  }
+
+  /**
+   * Calcula el porcentaje de tickets vendidos
+   */
+  getTicketPercentage(event: Event): number {
+    const total = this.getTotalCapacity(event);
+    if (total === 0) return 0;
+    const sold = this.getTicketsSoldByEvent(event);
+    return Math.round((sold / total) * 100);
+  }
+
+  /**
+   * Obtiene la imagen del evento o usa un placeholder
+   */
+  getEventImage(event: Event): string {
+    return event.imageUrl || 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=400';
+  }
+
+  /**
+   * Determina si el evento está publicado
+   */
+  isPublished(event: Event): boolean {
+    // Puedes ajustar esta lógica según tu modelo
+    return event.date ? new Date(event.date) > new Date() : false;
+  }
+
+  /**
    * Calcula el ingreso total de un evento
    * Ingresos = Tickets Vendidos × Precio
    */

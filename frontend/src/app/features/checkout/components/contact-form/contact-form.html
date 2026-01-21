@@ -1,10 +1,10 @@
-<form class="space-y-4">
-  <h3 class="text-lg font-bold text-gray-900">Información de contacto</h3>
+<form class="space-y-6">
+  <h3 class="font-heading text-2xl font-bold text-white">Contact Information</h3>
 
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
     <!-- First Name -->
     <div>
-      <label for="firstName" class="block text-sm font-medium text-gray-700 mb-2">Nombre</label>
+      <label for="firstName" class="block metadata-text text-white/80 mb-2">First Name</label>
       <input
         id="firstName"
         type="text"
@@ -12,16 +12,16 @@
         name="firstName"
         placeholder="John"
         autocomplete="given-name"
-        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-600 focus:border-transparent outline-none text-sm"
+        class="w-full bg-transparent border border-white/10 px-4 py-3 text-white placeholder:text-white/20 focus:border-primary outline-none"
       />
       @if (errors['firstName']) {
-        <p class="text-xs text-red-600 mt-1">{{ errors['firstName'] }}</p>
+        <p class="metadata-text text-red-400 mt-1">{{ errors['firstName'] }}</p>
       }
     </div>
 
     <!-- Last Name -->
     <div>
-      <label for="lastName" class="block text-sm font-medium text-gray-700 mb-2">Apellido</label>
+      <label for="lastName" class="block metadata-text text-white/80 mb-2">Last Name</label>
       <input
         id="lastName"
         type="text"
@@ -29,18 +29,18 @@
         name="lastName"
         placeholder="Doe"
         autocomplete="family-name"
-        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-600 focus:border-transparent outline-none text-sm"
+        class="w-full bg-transparent border border-white/10 px-4 py-3 text-white placeholder:text-white/20 focus:border-primary outline-none"
       />
       @if (errors['lastName']) {
-        <p class="text-xs text-red-600 mt-1">{{ errors['lastName'] }}</p>
+        <p class="metadata-text text-red-400 mt-1">{{ errors['lastName'] }}</p>
       }
     </div>
   </div>
 
   <!-- Email -->
   <div>
-    <label for="email" class="block text-sm font-medium text-gray-700 mb-2"
-      >Correo electrónico</label
+    <label for="email" class="block metadata-text text-white/80 mb-2"
+      >Email Address</label
     >
     <input
       id="email"
@@ -49,16 +49,16 @@
       name="email"
       placeholder="john@example.com"
       autocomplete="email"
-      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-600 focus:border-transparent outline-none text-sm"
+      class="w-full bg-transparent border border-white/10 px-4 py-3 text-white placeholder:text-white/20 focus:border-primary outline-none"
     />
     @if (errors['email']) {
-      <p class="text-xs text-red-600 mt-1">{{ errors['email'] }}</p>
+      <p class="metadata-text text-red-400 mt-1">{{ errors['email'] }}</p>
     }
   </div>
 
   <!-- Phone -->
   <div>
-    <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">Teléfono</label>
+    <label for="phone" class="block metadata-text text-white/80 mb-2">Phone</label>
     <input
       id="phone"
       type="tel"
@@ -66,10 +66,10 @@
       name="phone"
       placeholder="+1 (555) 000-0000"
       autocomplete="tel"
-      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-600 focus:border-transparent outline-none text-sm"
+      class="w-full bg-transparent border border-white/10 px-4 py-3 text-white placeholder:text-white/20 focus:border-primary outline-none"
     />
     @if (errors['phone']) {
-      <p class="text-xs text-red-600 mt-1">{{ errors['phone'] }}</p>
+      <p class="metadata-text text-red-400 mt-1">{{ errors['phone'] }}</p>
     }
   </div>
 </form>

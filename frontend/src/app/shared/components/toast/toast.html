@@ -8,17 +8,17 @@
       [ngClass]="{
         'bg-green-50 border-green-500 text-green-900': type() === 'success',
         'bg-red-50 border-red-500 text-red-900': type() === 'error',
-        'bg-blue-50 border-blue-500 text-blue-900': type() === 'info',
+        'bg-primary/10 border-primary text-primary': type() === 'info',
         'bg-yellow-50 border-yellow-500 text-yellow-900': type() === 'warning',
       }"
-      class="flex items-start gap-3 p-4 rounded-lg border-l-4 shadow-lg backdrop-blur-sm bg-white/95"
+      class="flex items-start gap-3 p-4 rounded-lg border-l-4 shadow-lg backdrop-blur-sm bg-background-light/95"
     >
       <!-- Icon -->
       <span
         [ngClass]="{
           'text-green-600': type() === 'success',
           'text-red-600': type() === 'error',
-          'text-blue-600': type() === 'info',
+          'text-primary': type() === 'info',
           'text-yellow-600': type() === 'warning',
         }"
         class="material-symbols-outlined text-2xl flex-shrink-0"

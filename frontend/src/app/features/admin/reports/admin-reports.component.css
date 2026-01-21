@@ -4,7 +4,7 @@
 
 .admin-reports h2 {
   margin-bottom: 30px;
-  color: #2c3e50;
+  color: #FFFFFF;
 }
 
 .reports-grid {
@@ -14,10 +14,10 @@
 }
 
 .report-card {
-  background: white;
+  background: #1A1A1A;
   padding: 25px;
   border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 10px rgba(255, 77, 0, 0.1);
 }
 
 .report-card.full-width {
@@ -27,7 +27,7 @@
 .report-card h3 {
   margin-top: 0;
   margin-bottom: 20px;
-  color: #2c3e50;
+  color: #FFFFFF;
   border-bottom: 2px solid #1f618d;
   padding-bottom: 10px;
 }
@@ -37,7 +37,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 10px 0;
-  border-bottom: 1px solid #ecf0f1;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .metric:last-child {
@@ -45,13 +45,13 @@
 }
 
 .metric .label {
-  color: #7f8c8d;
+  color: rgba(255, 255, 255, 0.6);
   font-weight: 500;
 }
 
 .metric .value {
   font-weight: bold;
-  color: #2c3e50;
+  color: #FFFFFF;
 }
 
 .metric .value.revenue {
@@ -87,12 +87,12 @@
 
 .event-details h4 {
   margin: 0 0 5px 0;
-  color: #2c3e50;
+  color: #FFFFFF;
 }
 
 .event-details p {
   margin: 2px 0;
-  color: #7f8c8d;
+  color: rgba(255, 255, 255, 0.6);
   font-size: 0.9rem;
 }
 
@@ -120,7 +120,7 @@
 
 .category-name,
 .type-name {
-  color: #2c3e50;
+  color: #FFFFFF;
   font-weight: 500;
 }
 
@@ -149,12 +149,12 @@
 
 .month-info h4 {
   margin: 0 0 8px 0;
-  color: #2c3e50;
+  color: #FFFFFF;
 }
 
 .month-info p {
   margin: 4px 0;
-  color: #7f8c8d;
+  color: rgba(255, 255, 255, 0.6);
   font-size: 0.9rem;
 }
 
@@ -198,9 +198,9 @@
 .error {
   text-align: center;
   padding: 40px;
-  background: white;
+  background: #1A1A1A;
   border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 10px rgba(255, 77, 0, 0.1);
 }
 
 .error {

@@ -3,13 +3,12 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Event } from '../../../models/event.model';
 import { CurrencyFormatPipe } from '../../pipes/currency-format.pipe';
-import { DateFormatPipe } from '../../pipes/date-format.pipe';
 import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-event-card',
   standalone: true,
-  imports: [CommonModule, RouterLink, CurrencyFormatPipe, DateFormatPipe],
+  imports: [CommonModule, RouterLink, CurrencyFormatPipe],
   templateUrl: './event-card.html',
   styleUrl: './event-card.css',
 })

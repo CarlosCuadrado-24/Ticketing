@@ -1,81 +1,73 @@
-<header class="w-full bg-white border-b border-gray-200 sticky top-0 z-50">
-  <div class="flex items-center justify-between px-4 py-3 max-w-7xl mx-auto">
-    <!-- Logo -->
-    <div class="flex items-center gap-2">
-      <a
-        [routerLink]="['/']"
-        class="flex items-center gap-2 text-gray-900 hover:text-blue-600 transition-colors"
-      >
-        <svg class="w-8 h-8 text-blue-600" fill="currentColor" viewBox="0 0 48 48">
-          <path d="M6 6H42L36 24L42 42H6L12 24L6 6Z"></path>
-        </svg>
-        <h1 [routerLink]="['/']" class="text-xl font-bold">TicketMastery</h1>
+<nav class="fixed top-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-xl border-b border-white/10">
+  <div class="max-w-[1440px] mx-auto px-6 h-16 flex items-center justify-between">
+    <!-- Logo and Navigation -->
+    <div class="flex items-center gap-8">
+      <!-- Logo -->
+      <a [routerLink]="['/']" class="flex items-center gap-2">
+        <div class="w-8 h-8 flex items-center justify-center relative">
+          <span class="material-symbols-outlined text-primary text-3xl">star</span>
+          <div class="absolute inset-0 flex items-center justify-center">
+            <div class="w-2 h-2 bg-white rotate-45"></div>
+          </div>
+        </div>
+        <span class="stylized-heading text-2xl tracking-tighter italic">
+          Ticket<span class="text-primary">Mastery</span>
+        </span>
       </a>
+      
+      <!-- Desktop Navigation -->
+      <div class="hidden md:flex items-center gap-6">
+        <a
+          [routerLink]="['/']"
+          class="text-[10px] uppercase font-bold tracking-[0.2em] hover:text-primary transition-colors text-primary"
+        >
+          Eventos
+        </a>
+        @if (isAuthenticated() && isBuyer()) {
+          <a
+            [routerLink]="['/my-tickets']"
+            class="text-[10px] uppercase font-bold tracking-[0.2em] hover:text-primary transition-colors text-white/60"
+          >
+            Mis Tickets
+          </a>
+        }
+      </div>
     </div>
 
-    <!-- Desktop Navigation -->
-    <nav class="hidden md:flex items-center gap-6">
-      @if (isAuthenticated() && isBuyer()) {
-        <a
-          [routerLink]="['/my-tickets']"
-          class="text-gray-700 hover:text-blue-600 transition-colors"
-          >Mis Entradas</a
-        >
-      }
-    </nav>
-
-    <!-- Auth Buttons Desktop -->
-    <div class="hidden md:flex items-center gap-2">
+    <!-- Auth Buttons -->
+    <div class="flex items-center gap-6">
       @if (!isAuthenticated()) {
         <a
           [routerLink]="['/auth']"
-          class="px-4 py-2 text-sm font-semibold text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+          class="text-[10px] uppercase font-extrabold tracking-[0.2em] text-white border border-white/20 px-5 py-2 hover:bg-white hover:text-black transition-all"
         >
-          Iniciar sesión
-        </a>
-        <a
-          [routerLink]="['/auth']"
-          class="px-4 py-2 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
-        >
-          Crear cuenta
+          Login
         </a>
       } @else {
-        <button
-          (click)="logout()"
-          class="px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
-        >
-          Cerrar sesión
-        </button>
+        <div class="flex items-center gap-4">
+          <span class="metadata-text text-white/60 hidden md:inline">
+            {{ currentUser()?.firstName || 'Usuario' }}
+          </span>
+          <button
+            (click)="logout()"
+            class="text-[10px] uppercase font-extrabold tracking-[0.2em] text-white border border-white/20 px-5 py-2 hover:bg-primary hover:border-primary transition-all"
+          >
+            Salir
+          </button>
+        </div>
       }
+      
+      <!-- Mobile Menu Button -->
+      <button
+        (click)="toggleMobileMenu()"
+        class="md:hidden p-2 text-white hover:text-primary transition-colors"
+        [attr.aria-label]="mobileMenuOpen() ? 'Cerrar menú' : 'Abrir menú'"
+      >
+        <span class="material-symbols-outlined">
+          {{ mobileMenuOpen() ? 'close' : 'menu' }}
+        </span>
+      </button>
     </div>
-
-    <!-- Mobile Menu Button -->
-    <button
-      (click)="toggleMobileMenu()"
-      (keydown.enter)="toggleMobileMenu()"
-      (keydown.space)="$event.preventDefault(); toggleMobileMenu()"
-      [attr.aria-expanded]="mobileMenuOpen()"
-      [attr.aria-label]="mobileMenuOpen() ? 'Cerrar men\u00fa' : 'Abrir men\u00fa'"
-      class="md:hidden p-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
-    >
-      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-        @if (!mobileMenuOpen()) {
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M4 6h16M4 12h16M4 18h16"
-          ></path>
-        } @else {
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M6 18L18 6M6 6l12 12"
-          ></path>
-        }
-      </svg>
-    </button>
   </div>
 
   <!-- Mobile Menu -->
@@ -88,4 +80,4 @@
     >
     </app-mobile-menu>
   }
-</header>
+</nav>

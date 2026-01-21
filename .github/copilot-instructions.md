@@ -1,6 +1,6 @@
 ## AI Agent Guide: Ticketing System (Full Stack)
 
-Monorepo with NestJS backend (DDD + Clean Architecture) + Angular 21 frontend. Goal: enable productive, safe changes consistent with existing patterns.
+Monorepo with NestJS backend (DDD + Clean Architecture) + Angular 21 frontend. Goal: enable productive, safe changes consistent with existing patterns. IMPORTANT: PRINCIPLES SOLID, CLEAN CODE.
 
 ---
 

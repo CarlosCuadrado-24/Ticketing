@@ -25,9 +25,9 @@ export class AdminLayoutComponent {
 
   readonly menuItems: MenuItem[] = [
     { path: '/admin/dashboard', label: 'Dashboard', icon: 'icon-dashboard', adminOnly: true },
-    { path: '/admin/events', label: 'Eventos', icon: 'icon-events' },
-    { path: '/admin/tickets', label: 'Tickets', icon: 'icon-tickets' },
-    { path: '/admin/qr-scanner', label: 'Escáner QR', icon: 'icon-qr-scanner' },
+    { path: '/admin/events', label: 'Events', icon: 'icon-events' },
+    { path: '/admin/tickets', label: 'Tickets', icon: 'icon-tickets', adminOnly: true },
+    { path: '/admin/qr-scanner', label: 'Escáner QR', icon: 'icon-qr', adminOnly: true },
     { path: '/admin/users', label: 'Usuarios', icon: 'icon-users', adminOnly: true },
   ];
 

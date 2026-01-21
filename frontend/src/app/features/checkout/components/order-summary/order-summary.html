@@ -1,26 +1,26 @@
-<div class="bg-white border border-gray-200 rounded-xl shadow-sm p-6">
-  <h2 class="text-xl font-bold text-gray-900 mb-6">Resumen de la orden</h2>
+<div class="bg-background-light border border-white/10 p-8">
+  <h2 class="font-heading text-2xl font-bold text-white mb-8">Order Summary</h2>
 
   <!-- Cart Items -->
-  <div class="space-y-4 mb-6">
+  <div class="space-y-6 mb-8">
     @if (cart().length === 0) {
-      <p class="text-gray-500 text-center py-4">Tu carrito está vacío</p>
+      <p class="metadata-text text-white/40 text-center py-8">Your cart is empty</p>
     } @else {
       @for (item of cart(); track item.ticketTypeId) {
-        <div class="flex items-center justify-between pb-4 border-b border-gray-200">
+        <div class="flex items-start justify-between pb-6 border-b border-white/5">
           <div class="flex-1">
-            <h3 class="text-sm font-semibold text-gray-900">{{ item.ticketTypeName }}</h3>
-            <p class="text-xs text-gray-500">Cant.: {{ item.quantity }}</p>
+            <h3 class="font-heading text-base font-bold text-white">{{ item.ticketTypeName }}</h3>
+            <p class="metadata-text text-white/60 mt-1">Qty: {{ item.quantity }}</p>
           </div>
           <div class="text-right">
-            <p class="text-sm font-bold text-gray-900">
+            <p class="font-heading text-base font-bold text-white">
               {{ item.price * item.quantity | currencyFormat }}
             </p>
             <button
               (click)="removeItem(item.ticketTypeId)"
-              class="text-xs text-red-500 hover:text-red-700 mt-1"
+              class="metadata-text text-red-400 hover:text-red-300 mt-2 transition-colors"
             >
-              Eliminar
+              Remove
             </button>
           </div>
         </div>
@@ -29,24 +29,24 @@
   </div>
 
   <!-- Totals -->
-  <div class="space-y-3 border-t border-gray-200 pt-4">
+  <div class="space-y-4 border-t border-white/10 pt-6">
     <div class="flex justify-between items-center">
-      <span class="text-sm text-gray-600">Subtotal</span>
-      <span class="text-sm font-semibold text-gray-900">{{ subtotal() | currencyFormat }}</span>
+      <span class="metadata-text text-white/60">Subtotal</span>
+      <span class="font-heading text-sm font-bold text-white">{{ subtotal() | currencyFormat }}</span>
     </div>
     <div class="flex justify-between items-center">
-      <span class="text-sm text-gray-600">Cargo de servicio (5%)</span>
-      <span class="text-sm font-semibold text-gray-900">{{ tax() | currencyFormat }}</span>
+      <span class="metadata-text text-white/60">Service Fee (5%)</span>
+      <span class="font-heading text-sm font-bold text-white">{{ tax() | currencyFormat }}</span>
     </div>
     <div class="flex justify-between items-center">
-      <span class="text-sm text-gray-600">Procesamiento</span>
-      <span class="text-sm font-semibold text-gray-900">{{
+      <span class="metadata-text text-white/60">Processing</span>
+      <span class="font-heading text-sm font-bold text-white">{{
         processingFee() | currencyFormat
       }}</span>
     </div>
-    <div class="flex justify-between items-center text-lg pt-3 border-t border-gray-200">
-      <span class="font-bold text-gray-900">Total</span>
-      <span class="font-black text-primary-600">{{ total() | currencyFormat }}</span>
+    <div class="flex justify-between items-center text-xl pt-4 border-t border-white/10">
+      <span class="font-heading font-black text-white">Total</span>
+      <span class="font-heading font-black text-primary">{{ total() | currencyFormat }}</span>
     </div>
   </div>
 </div>
