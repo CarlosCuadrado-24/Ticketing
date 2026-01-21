@@ -1,285 +1,416 @@
-<div class="event-form-container">
-  <div class="form-header">
-    <h2>{{ isEditing() ? 'Editar Evento' : 'Crear Nuevo Evento' }}</h2>
-    <button class="btn btn-secondary" (click)="onCancel()">Cancelar</button>
+<!-- Grainy Overlay -->
+<div class="fixed top-0 left-0 w-full h-full pointer-events-none z-50 opacity-[0.03]" style="background: url(&quot;data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E&quot;);"></div>
+
+<!-- Top Progress Bar -->
+<div class="fixed top-0 left-0 w-full z-50">
+  <div class="h-1 bg-primary/20 w-full">
+    <div class="h-full bg-primary transition-all duration-500" [style.width.%]="getProgressPercentage()"></div>
   </div>
+</div>
 
-  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="event-form">
-    <!-- Información Básica -->
-    <section class="form-section">
-      <h3>Información Básica</h3>
-
-      <div class="form-group">
-        <label for="name">Nombre del Evento *</label>
-        <input
-          id="name"
-          type="text"
-          formControlName="name"
-          placeholder="Ej: Concierto de Rock"
-          class="form-control"
-          [class.is-invalid]="form.get('name')?.invalid && form.get('name')?.touched"
-        />
-        <div class="error-message" *ngIf="form.get('name')?.invalid && form.get('name')?.touched">
-          <span *ngIf="form.get('name')?.getError('required')">El nombre es requerido</span>
-          <span *ngIf="form.get('name')?.getError('minlength')"
-            >El nombre debe tener al menos 3 caracteres</span
-          >
-        </div>
+<div class="relative flex flex-col min-h-screen bg-gradient-to-br from-[#111111] to-black">
+  <!-- Header / Nav Bar -->
+  <header class="sticky top-1 z-40 flex items-center justify-between border-b border-white/10 bg-background-dark/80 backdrop-blur-md px-6 md:px-20 py-4">
+    <div class="flex items-center gap-4">
+      <div class="bg-primary p-1">
+        <span class="material-symbols-outlined text-black font-bold text-2xl">{{ isEditing() ? 'edit_note' : 'rocket_launch' }}</span>
       </div>
-
-      <div class="form-row">
-        <div class="form-group">
-          <label for="date">Fecha y Hora *</label>
-          <input
-            id="date"
-            type="datetime-local"
-            formControlName="date"
-            class="form-control"
-            [class.is-invalid]="form.get('date')?.invalid && form.get('date')?.touched"
-          />
-          <div class="error-message" *ngIf="form.get('date')?.invalid && form.get('date')?.touched">
-            La fecha es requerida
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label for="category">Categoría *</label>
-          <select
-            id="category"
-            formControlName="category"
-            class="form-control"
-            [class.is-invalid]="form.get('category')?.invalid && form.get('category')?.touched"
-          >
-            <option value="">Selecciona una categoría</option>
-            <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
-          </select>
-          <div
-            class="error-message"
-            *ngIf="form.get('category')?.invalid && form.get('category')?.touched"
-          >
-            La categoría es requerida
-          </div>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="description">Descripción *</label>
-        <textarea
-          id="description"
-          formControlName="description"
-          placeholder="Describe el evento..."
-          class="form-control"
-          rows="3"
-          [class.is-invalid]="form.get('description')?.invalid && form.get('description')?.touched"
-        ></textarea>
-        <div
-          class="error-message"
-          *ngIf="form.get('description')?.invalid && form.get('description')?.touched"
-        >
-          La descripción es requerida
-        </div>
-      </div>
-    </section>
-
-    <!-- Ubicación -->
-    <section class="form-section">
-      <h3>Ubicación</h3>
-
-      <div class="form-row">
-        <div class="form-group">
-          <label for="location">Dirección *</label>
-          <input
-            id="location"
-            type="text"
-            formControlName="location"
-            placeholder="Ej: Cra. 5 #6-64"
-            class="form-control"
-            [class.is-invalid]="form.get('location')?.invalid && form.get('location')?.touched"
-          />
-          <div
-            class="error-message"
-            *ngIf="form.get('location')?.invalid && form.get('location')?.touched"
-          >
-            La ubicación es requerida
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label for="venueName">Nombre del Lugar *</label>
-          <input
-            id="venueName"
-            type="text"
-            formControlName="venueName"
-            placeholder="Ej: Teatro Principal"
-            class="form-control"
-            [class.is-invalid]="form.get('venueName')?.invalid && form.get('venueName')?.touched"
-          />
-          <div
-            class="error-message"
-            *ngIf="form.get('venueName')?.invalid && form.get('venueName')?.touched"
-          >
-            El nombre del lugar es requerido
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Imagen -->
-    <section class="form-section">
-      <h3>Imagen del Evento</h3>
-
-      <div class="form-group">
-        <label for="image">Subir Imagen</label>
-        <div class="image-upload">
-          <input
-            id="image"
-            type="file"
-            accept="image/*"
-            (change)="onImageSelected($event)"
-            class="form-control"
-          />
-          <div class="image-preview" *ngIf="imagePreview()">
-            <img [src]="imagePreview()" alt="Preview" />
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Tipos de Entrada -->
-    <section class="form-section">
-      <h3>Configuración de Entradas</h3>
-
-      <div formGroupName="ticketTypes">
-        <!-- General -->
-        <div class="ticket-type" formGroupName="general">
-          <h4>Entrada General *</h4>
-          <div class="form-row">
-            <div class="form-group">
-              <label for="generalPrice">Precio ($) *</label>
-              <input
-                id="generalPrice"
-                type="number"
-                formControlName="price"
-                placeholder="0.00"
-                class="form-control"
-                step="0.01"
-                [class.is-invalid]="
-                  generalTickets?.get('price')?.invalid && generalTickets?.get('price')?.touched
-                "
-              />
-              <div
-                class="error-message"
-                *ngIf="
-                  generalTickets?.get('price')?.invalid && generalTickets?.get('price')?.touched
-                "
-              >
-                <span *ngIf="generalTickets?.get('price')?.getError('required')"
-                  >El precio es requerido</span
-                >
-                <span *ngIf="generalTickets?.get('price')?.getError('min')"
-                  >El precio debe ser mayor a 0</span
-                >
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label for="generalQty">Cantidad *</label>
-              <input
-                id="generalQty"
-                type="number"
-                formControlName="quantity"
-                placeholder="0"
-                class="form-control"
-                [class.is-invalid]="
-                  generalTickets?.get('quantity')?.invalid &&
-                  generalTickets?.get('quantity')?.touched
-                "
-              />
-              <div
-                class="error-message"
-                *ngIf="
-                  generalTickets?.get('quantity')?.invalid &&
-                  generalTickets?.get('quantity')?.touched
-                "
-              >
-                <span *ngIf="generalTickets?.get('quantity')?.getError('required')"
-                  >La cantidad es requerida</span
-                >
-                <span *ngIf="generalTickets?.get('quantity')?.getError('min')"
-                  >La cantidad debe ser mayor a 0</span
-                >
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- VIP -->
-        <div class="ticket-type" formGroupName="vip">
-          <h4>Entrada VIP (Opcional)</h4>
-          <p class="help-text">Deja vacío si no deseas ofrecer entradas VIP</p>
-          <div class="form-row">
-            <div class="form-group">
-              <label for="vipPrice">Precio ($)</label>
-              <input
-                id="vipPrice"
-                type="number"
-                formControlName="price"
-                placeholder="0.00"
-                class="form-control"
-                step="0.01"
-              />
-            </div>
-
-            <div class="form-group">
-              <label for="vipQty">Cantidad</label>
-              <input
-                id="vipQty"
-                type="number"
-                formControlName="quantity"
-                placeholder="0"
-                class="form-control"
-              />
-            </div>
-          </div>
-        </div>
-       <!-- EARLY_BIRD -->
-        <div class="ticket-type" formGroupName="early_bird">
-          <h4>Entrada EARLY_BIRD  (Opcional)</h4>
-          <p class="help-text">Deja vacío si no deseas ofrecer entradas EARLY_BIRD </p>
-          <div class="form-row">
-            <div class="form-group">
-              <label for="earlyBirdPrice">Precio ($)</label>
-              <input
-                id="earlyBirdPrice"
-                type="number"
-                formControlName="price"
-                placeholder="0.00"
-                class="form-control"
-                step="0.01"
-              />
-            </div>
-
-            <div class="form-group">
-              <label for="earlyBirdQty">Cantidad</label>
-              <input
-                id="earlyBirdQty"
-                type="number"
-                formControlName="quantity"
-                placeholder="0"
-                class="form-control"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Botones de Acción -->
-    <div class="form-actions">
-      <button type="submit" class="btn btn-primary" [disabled]="form.invalid || loading()">
-        {{ loading() ? 'Guardando...' : isEditing() ? 'Actualizar Evento' : 'Crear Evento' }}
-      </button>
-      <button type="button" class="btn btn-secondary" (click)="onCancel()">Cancelar</button>
+      <h1 class="text-xl md:text-2xl font-black uppercase tracking-tighter">{{ isEditing() ? 'Editar Evento' : 'Crear Nuevo Evento' }}</h1>
     </div>
-  </form>
+    <div class="flex gap-3">
+      <button 
+        type="button"
+        (click)="onCancel()"
+        class="flex items-center justify-center rounded border border-white/20 px-5 py-2 text-sm font-bold uppercase tracking-wider hover:bg-white hover:text-black transition-colors"
+      >
+        Cancelar
+      </button>
+      <button 
+        type="submit"
+        form="eventForm"
+        [disabled]="form.invalid || loading()"
+        class="flex items-center justify-center rounded bg-primary px-5 py-2 text-sm font-bold uppercase tracking-wider text-black hover:bg-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        {{ loading() ? 'Guardando...' : isEditing() ? 'Actualizar' : 'Guardar' }}
+      </button>
+    </div>
+  </header>
+
+  <main class="flex-1 flex justify-center py-12 px-6">
+    <div class="w-full max-w-3xl flex flex-col gap-10">
+      <form id="eventForm" [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-10">
+        <!-- STEP 1: Información Básica -->
+        <div class="flex flex-col gap-4">
+          <div class="flex items-center gap-3">
+            <span class="text-primary font-bold text-sm tracking-[0.2em] uppercase">Paso 01 / 03</span>
+            <div class="h-px flex-1 bg-white/10"></div>
+          </div>
+          <div>
+            <h2 class="text-4xl md:text-6xl font-black uppercase leading-none tracking-tighter italic">01. Información Básica</h2>
+            <p class="text-white/50 mt-4 text-lg max-w-xl">Define la identidad visual y los conceptos fundamentales de tu experiencia.</p>
+          </div>
+        </div>
+
+        <!-- Event Name -->
+        <div class="group flex flex-col gap-2">
+          <label for="name" class="text-xs font-bold uppercase tracking-[0.2em] text-white/40 group-focus-within:text-primary transition-colors">
+            Nombre del Evento *
+          </label>
+          <input
+            id="name"
+            type="text"
+            formControlName="name"
+            placeholder="Ej. UNDERGROUND TECHNO RAVE"
+            class="w-full bg-transparent border-b border-white/20 py-4 text-2xl md:text-3xl font-bold placeholder:text-white/10 focus:outline-none focus:border-primary transition-all rounded-none"
+            [class.border-red-500]="form.get('name')?.invalid && form.get('name')?.touched"
+          />
+          @if (form.get('name')?.invalid && form.get('name')?.touched) {
+            <div class="text-red-400 text-xs uppercase tracking-widest mt-1">
+              @if (form.get('name')?.getError('required')) {
+                <span>El nombre es requerido</span>
+              }
+              @if (form.get('name')?.getError('minlength')) {
+                <span>Mínimo 3 caracteres</span>
+              }
+            </div>
+          }
+        </div>
+
+        <!-- Description -->
+        <div class="group flex flex-col gap-2">
+          <label for="description" class="text-xs font-bold uppercase tracking-[0.2em] text-white/40 group-focus-within:text-primary transition-colors">
+            Descripción Corta *
+          </label>
+          <textarea
+            id="description"
+            formControlName="description"
+            placeholder="Resume la esencia del evento para captar la atención..."
+            class="w-full bg-white/5 border border-white/10 p-5 min-h-[120px] text-lg placeholder:text-white/20 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all rounded"
+            [class.border-red-500]="form.get('description')?.invalid && form.get('description')?.touched"
+          ></textarea>
+          <div class="text-right text-[10px] text-white/30 uppercase tracking-widest">
+            {{ form.get('description')?.value?.length || 0 }} caracteres
+          </div>
+          @if (form.get('description')?.invalid && form.get('description')?.touched) {
+            <div class="text-red-400 text-xs uppercase tracking-widest mt-1">
+              La descripción es requerida
+            </div>
+          }
+        </div>
+
+        <!-- Date & Category Row -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="group flex flex-col gap-2">
+            <label for="date" class="text-xs font-bold uppercase tracking-[0.2em] text-white/40 group-focus-within:text-primary transition-colors">
+              Fecha y Hora *
+            </label>
+            <input
+              id="date"
+              type="datetime-local"
+              formControlName="date"
+              class="w-full bg-white/5 border border-white/10 p-4 text-white focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all rounded"
+              [class.border-red-500]="form.get('date')?.invalid && form.get('date')?.touched"
+            />
+            @if (form.get('date')?.invalid && form.get('date')?.touched) {
+              <div class="text-red-400 text-xs uppercase tracking-widest mt-1">
+                La fecha es requerida
+              </div>
+            }
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <label class="text-xs font-bold uppercase tracking-[0.2em] text-white/40">Categoría del Evento *</label>
+            <select
+              id="category"
+              formControlName="category"
+              class="w-full bg-white/5 border border-white/10 p-4 text-white focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all rounded"
+              [class.border-red-500]="form.get('category')?.invalid && form.get('category')?.touched"
+            >
+              <option value="" class="bg-black">Selecciona una categoría</option>
+              @for (cat of categories; track cat) {
+                <option [value]="cat" class="bg-black">{{ cat }}</option>
+              }
+            </select>
+            @if (form.get('category')?.invalid && form.get('category')?.touched) {
+              <div class="text-red-400 text-xs uppercase tracking-widest mt-1">
+                La categoría es requerida
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- STEP 2: Ubicación -->
+        <div class="flex flex-col gap-4 pt-8 border-t border-white/10">
+          <div class="flex items-center gap-3">
+            <span class="text-primary font-bold text-sm tracking-[0.2em] uppercase">Paso 02 / 03</span>
+            <div class="h-px flex-1 bg-white/10"></div>
+          </div>
+          <div>
+            <h2 class="text-4xl md:text-6xl font-black uppercase leading-none tracking-tighter italic">02. Ubicación</h2>
+            <p class="text-white/50 mt-4 text-lg max-w-xl">Especifica dónde se realizará el evento.</p>
+          </div>
+        </div>
+
+        <!-- Location & Venue Row -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="group flex flex-col gap-2">
+            <label for="location" class="text-xs font-bold uppercase tracking-[0.2em] text-white/40 group-focus-within:text-primary transition-colors">
+              Dirección *
+            </label>
+            <input
+              id="location"
+              type="text"
+              formControlName="location"
+              placeholder="Ej: Cra. 5 #6-64"
+              class="w-full bg-white/5 border border-white/10 p-4 text-white placeholder:text-white/20 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all rounded"
+              [class.border-red-500]="form.get('location')?.invalid && form.get('location')?.touched"
+            />
+            @if (form.get('location')?.invalid && form.get('location')?.touched) {
+              <div class="text-red-400 text-xs uppercase tracking-widest mt-1">
+                La ubicación es requerida
+              </div>
+            }
+          </div>
+
+          <div class="group flex flex-col gap-2">
+            <label for="venueName" class="text-xs font-bold uppercase tracking-[0.2em] text-white/40 group-focus-within:text-primary transition-colors">
+              Nombre del Lugar *
+            </label>
+            <input
+              id="venueName"
+              type="text"
+              formControlName="venueName"
+              placeholder="Ej: Teatro Principal"
+              class="w-full bg-white/5 border border-white/10 p-4 text-white placeholder:text-white/20 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all rounded"
+              [class.border-red-500]="form.get('venueName')?.invalid && form.get('venueName')?.touched"
+            />
+            @if (form.get('venueName')?.invalid && form.get('venueName')?.touched) {
+              <div class="text-red-400 text-xs uppercase tracking-widest mt-1">
+                El nombre del lugar es requerido
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Image Upload Section -->
+        <div class="flex flex-col gap-4">
+          <label class="text-xs font-bold uppercase tracking-[0.2em] text-white/40">Imagen de Portada (Poster)</label>
+          <div class="relative group">
+            @if (!imagePreview()) {
+              <label for="image" class="cursor-pointer">
+                <div class="border-2 border-dashed border-white/10 group-hover:border-primary/50 group-hover:bg-primary/5 min-h-[300px] flex flex-col items-center justify-center gap-4 rounded transition-all">
+                  <div class="w-16 h-16 rounded-full border border-white/10 flex items-center justify-center group-hover:border-primary group-hover:text-primary transition-all">
+                    <span class="material-symbols-outlined text-3xl">add_photo_alternate</span>
+                  </div>
+                  <div class="text-center">
+                    <p class="font-bold uppercase tracking-widest text-sm">Arrastra tu arte aquí</p>
+                    <p class="text-white/40 text-xs mt-1">Recomendado: 1920x1080px (Máx 5MB)</p>
+                  </div>
+                  <button type="button" class="mt-2 px-6 py-2 bg-white text-black text-[10px] font-black uppercase tracking-[0.2em] rounded">
+                    Explorar Archivos
+                  </button>
+                </div>
+              </label>
+            } @else {
+              <div class="relative rounded overflow-hidden border border-white/10">
+                <img [src]="imagePreview()" alt="Preview" class="w-full h-auto" />
+                <button
+                  type="button"
+                  (click)="removeImage()"
+                  class="absolute top-4 right-4 w-10 h-10 bg-red-500 hover:bg-red-600 rounded-full flex items-center justify-center transition-all"
+                >
+                  <span class="material-symbols-outlined text-white">close</span>
+                </button>
+              </div>
+            }
+            <input
+              id="image"
+              type="file"
+              accept="image/*"
+              (change)="onImageSelected($event)"
+              class="hidden"
+            />
+          </div>
+        </div>
+
+        <!-- STEP 3: Tickets -->
+        <div class="flex flex-col gap-4 pt-8 border-t border-white/10">
+          <div class="flex items-center gap-3">
+            <span class="text-primary font-bold text-sm tracking-[0.2em] uppercase">Paso 03 / 03</span>
+            <div class="h-px flex-1 bg-white/10"></div>
+          </div>
+          <div>
+            <h2 class="text-4xl md:text-6xl font-black uppercase leading-none tracking-tighter italic">03. Configuración de Tickets</h2>
+            <p class="text-white/50 mt-4 text-lg max-w-xl">Define los tipos de entrada y precios.</p>
+          </div>
+        </div>
+
+        <div formGroupName="ticketTypes" class="flex flex-col gap-6">
+          <!-- GENERAL Ticket -->
+          <div formGroupName="general" class="bg-white/5 border border-white/10 p-6 rounded-lg">
+            <div class="flex items-center gap-3 mb-4">
+              <span class="material-symbols-outlined text-primary text-2xl">confirmation_number</span>
+              <h3 class="text-xl font-black uppercase tracking-tight">Entrada General *</h3>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="group flex flex-col gap-2">
+                <label for="generalPrice" class="text-xs font-bold uppercase tracking-[0.2em] text-white/40 group-focus-within:text-primary transition-colors">
+                  Precio (COP) *
+                </label>
+                <div class="relative">
+                  <span class="absolute left-4 top-1/2 -translate-y-1/2 text-white/50 font-bold">$</span>
+                  <input
+                    id="generalPrice"
+                    type="number"
+                    formControlName="price"
+                    placeholder="0"
+                    step="1"
+                    class="w-full bg-black border border-white/10 pl-8 pr-4 py-3 text-white font-bold placeholder:text-white/10 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all rounded"
+                    [class.border-red-500]="generalTickets?.get('price')?.invalid && generalTickets?.get('price')?.touched"
+                  />
+                </div>
+                @if (generalTickets?.get('price')?.invalid && generalTickets?.get('price')?.touched) {
+                  <div class="text-red-400 text-xs uppercase tracking-widest mt-1">
+                    @if (generalTickets?.get('price')?.getError('required')) {
+                      <span>El precio es requerido</span>
+                    }
+                    @if (generalTickets?.get('price')?.getError('min')) {
+                      <span>Debe ser mayor a 0</span>
+                    }
+                  </div>
+                }
+              </div>
+
+              <div class="group flex flex-col gap-2">
+                <label for="generalQty" class="text-xs font-bold uppercase tracking-[0.2em] text-white/40 group-focus-within:text-primary transition-colors">
+                  Cantidad Disponible *
+                </label>
+                <input
+                  id="generalQty"
+                  type="number"
+                  formControlName="quantity"
+                  placeholder="0"
+                  class="w-full bg-black border border-white/10 px-4 py-3 text-white font-bold placeholder:text-white/10 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all rounded"
+                  [class.border-red-500]="generalTickets?.get('quantity')?.invalid && generalTickets?.get('quantity')?.touched"
+                />
+                @if (generalTickets?.get('quantity')?.invalid && generalTickets?.get('quantity')?.touched) {
+                  <div class="text-red-400 text-xs uppercase tracking-widest mt-1">
+                    @if (generalTickets?.get('quantity')?.getError('required')) {
+                      <span>La cantidad es requerida</span>
+                    }
+                    @if (generalTickets?.get('quantity')?.getError('min')) {
+                      <span>Debe ser mayor a 0</span>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+
+          <!-- VIP Ticket -->
+          <div formGroupName="vip" class="bg-gradient-to-br from-primary/10 to-transparent border border-primary/30 p-6 rounded-lg">
+            <div class="flex items-center gap-3 mb-2">
+              <span class="material-symbols-outlined text-primary text-2xl">stars</span>
+              <h3 class="text-xl font-black uppercase tracking-tight">Entrada VIP</h3>
+              <span class="text-xs text-white/40 uppercase tracking-widest">(Opcional)</span>
+            </div>
+            <p class="text-white/50 text-sm mb-4">Deja vacío si no deseas ofrecer entradas VIP</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="group flex flex-col gap-2">
+                <label for="vipPrice" class="text-xs font-bold uppercase tracking-[0.2em] text-white/40 group-focus-within:text-primary transition-colors">
+                  Precio (COP)
+                </label>
+                <div class="relative">
+                  <span class="absolute left-4 top-1/2 -translate-y-1/2 text-white/50 font-bold">$</span>
+                  <input
+                    id="vipPrice"
+                    type="number"
+                    formControlName="price"
+                    placeholder="0"
+                    step="1"
+                    class="w-full bg-black/50 border border-white/10 pl-8 pr-4 py-3 text-white font-bold placeholder:text-white/10 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all rounded"
+                  />
+                </div>
+              </div>
+
+              <div class="group flex flex-col gap-2">
+                <label for="vipQty" class="text-xs font-bold uppercase tracking-[0.2em] text-white/40 group-focus-within:text-primary transition-colors">
+                  Cantidad Disponible
+                </label>
+                <input
+                  id="vipQty"
+                  type="number"
+                  formControlName="quantity"
+                  placeholder="0"
+                  class="w-full bg-black/50 border border-white/10 px-4 py-3 text-white font-bold placeholder:text-white/10 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all rounded"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- EARLY BIRD Ticket -->
+          <div formGroupName="early_bird" class="bg-gradient-to-br from-orange-500/10 to-transparent border border-orange-500/30 p-6 rounded-lg">
+            <div class="flex items-center gap-3 mb-2">
+              <span class="material-symbols-outlined text-orange-500 text-2xl">schedule</span>
+              <h3 class="text-xl font-black uppercase tracking-tight">Entrada Early Bird</h3>
+              <span class="text-xs text-white/40 uppercase tracking-widest">(Opcional)</span>
+            </div>
+            <p class="text-white/50 text-sm mb-4">Precio especial para compras anticipadas</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="group flex flex-col gap-2">
+                <label for="earlyBirdPrice" class="text-xs font-bold uppercase tracking-[0.2em] text-white/40 group-focus-within:text-orange-500 transition-colors">
+                  Precio (COP)
+                </label>
+                <div class="relative">
+                  <span class="absolute left-4 top-1/2 -translate-y-1/2 text-white/50 font-bold">$</span>
+                  <input
+                    id="earlyBirdPrice"
+                    type="number"
+                    formControlName="price"
+                    placeholder="0"
+                    step="1"
+                    class="w-full bg-black/50 border border-white/10 pl-8 pr-4 py-3 text-white font-bold placeholder:text-white/10 focus:outline-none focus:ring-1 focus:ring-orange-500 focus:border-orange-500 transition-all rounded"
+                  />
+                </div>
+              </div>
+
+              <div class="group flex flex-col gap-2">
+                <label for="earlyBirdQty" class="text-xs font-bold uppercase tracking-[0.2em] text-white/40 group-focus-within:text-orange-500 transition-colors">
+                  Cantidad Disponible
+                </label>
+                <input
+                  id="earlyBirdQty"
+                  type="number"
+                  formControlName="quantity"
+                  placeholder="0"
+                  class="w-full bg-black/50 border border-white/10 px-4 py-3 text-white font-bold placeholder:text-white/10 focus:outline-none focus:ring-1 focus:ring-orange-500 focus:border-orange-500 transition-all rounded"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="mt-12 pt-8 border-t border-white/10 flex justify-end">
+          <button
+            type="submit"
+            [disabled]="form.invalid || loading()"
+            class="group flex items-center gap-4 bg-primary px-10 py-5 rounded hover:bg-white transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <span class="text-black font-black text-xl uppercase tracking-tighter">
+              {{ loading() ? 'Guardando...' : isEditing() ? 'Actualizar Evento' : 'Crear Evento' }}
+            </span>
+            <span class="material-symbols-outlined text-black font-bold group-hover:translate-x-1 transition-transform">
+              {{ loading() ? 'hourglass_empty' : 'arrow_forward' }}
+            </span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <!-- Footer Info -->
+  <footer class="p-8 text-center text-white/20 text-[10px] uppercase tracking-[0.3em]">
+    Event Organizer Console © 2026 / All rights reserved
+  </footer>
 </div>

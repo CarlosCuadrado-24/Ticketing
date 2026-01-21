@@ -257,4 +257,30 @@ export class EventFormComponent implements OnInit {
   get vipTickets() {
     return this.form.get('ticketTypes.vip');
   }
+
+  getProgressPercentage(): number {
+    if (!this.form) return 0;
+    
+    const fieldsCompleted = [
+      this.form.get('name')?.valid,
+      this.form.get('description')?.valid,
+      this.form.get('date')?.valid,
+      this.form.get('category')?.valid,
+      this.form.get('location')?.valid,
+      this.form.get('venueName')?.valid,
+      this.form.get('ticketTypes.general.price')?.valid,
+      this.form.get('ticketTypes.general.quantity')?.valid,
+    ].filter(Boolean).length;
+    
+    return (fieldsCompleted / 8) * 100;
+  }
+
+  removeImage() {
+    this.selectedImage = null;
+    this.imagePreview.set(null);
+    const imageInput = document.getElementById('image') as HTMLInputElement;
+    if (imageInput) {
+      imageInput.value = '';
+    }
+  }
 }
