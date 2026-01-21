@@ -16,6 +16,7 @@ module.exports = {
     extend: {
       colors: {
         primary: '#FF4D00', // Vibrant Orange-Red
+        neon: '#39FF14', // Neon Green
         background: '#0D0D0D', // Deep Charcoal/Black
         'background-light': '#1A1A1A',
         'background-surface': '#1A1A1A',

@@ -1,1 +1,92 @@
-/* Confirmation Styles */
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=UnifrakturMaguntia&family=Archivo+Black&display=swap');
+
+:host {
+  --primary: #FF4D00;
+  --neon: #39FF14;
+  display: block;
+  background-color: #000;
+  background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBB6wSSiSZOYfSFeG_AnOR5ykoXWdo5iW2FC28l6PaJya-tYKLYVBb43tmpvhIQA1e6SELs8JbTnJhRPWWY8vGB_CWOrVKmGW81gw9UXh96ApiwDWRycasJ4eJ9pmPKN92yNB7tOPFXXhN2zh_C5DDTXNwjt-wErJ9qD1Mc8cxkI0LNXfbZL9zwBrBoVQjDAH7ax1QVo5ZmQjpUI3eNXxPiiX4dui4FvawiVE8Fn2_Fi-YOXdPCzAPO3N8IyvJ5WH-8YUZhCf3JyS6a');
+  background-repeat: repeat;
+  opacity: 0.98;
+  min-height: 100vh;
+}
+
+.font-distressed {
+  font-family: 'UnifrakturMaguntia', serif;
+}
+
+.font-mono {
+  font-family: 'Space Mono', monospace;
+}
+
+.font-impact {
+  font-family: 'Archivo Black', sans-serif;
+}
+
+.font-display {
+  font-family: 'Archivo Black', sans-serif;
+}
+
+.brutal-border-thick {
+  border: 6px solid #000;
+  box-shadow: 12px 12px 0 0 var(--primary);
+}
+
+.halftone {
+  filter: contrast(200%) grayscale(100%) brightness(120%);
+  mix-blend-mode: multiply;
+}
+
+.vertical-text {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+}
+
+@keyframes strobe {
+  0% { opacity: 1; }
+  50% { opacity: 0.8; }
+  100% { opacity: 1; }
+}
+
+.strobe-text {
+  animation: strobe 0.1s infinite;
+}
+
+/* Material Icons */
+.material-symbols-outlined {
+  font-variation-settings:
+  'FILL' 0,
+  'wght' 400,
+  'GRAD' 0,
+  'opsz' 24;
+}
+
+/* Neon color utility */
+.text-neon {
+  color: var(--neon);
+}
+
+.bg-neon {
+  background-color: var(--neon);
+}
+
+.border-neon {
+  border-color: var(--neon);
+}
+
+.bg-neon\/10 {
+  background-color: rgba(57, 255, 20, 0.1);
+}
+
+/* Primary color utility */
+.text-primary {
+  color: var(--primary);
+}
+
+.bg-primary {
+  background-color: var(--primary);
+}
+
+.border-primary {
+  border-color: var(--primary);
+}

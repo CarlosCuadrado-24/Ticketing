@@ -168,6 +168,8 @@ export class Confirmation implements OnInit {
               };
             });
 
+            console.log('[Confirmation] Enriched tickets:', enriched);
+            console.log('[Confirmation] Sample qrToken:', enriched[0]?.qrToken);
             this._tickets.set(enriched);
             this._isLoading.set(false);
           },
@@ -393,6 +395,58 @@ export class Confirmation implements OnInit {
 
     // Build the full URL using the API endpoint
     return `${environment.apiUrl}/events/file/${filename}`;
+  }
+
+  /**
+   * Format date to match mockup format: "15 JULIO"
+   */
+  formatEventDate(dateString: string | undefined): string {
+    if (!dateString) return 'TBD';
+
+    const date = new Date(dateString);
+    const day = date.getDate();
+    const months = [
+      'ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO',
+      'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'
+    ];
+    const month = months[date.getMonth()];
+
+    return `${day} ${month}`;
+  }
+
+  /**
+   * Format time from date string: "17:48"
+   */
+  formatEventTime(dateString: string | undefined): string {
+    if (!dateString) return '';
+
+    const date = new Date(dateString);
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+
+    return `${hours}:${minutes}`;
+  }
+
+  /**
+   * Get QR code URL for ticket
+   */
+  getQRCodeUrl(qrToken: string | undefined): string {
+    console.log('[Confirmation] getQRCodeUrl called with qrToken:', qrToken);
+    
+    if (!qrToken) {
+      console.warn('[Confirmation] qrToken is empty or undefined');
+      return '';
+    }
+    
+    // If it's already a full URL, return as-is
+    if (qrToken.startsWith('http')) {
+      return qrToken;
+    }
+    
+    // Use public QR code generation service (same as my-tickets)
+    const url = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qrToken)}`;
+    console.log('[Confirmation] Generated QR URL:', url);
+    return url;
   }
 
   continueShopping(): void {
