@@ -1,129 +1,49 @@
 <!-- Page Container -->
-<div class="min-h-screen bg-background">
+<div class="relative min-h-screen bg-background-dark text-white">
   <!-- Main Content -->
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <main class="max-w-4xl mx-auto px-6 lg:px-20 pt-32 pb-24">
     <!-- Page Heading -->
-    <div class="mb-8">
-      <h1 class="text-3xl sm:text-4xl font-black tracking-tight text-white mb-2">
-        Mis Entradas
-      </h1>
-      <p class="text-white/60 text-lg">Administra tus entradas próximas y pasadas.</p>
-    </div>
-
-    <!-- Controls: Tabs & Search -->
-    <div
-      class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8 border-b border-white/10 pb-1"
-    >
-      <!-- Tabs -->
-      <div role="tablist" class="flex gap-8 px-2">
-        <button
-          role="tab"
-          [attr.aria-selected]="activeTab() === 'upcoming'"
-          [attr.aria-controls]="'panel-upcoming'"
-          [attr.tabindex]="activeTab() === 'upcoming' ? 0 : -1"
-          (click)="setActiveTab('upcoming')"
-          (keydown.enter)="setActiveTab('upcoming')"
-          (keydown.space)="$event.preventDefault(); setActiveTab('upcoming')"
-          [class]="
-            activeTab() === 'upcoming'
-              ? 'border-primary text-primary'
-              : 'border-transparent text-gray-500 hover:text-gray-700'
-          "
-          class="pb-4 border-b-[3px] transition-colors"
-        >
-          <span class="text-sm font-bold tracking-wide">
-            Próximos
-            <span
-              class="ml-1 px-1.5 py-0.5 bg-primary/20 text-primary rounded-full text-xs font-semibold"
-            >
-              {{ upcomingCount() }}
-            </span>
-          </span>
-        </button>
-        <button
-          role="tab"
-          [attr.aria-selected]="activeTab() === 'history'"
-          [attr.aria-controls]="'panel-history'"
-          [attr.tabindex]="activeTab() === 'history' ? 0 : -1"
-          (click)="setActiveTab('history')"
-          (keydown.enter)="setActiveTab('history')"
-          (keydown.space)="$event.preventDefault(); setActiveTab('history')"
-          [class]="
-            activeTab() === 'history'
-              ? 'border-primary text-primary'
-              : 'border-transparent text-gray-500 hover:text-gray-700'
-          "
-          class="pb-4 border-b-[3px] transition-colors"
-        >
-          <span class="text-sm font-bold tracking-wide">
-            Historial
-            <span
-              class="ml-1 px-1.5 py-0.5 bg-gray-100 text-white/60 rounded-full text-xs font-semibold"
-            >
-              {{ historyCount() }}
-            </span>
-          </span>
-        </button>
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
+      <div class="flex flex-col gap-2">
+        <h1 class="edgy-title text-6xl md:text-7xl font-black text-white">Mis Tickets</h1>
+        <p class="text-white/50 text-lg">Gestiona tus accesos y eventos exclusivos</p>
       </div>
-
-      <!-- Search -->
-      <div class="w-full md:w-auto pb-3 md:pb-0">
-        <div class="relative">
-          <div
-            class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400"
-          >
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              ></path>
-            </svg>
-          </div>
-          <input
-            type="text"
-            (input)="onSearchChange($event)"
-            aria-label="Buscar entradas por evento o lugar"
-            class="block w-full md:w-80 rounded-lg border border-white/10 bg-background-light py-2.5 pl-10 pr-4 text-sm text-white placeholder:text-gray-400 focus:ring-2 focus:ring-primary focus:border-transparent transition-all shadow-sm"
-            placeholder="Buscar por evento o lugar..."
-          />
-        </div>
+      
+      <!-- Filter Chips -->
+      <div class="flex gap-3 flex-wrap">
+        <button 
+          (click)="setActiveTab('upcoming')"
+          [class]="activeTab() === 'upcoming' 
+            ? 'border-2 border-primary bg-primary/10 text-primary' 
+            : 'border border-white/20 bg-transparent text-white/60'"
+          class="flex h-10 items-center justify-center rounded-full px-6 text-sm font-bold transition-all hover:border-primary hover:text-primary">
+          Próximos
+        </button>
+        <button 
+          (click)="setActiveTab('history')"
+          [class]="activeTab() === 'history' 
+            ? 'border-2 border-primary bg-primary/10 text-primary' 
+            : 'border border-white/20 bg-transparent text-white/60'"
+          class="flex h-10 items-center justify-center rounded-full px-6 text-sm font-medium transition-all hover:border-white hover:text-white">
+          Pasados
+        </button>
       </div>
     </div>
 
     <!-- Auth Warning -->
     @if (showAuthWarning() && !isLoading()) {
-      <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 mb-8 rounded-lg shadow-sm">
+      <div class="glass-card p-6 mb-8">
         <div class="flex items-start gap-3">
-          <span class="material-symbols-outlined text-yellow-600 text-2xl flex-shrink-0"
-            >warning</span
-          >
+          <span class="material-symbols-outlined text-yellow-600 text-2xl flex-shrink-0">warning</span>
           <div class="flex-1">
             <h3 class="font-bold text-white mb-2">Sesión expirada o sin iniciar sesión</h3>
-            <p class="text-gray-700 mb-4">
-              Tu sesión puede haber expirado o necesitas iniciar sesión nuevamente para acceder a
-              tus entradas desde el servidor.
-              @if (tickets().length > 0) {
-                <span class="block mt-2 font-semibold text-green-700"
-                  >✓ Mostrando {{ tickets().length }} entrada(s) desde el almacenamiento local del
-                  navegador.</span
-                >
-                <span class="block mt-1 text-sm text-white/60"
-                  >Para ver todas tus entradas (incluyendo las compradas en otros dispositivos), por
-                  favor inicia sesión.</span
-                >
-              } @else {
-                <span class="block mt-2 text-sm text-white/60"
-                  >No se encontraron entradas locales. Inicia sesión para ver tus compras.</span
-                >
-              }
+            <p class="text-white/60 mb-4">
+              Tu sesión puede haber expirado o necesitas iniciar sesión nuevamente.
             </p>
             <button
-              (click)="router.navigate(['/login'])"
-              class="px-5 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold transition-colors inline-flex items-center gap-2"
-            >
-              <span class="material-symbols-outlined text-lg">login</span>
+              (click)="router.navigate(['/auth'])"
+              class="flex items-center gap-2 rounded-full bg-white text-black px-6 py-2.5 text-sm font-bold transition-transform active:scale-95 hover:bg-primary hover:text-white">
+              <span class="material-symbols-outlined">login</span>
               Iniciar sesión
             </button>
           </div>
@@ -131,14 +51,14 @@
       </div>
     }
 
-    <!-- Error Message (only show if NOT an auth issue) -->
+    <!-- Error Message -->
     @if (error() && !showAuthWarning() && !isLoading()) {
-      <div class="bg-red-50 border-l-4 border-red-400 p-6 mb-8 rounded-lg shadow-sm">
+      <div class="glass-card p-6 mb-8 border-l-4 border-red-500">
         <div class="flex items-start gap-3">
           <span class="material-symbols-outlined text-red-600 text-2xl flex-shrink-0">error</span>
           <div>
             <h3 class="font-bold text-white mb-1">Error</h3>
-            <p class="text-gray-700">{{ error() }}</p>
+            <p class="text-white/60">{{ error() }}</p>
           </div>
         </div>
       </div>
@@ -153,373 +73,153 @@
 
     <!-- Empty State -->
     @if (!isLoading() && groupedTickets().length === 0) {
-      <div class="text-center py-20">
-        <svg
-          class="mx-auto h-24 w-24 text-gray-400"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"
-          ></path>
-        </svg>
-        <h3 class="mt-4 text-lg font-semibold text-white">No se encontraron entradas</h3>
-        <p class="mt-2 text-white/60">
-          @if (activeTab() === 'upcoming') {
-            No tienes eventos próximos. ¡Explora eventos para comenzar!
-          } @else {
-            Aún no tienes entradas anteriores.
-          }
+      <div class="flex flex-col items-center justify-center py-20 px-6 text-center border-2 border-dashed border-white/10 rounded-xl">
+        <div class="size-24 rounded-full bg-primary/10 flex items-center justify-center mb-6">
+          <span class="material-symbols-outlined text-primary text-5xl">confirmation_number</span>
+        </div>
+        <h3 class="text-2xl font-bold text-white mb-2">Aún no tienes tickets</h3>
+        <p class="text-white/50 max-w-sm mb-8">
+          Descubre los eventos más exclusivos y asegura tu lugar en la pista de baile.
         </p>
-        @if (activeTab() === 'upcoming') {
-          <a
-            [routerLink]="['/']"
-            class="mt-6 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700"
-          >
-            Explorar eventos
-          </a>
-        }
+        <a
+          [routerLink]="['/']"
+          class="bg-primary text-white px-8 py-3 rounded-full font-bold text-lg hover:shadow-[0_0_20px_rgba(255,77,0,0.4)] transition-all">
+          Explorar Eventos
+        </a>
       </div>
     }
 
-    <!-- Event Groups -->
+    <!-- Ticket List -->
     @if (!isLoading() && groupedTickets().length > 0) {
-      <div class="space-y-6">
+      <div class="flex flex-col gap-4">
         @for (eventGroup of groupedTickets(); track eventGroup.eventId) {
-          <div class="bg-background-light rounded-xl overflow-hidden shadow-sm border border-white/10">
-            <!-- Event Summary Card (Collapsed State) -->
-            <div class="p-6">
-              <div class="flex items-center gap-6">
-                <!-- Event Image Thumbnail -->
-                <div
-                  class="relative w-24 h-24 rounded-lg overflow-hidden flex-shrink-0 bg-gray-200"
-                >
-                  @if (eventGroup.eventImageUrl) {
-                    <img
-                      [src]="eventGroup.eventImageUrl"
-                      [alt]="eventGroup.eventName"
-                      class="w-full h-full object-cover"
-                    />
-                  } @else {
-                    <div
-                      class="w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center"
-                    >
-                      <svg
-                        class="w-10 h-10 text-white opacity-50"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path
-                          d="M2 6a2 2 0 012-2h12a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"
-                        ></path>
-                      </svg>
-                    </div>
-                  }
+          @let currentTicket = getCurrentTicket(eventGroup);
+          <!-- Ticket Card -->
+          <div class="glass-card p-4 md:p-6 group flex flex-col md:flex-row gap-6 items-center transition-all hover:border-primary/30">
+            <!-- Event Image -->
+            <div class="w-full md:w-48 aspect-video md:aspect-square bg-center bg-cover rounded-lg shrink-0 overflow-hidden">
+              @if (currentTicket.eventImageUrl) {
+                <img
+                  [src]="currentTicket.eventImageUrl"
+                  [alt]="currentTicket.eventName"
+                  class="w-full h-full object-cover"
+                />
+              } @else {
+                <div class="w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+                  <span class="material-symbols-outlined text-white text-5xl">confirmation_number</span>
                 </div>
-
-                <!-- Event Info -->
-                <div class="flex-1 min-w-0">
-                  <h3 class="text-xl font-bold text-white mb-2">{{ eventGroup.eventName }}</h3>
-                  <div class="flex flex-wrap gap-4 text-sm text-white/60">
-                    <div class="flex items-center gap-1">
-                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                        ></path>
-                      </svg>
-                      <span>{{ formatDate(eventGroup.eventDate) }}</span>
+              }
+            </div>
+            
+            <!-- Ticket Info -->
+            <div class="flex flex-1 flex-col gap-4 w-full">
+              <div class="flex justify-between items-start">
+                <div class="flex flex-col gap-1">
+                  <span class="text-primary text-[10px] font-black tracking-[0.2em] uppercase">
+                    {{ currentTicket.status === 'upcoming' ? 'Confirmado' : 'Pasado' }}
+                  </span>
+                  <h3 class="text-white text-2xl font-bold leading-tight group-hover:text-primary transition-colors">
+                    {{ currentTicket.eventName }}
+                  </h3>
+                  <div class="flex items-center gap-4 mt-2 flex-wrap">
+                    <div class="flex items-center gap-1.5 text-white/60 text-sm">
+                      <span class="material-symbols-outlined text-sm">calendar_today</span>
+                      {{ formatDate(currentTicket.eventDate) | slice:0:10 }}
                     </div>
-                    <div class="flex items-center gap-1">
-                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                        ></path>
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                        ></path>
-                      </svg>
-                      <span>{{ eventGroup.venue }}</span>
+                    <div class="flex items-center gap-1.5 text-white/60 text-sm">
+                      <span class="material-symbols-outlined text-sm">schedule</span>
+                      {{ formatTime(currentTicket.eventTime) }}
+                    </div>
+                    <div class="flex items-center gap-1.5 text-white/60 text-sm">
+                      <span class="material-symbols-outlined text-sm">location_on</span>
+                      {{ currentTicket.venue | slice:0:20 }}
                     </div>
                   </div>
                 </div>
-
-                <!-- Ticket Count & Price -->
-                <div class="text-right">
-                  <p class="text-sm text-white/60 mb-1">
-                    {{ eventGroup.ticketCount }} entrada{{ eventGroup.ticketCount > 1 ? 's' : '' }}
-                  </p>
-                  <p class="text-xl font-bold text-white">
-                    {{ eventGroup.totalPrice | currencyFormat }}
-                  </p>
+                <div class="hidden sm:block">
+                  <div [class]="currentTicket.status === 'upcoming' ? 'bg-primary/20 text-primary' : 'bg-white/10 text-white/60'" 
+                       class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider">
+                    {{ currentTicket.status === 'upcoming' ? 'Próximo' : 'Pasado' }}
+                  </div>
                 </div>
-
-                <!-- Expand Button -->
-                <button
+              </div>
+              
+              <div class="flex items-center justify-between mt-2 pt-4 border-t border-white/5">
+                <div class="flex -space-x-2">
+                  @if (eventGroup.ticketCount > 1) {
+                    <div class="size-8 rounded-full border-2 border-background-dark bg-zinc-800 flex items-center justify-center text-[10px] font-bold text-white">
+                      +{{ eventGroup.ticketCount - 1 }}
+                    </div>
+                  }
+                  <div class="size-8 rounded-full border-2 border-background-dark bg-zinc-700"></div>
+                </div>
+                <button 
                   (click)="toggleEventDetails(eventGroup.eventId)"
-                  class="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-                >
-                  <span class="material-symbols-outlined text-white/60">
-                    {{ expandedEventId() === eventGroup.eventId ? 'expand_less' : 'expand_more' }}
-                  </span>
+                  class="flex items-center gap-2 rounded-full bg-white text-black px-6 py-2.5 text-sm font-bold transition-transform active:scale-95 hover:bg-primary hover:text-white">
+                  Ver Tickets
+                  <span class="material-symbols-outlined text-lg">qr_code_2</span>
                 </button>
               </div>
             </div>
-
-            <!-- Expanded Ticket Details -->
-            @if (expandedEventId() === eventGroup.eventId) {
-              <div class="border-t border-white/10">
-                @let currentTicket = getCurrentTicket(eventGroup);
-                @if (currentTicket) {
-                  <div class="bg-background-light rounded-2xl overflow-hidden">
-                    <!-- Header Actions -->
-                    <div
-                      class="bg-background px-6 py-4 border-b border-white/10 flex justify-between items-center"
-                    >
-                      <h3 class="text-sm font-semibold text-gray-700 uppercase tracking-wide">
-                        Tu Entrada
-                      </h3>
-                      <div class="flex gap-3">
-                        <button
-                          class="flex items-center gap-1 text-white/60 hover:text-white transition-colors text-sm"
-                        >
-                          <span class="material-symbols-outlined text-lg">print</span>
-                          Print
-                        </button>
-                        <button
-                          (click)="downloadTicket(currentTicket.id)"
-                          class="flex items-center gap-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm font-semibold"
-                        >
-                          <span class="material-symbols-outlined text-lg">download</span>
-                          Descargar PNG
-                        </button>
-                        <button
-                          class="flex items-center gap-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm font-semibold"
-                        >
-                          <span class="material-symbols-outlined text-lg">share</span>
-                          Share
-                        </button>
-                      </div>
+          </div>
+          
+          <!-- Expanded QR Details -->
+          @if (expandedEventId() === eventGroup.eventId) {
+            <div class="glass-card p-6 animate-slide-in">
+              <div class="flex flex-col lg:flex-row gap-6">
+                <!-- QR Code -->
+                <div class="flex flex-col items-center gap-4 lg:w-1/3">
+                  <div class="bg-white p-4 rounded-lg">
+                    <img [src]="currentTicket.qrCode" [alt]="'QR Code'" class="w-48 h-48" />
+                  </div>
+                  <p class="text-white/60 text-xs font-mono">#{{ currentTicket.id.substring(0, 12) }}</p>
+                </div>
+                
+                <!-- Ticket Details -->
+                <div class="flex-1 space-y-4">
+                  <div class="grid grid-cols-2 gap-4">
+                    <div>
+                      <p class="text-xs text-white/40 uppercase mb-1">Tipo</p>
+                      <p class="text-white font-bold">{{ currentTicket.ticketType }}</p>
                     </div>
-
-                    <div class="flex flex-col lg:flex-row">
-                      <!-- Ticket Main Content -->
-                      <div class="flex-1 p-8">
-                        <!-- Event Banner/Image -->
-                        <div class="relative mb-6 rounded-xl overflow-hidden" style="height: 250px">
-                          @if (currentTicket.eventImageUrl) {
-                            <img
-                              [src]="currentTicket.eventImageUrl"
-                              [alt]="currentTicket.eventName"
-                              class="w-full h-full object-cover"
-                            />
-                          } @else {
-                            <div
-                              class="w-full h-full bg-gradient-to-br from-purple-900 via-purple-700 to-blue-600 flex items-center justify-center"
-                            >
-                              <div class="text-center">
-                                <span class="material-symbols-outlined text-white text-6xl mb-2"
-                                  >confirmation_number</span
-                                >
-                              </div>
-                            </div>
-                          }
-                          <!-- Badge -->
-                          <div class="absolute top-4 left-4">
-                            <span
-                              class="px-4 py-2 bg-blue-600 text-white text-xs font-bold rounded-md shadow-lg uppercase tracking-wider"
-                            >
-                              {{ currentTicket.ticketType }} ACCESS
-                            </span>
-                          </div>
-                          <!-- Event Name Overlay -->
-                          <div
-                            class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6"
-                          >
-                            <h2 class="text-white text-3xl font-bold drop-shadow-lg">
-                              {{ currentTicket.eventName }}
-                            </h2>
-                          </div>
-                        </div>
-
-                        <!-- Event Details Grid -->
-                        <div class="grid grid-cols-2 gap-6 mb-6">
-                          <!-- Date & Time -->
-                          <div>
-                            <div class="flex items-start gap-3">
-                              <div class="bg-blue-50 p-3 rounded-lg">
-                                <span class="material-symbols-outlined text-primary text-2xl"
-                                  >calendar_today</span
-                                >
-                              </div>
-                              <div>
-                                <p class="text-xs text-gray-500 uppercase font-semibold mb-1">
-                                  Fecha y hora
-                                </p>
-                                <p class="text-white font-bold text-lg">
-                                  {{ formatDate(currentTicket.eventDate) }}
-                                </p>
-                                <p class="text-white/60 text-sm">
-                                  {{ formatTime(currentTicket.eventTime) }}
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-
-                          <!-- Location -->
-                          <div>
-                            <div class="flex items-start gap-3">
-                              <div class="bg-blue-50 p-3 rounded-lg">
-                                <span class="material-symbols-outlined text-primary text-2xl"
-                                  >location_on</span
-                                >
-                              </div>
-                              <div>
-                                <p class="text-xs text-gray-500 uppercase font-semibold mb-1">
-                                  Ubicación
-                                </p>
-                                <p class="text-white font-bold text-lg">
-                                  {{ currentTicket.venue }}
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-
-                        <!-- Ticket Details -->
-                        <div class="border-t border-white/10 pt-6">
-                          <div class="grid grid-cols-4 gap-4">
-                            <div>
-                              <p class="text-xs text-gray-500 uppercase mb-1">Pedido #</p>
-                              <p class="text-white font-bold font-mono text-sm">
-                                {{ currentTicket.id.substring(0, 12) }}...
-                              </p>
-                            </div>
-                            @if (currentTicket.seatNumber) {
-                              <div>
-                                <p class="text-xs text-gray-500 uppercase mb-1">Asiento</p>
-                                <p class="text-white font-bold">
-                                  {{ currentTicket.seatNumber }}
-                                </p>
-                              </div>
-                            }
-                            <div>
-                              <p class="text-xs text-gray-500 uppercase mb-1">Tipo</p>
-                              <p class="text-white font-bold">{{ currentTicket.ticketType }}</p>
-                            </div>
-                            <div>
-                              <p class="text-xs text-gray-500 uppercase mb-1">Precio</p>
-                              <p class="text-white font-bold">
-                                {{ currentTicket.price | currencyFormat }}
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      <!-- QR Code Section -->
-                      <div
-                        class="lg:w-80 bg-background border-l border-white/10 p-8 flex flex-col items-center justify-center"
-                      >
-                        <div class="text-center mb-6">
-                          <h3 class="text-lg font-bold text-white mb-6">ESCANEAR PARA ENTRAR</h3>
-                          <div
-                            class="bg-background-light p-4 rounded-xl shadow-md border-2 border-white/10 mb-4"
-                          >
-                            <img
-                              [src]="currentTicket.qrCode"
-                              [alt]="'QR Code for ' + currentTicket.eventName"
-                              class="w-64 h-64"
-                            />
-                          </div>
-                          <p class="text-white font-bold font-mono text-lg mb-2">
-                            #{{ currentTicket.id.substring(0, 12) }}
-                          </p>
-                        </div>
-
-                        <!-- Status Badge -->
-                        <div class="mt-6">
-                          @if (currentTicket.status === 'upcoming') {
-                            <span
-                              class="px-4 py-2 bg-green-100 text-green-800 text-xs font-bold rounded-full"
-                            >
-                              ✓ CONFIRMADO
-                            </span>
-                          } @else {
-                            <span
-                              class="px-4 py-2 bg-gray-200 text-gray-700 text-xs font-bold rounded-full capitalize"
-                            >
-                              {{ currentTicket.status }}
-                            </span>
-                          }
-                        </div>
-                      </div>
+                    <div>
+                      <p class="text-xs text-white/40 uppercase mb-1">Precio</p>
+                      <p class="text-white font-bold">{{ currentTicket.price | currencyFormat }}</p>
                     </div>
-
-                    <!-- Important Information -->
-                    <div class="bg-blue-50 border-t-2 border-blue-200 p-6">
-                      <div class="flex gap-3">
-                        <span class="material-symbols-outlined text-primary text-2xl">info</span>
-                        <div>
-                          <h4 class="font-bold text-white mb-2">Información importante</h4>
-                          <p class="text-gray-700 text-sm">
-                            Por favor presenta esta entrada en la puerta para su validación. Esta
-                            entrada es válida para un único ingreso. La reventa no autorizada (o
-                            intento de reventa) es motivo de incautación y cancelación sin
-                            reembolso.
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- Ticket Navigation (if multiple tickets) -->
+                  </div>
+                  
+                  <div class="flex gap-3 pt-4">
+                    <button
+                      (click)="downloadTicket(currentTicket.id)"
+                      class="flex-1 flex items-center justify-center gap-2 bg-primary text-white px-4 py-2.5 rounded-lg hover:bg-primary/80 transition-colors font-semibold">
+                      <span class="material-symbols-outlined">download</span>
+                      Descargar
+                    </button>
                     @if (eventGroup.ticketCount > 1) {
-                      <div class="bg-background border-t border-white/10 p-6">
-                        <div class="flex items-center justify-between gap-4">
-                          <button
-                            (click)="previousTicket(eventGroup)"
-                            [disabled]="eventGroup.currentTicketIndex === 0"
-                            class="flex-1 px-6 py-3 bg-background-light border border-white/10 text-white rounded-lg font-semibold hover:bg-background disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
-                          >
-                            <span class="material-symbols-outlined">arrow_back</span>
-                            Entrada anterior
-                          </button>
-
-                          <div class="text-center px-4">
-                            <p class="text-sm font-bold text-white">
-                              TICKET {{ eventGroup.currentTicketIndex + 1 }} OF
-                              {{ eventGroup.ticketCount }}
-                            </p>
-                          </div>
-
-                          <button
-                            (click)="nextTicket(eventGroup)"
-                            [disabled]="eventGroup.currentTicketIndex >= eventGroup.ticketCount - 1"
-                            class="flex-1 px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
-                          >
-                            Siguiente entrada
-                            <span class="material-symbols-outlined">arrow_forward</span>
-                          </button>
-                        </div>
-                      </div>
+                      <button
+                        (click)="previousTicket(eventGroup)"
+                        [disabled]="eventGroup.currentTicketIndex === 0"
+                        class="flex items-center justify-center gap-2 bg-white/10 text-white px-4 py-2.5 rounded-lg hover:bg-white/20 transition-colors disabled:opacity-50">
+                        <span class="material-symbols-outlined">arrow_back</span>
+                      </button>
+                      <button
+                        (click)="nextTicket(eventGroup)"
+                        [disabled]="eventGroup.currentTicketIndex >= eventGroup.ticketCount - 1"
+                        class="flex items-center justify-center gap-2 bg-white/10 text-white px-4 py-2.5 rounded-lg hover:bg-white/20 transition-colors disabled:opacity-50">
+                        <span class="material-symbols-outlined">arrow_forward</span>
+                      </button>
                     }
                   </div>
-                }
+                  
+                  @if (eventGroup.ticketCount > 1) {
+                    <p class="text-white/40 text-xs text-center">
+                      Ticket {{ eventGroup.currentTicketIndex + 1 }} de {{ eventGroup.ticketCount }}
+                    </p>
+                  }
+                </div>
               </div>
-            }
-          </div>
+            </div>
+          }
         }
       </div>
     }
