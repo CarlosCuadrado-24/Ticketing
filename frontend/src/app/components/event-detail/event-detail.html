@@ -1,460 +1,300 @@
-<div
-  class="bg-background-light dark:bg-background-dark text-[#111118] dark:text-white font-display"
->
-  @if (isLoading()) {
-    <div class="flex justify-center items-center min-h-screen">
-      <app-loading-spinner
-        size="lg"
-        message="Cargando detalles del evento..."
-      ></app-loading-spinner>
-    </div>
-  } @else if (event()) {
-    <!-- Hero Section with Background Image -->
-    <div class="relative w-full h-[400px] md:h-[480px]">
-      <div
-        class="absolute inset-0 bg-cover bg-center"
-        [style.backgroundImage]="
-          'linear-gradient(rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.7) 100%), url(' +
-          getEventImage() +
-          ')'
-        "
-      ></div>
-      <div
-        class="absolute inset-0 flex flex-col justify-end pb-12 px-4 md:px-10 lg:px-40 layout-content-container max-w-[1440px] mx-auto w-full"
-      >
-        <span
-          class="inline-block px-3 py-1 mb-4 metadata-text text-white bg-primary w-fit"
-        >
-          Verified Event
-        </span>
-        <h1
-          class="stylized-heading text-white text-4xl md:text-6xl leading-tight mb-4"
-        >
-          {{ event()!.name }}
-        </h1>
-        <div class="flex flex-wrap gap-6 text-white/90">
-          <div class="flex items-center gap-2">
-            <span class="material-symbols-outlined">calendar_month</span>
-            <span class="metadata-text">{{
-              event()!.date | dateFormat: 'long'
-            }}</span>
+@if (isLoading()) {
+  <div class="flex justify-center items-center min-h-screen bg-black">
+    <app-loading-spinner size="lg" message="Cargando detalles del evento..."></app-loading-spinner>
+  </div>
+} @else if (event()) {
+  <main class="w-full bg-black">
+    <!-- HERO SECTION -->
+    <section class="grid grid-cols-1 lg:grid-cols-12 min-h-screen border-b-8 border-white relative">
+      <!-- Sidebar rotated text -->
+      <div class="lg:col-span-1 border-r-8 border-white flex flex-col items-center justify-center p-4">
+        <span class="rotated-text font-mono text-[10px] tracking-[0.5em] uppercase opacity-50">SCROLL_DOWN_TO_DECAY</span>
+        <div class="mt-10 font-mono text-xl text-white">↓</div>
+      </div>
+
+      <!-- Hero Image with overlay -->
+      <div class="lg:col-span-7 relative overflow-hidden group">
+        <img [src]="getEventImage()" 
+             [alt]="event()!.name"
+             class="w-full h-full object-cover halftone-xerox scale-105"/>
+        <div class="absolute inset-0 bg-primary/10 mix-blend-overlay"></div>
+        
+        <!-- Event Title Overlay -->
+        <div class="absolute inset-0 flex flex-col justify-end p-8 md:p-12 z-10 pointer-events-none">
+          <div class="sticker-tape mb-8 scale-150 origin-left">
+            {{ event()!.eventDetails?.[0]?.category || 'FEATURED EVENT' }} // {{ event()!.date.substring(0, 4) }}
           </div>
-          <div class="flex items-center gap-2">
-            <span class="material-symbols-outlined">location_on</span>
-            <span class="metadata-text">{{ event()!.location }}</span>
-          </div>
+          <h1 class="anti-design-title break-all text-white">
+            <span class="text-primary">{{ event()!.name.split(' ')[0] || 'EVENT' }}</span><br/>
+            {{ event()!.name.substring(event()!.name.indexOf(' ') + 1) || 'EXPERIENCE' }}
+          </h1>
         </div>
       </div>
-    </div>
 
-    <div
-      class="layout-container flex flex-col grow px-4 md:px-10 lg:px-40 py-8 lg:py-12 bg-background-light dark:bg-background-dark"
-    >
-      <div
-        class="layout-content-container max-w-[1440px] mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start"
-      >
-        <!-- Left Column: Content -->
-        <div class="lg:col-span-8 flex flex-col gap-8">
-          <!-- Organizer Info -->
-          <div class="flex items-center gap-4 pb-6 border-b border-white/10">
-            <div class="w-12 h-12 rounded-none border border-primary/50 p-0.5">
-              <img
-                alt="Organizer"
-                class="w-full h-full object-cover grayscale"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDqnsi021ryoTifgO-gyc5QXe-9hIe2OQwSFbTu_l7SrJrvruQKfVNuwqoPBB9iFbu0O8wAmTd24u7Gpkx2taF5CexGmuOCkbDlXkD7ByNxg20p3_rHVkC7b9nk9q0dC-0s3BUoQfuuPSysjDDyvGSHRSvydss8wJZgYzKH1pCRPk7ZGAMOUiUaBskqGCAd-x-6Yvb9_IRHdBCcLYYn-3RG2YOkVI7MP79ja86eqaqTNKWYbY45BkgKMHA31d9s6Yw8hbKZhavP03zg"
-              />
-            </div>
-            <div>
-              <p class="metadata-text text-white/40">Hosted by</p>
-              <a
-                class="font-heading font-bold text-white hover:text-primary flex items-center gap-1 transition-colors"
-                href="#"
-              >
-                @if (event()?.organizer?.firstName) {
-                  {{ event()!.organizer!.firstName }} {{ event()!.organizer!.lastName }}
-                } @else if (event()?.createdBy) {
-                  Usuario {{ event()!.createdBy }}
-                } @else {
-                  Organizador del evento
-                }
-                <span class="material-symbols-outlined text-primary text-[18px]">verified</span>
-              </a>
-            </div>
-            <button class="ml-auto text-[10px] uppercase font-extrabold tracking-[0.2em] text-white border border-white/20 px-4 py-2 hover:bg-white hover:text-black transition-all">
-              Follow
-            </button>
+      <!-- Event Quick Info Sidebar -->
+      <div class="lg:col-span-4 border-l-8 border-white bg-black p-8 md:p-16 flex flex-col justify-between">
+        <div class="space-y-12">
+          <!-- Date/Time Box -->
+          <div class="border-8 border-white p-6 -ml-16 bg-black relative z-20">
+            <div class="technical-mono mb-2">TIMESTAMP.STAMP</div>
+            <p class="font-brutal text-6xl">{{ event()!.date | dateFormat: 'short' }}</p>
+            <p class="font-mono text-xl mt-2 tracking-widest">{{ event()!.startTime || '20:00' }}_HRS</p>
           </div>
 
-          <!-- Description -->
-          <div class="flex flex-col gap-4">
-            <h3 class="font-heading text-2xl font-bold text-white">About the event</h3>
-            <p class="text-white/80 text-base leading-relaxed">
-              {{ event()!.description || 'Únete a nosotros para una experiencia inolvidable.' }}
-            </p>
-          </div>
-
-          <!-- Event Meta Details Grid -->
-          <div
-            class="bg-background-light border border-white/10 p-6"
-          >
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div class="flex gap-4 items-start">
-                <div class="p-3 bg-primary/10 text-primary">
-                  <span class="material-symbols-outlined">calendar_today</span>
-                </div>
-                <div>
-                  <h4 class="font-heading font-bold text-white">Date & Time</h4>
-                  <p class="metadata-text text-white/60 mt-1">
-                    {{ event()!.date | dateFormat: 'long' }}
-                  </p>
-                  <p class="metadata-text text-white/60">
-                    {{ event()!.startTime || '9:00 AM' }} - {{ event()!.endTime || '6:00 PM' }}
-                  </p>
-                  <a class="text-primary metadata-text mt-2 inline-block hover:text-white transition-colors" href="#"
-                    >Add to Calendar</a
-                  >
-                </div>
-              </div>
-              <div class="flex gap-4 items-start">
-                <div class="p-3 bg-primary/10 text-primary">
-                  <span class="material-symbols-outlined">map</span>
-                </div>
-                <div>
-                  <h4 class="font-heading font-bold text-white">Location</h4>
-                  <p class="metadata-text text-white/60 mt-1">
-                    {{ event()!.venueName || 'Venue' }}
-                  </p>
-                  <p class="metadata-text text-white/60">{{ event()!.location }}</p>
-                  <a class="text-primary metadata-text mt-2 inline-block hover:text-white transition-colors" href="#"
-                    >View Map</a
-                  >
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Map Section: Leaflet OpenStreetMap -->
-          <div
-            class="rounded-xl overflow-hidden w-full bg-gray-100 dark:bg-[#1e1e2d] border border-[#dbdbe6] dark:border-[#2a2a35] relative mb-6"
-            style="min-height: 250px"
-          >
-            @if (event()?.location) {
-              <app-map-viewer [location]="event()!.location" [venueName]="event()!.venueName">
-              </app-map-viewer>
-            } @else {
-              <div class="w-full h-full flex items-center justify-center">
-                <p class="text-[#616189] dark:text-gray-400">Ubicación no disponible</p>
-              </div>
-            }
-          </div>
-
-          <!-- Event Details Section -->
-          <div
-            class="rounded-xl overflow-hidden h-auto w-full bg-gray-100 dark:bg-[#1e1e2d] border border-[#dbdbe6] dark:border-[#2a2a35] p-6 mb-6"
-          >
-            <h4 class="text-lg font-bold text-[#111118] dark:text-white mb-4">
-              Detalles del evento
-            </h4>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              @if (event()?.eventDetails?.[0]?.category) {
-                <div>
-                  <span class="font-semibold text-[#616189] dark:text-gray-400">Categoría:</span>
-                  <span class="ml-2 text-[#111118] dark:text-white">{{
-                    event()!.eventDetails![0].category
-                  }}</span>
-                </div>
-              }
-              @if (event()?.eventDetails?.[0]?.minAge) {
-                <div>
-                  <span class="font-semibold text-[#616189] dark:text-gray-400">Edad mínima:</span>
-                  <span class="ml-2 text-[#111118] dark:text-white"
-                    >{{ event()!.eventDetails![0].minAge }} años</span
-                  >
-                </div>
-              }
-              @if (event()?.eventDetails?.[0]?.seating) {
-                <div>
-                  <span class="font-semibold text-[#616189] dark:text-gray-400">Asientos:</span>
-                  <span class="ml-2 text-[#111118] dark:text-white">{{
-                    event()!.eventDetails![0].seating
-                  }}</span>
-                </div>
-              }
-              @if (event()?.eventDetails?.[0]?.capacity) {
-                <div>
-                  <span class="font-semibold text-[#616189] dark:text-gray-400">Capacidad:</span>
-                  <span class="ml-2 text-[#111118] dark:text-white"
-                    >{{ event()!.eventDetails![0].capacity }} personas</span
-                  >
-                </div>
-              }
-              @if (event()?.eventDetails?.[0]?.foodSale !== undefined) {
-                <div>
-                  <span class="font-semibold text-[#616189] dark:text-gray-400"
-                    >Venta de comida:</span
-                  >
-                  <span class="ml-2 text-[#111118] dark:text-white">{{
-                    event()!.eventDetails![0].foodSale ? 'Sí' : 'No'
-                  }}</span>
-                </div>
-              }
-              @if (event()?.eventDetails?.[0]?.liquorSale !== undefined) {
-                <div>
-                  <span class="font-semibold text-[#616189] dark:text-gray-400"
-                    >Venta de alcohol:</span
-                  >
-                  <span class="ml-2 text-[#111118] dark:text-white">{{
-                    event()!.eventDetails![0].liquorSale ? 'Sí' : 'No'
-                  }}</span>
-                </div>
-              }
-              @if (event()?.eventDetails?.[0]?.reducedMobilityAccess) {
-                <div>
-                  <span class="font-semibold text-[#616189] dark:text-gray-400"
-                    >Acceso movilidad reducida:</span
-                  >
-                  <span class="ml-2 text-[#111118] dark:text-white">Sí</span>
-                </div>
-              }
-              @if (event()?.eventDetails?.[0]?.pregnantAccess) {
-                <div>
-                  <span class="font-semibold text-[#616189] dark:text-gray-400"
-                    >Acceso embarazadas:</span
-                  >
-                  <span class="ml-2 text-[#111118] dark:text-white">Sí</span>
-                </div>
-              }
-            </div>
-          </div>
-
-          <!-- Tags -->
-          <div class="flex flex-wrap gap-2">
-            @for (tag of getEventTags(); track tag) {
-              <span
-                class="px-3 py-1 bg-background-light border border-white/10 text-white/60 text-xs font-medium uppercase tracking-wider hover:border-primary hover:text-primary transition-colors cursor-pointer"
-                >{{ tag }}</span
-              >
-            }
-          </div>
-        </div>
-
-        <!-- Right Column: Sticky Ticket Sidebar -->
-        <div class="lg:col-span-4">
-          <div class="sticky top-4 flex flex-col gap-6">
-            <!-- Ticket Selection Card -->
-            <div
-              class="bg-white dark:bg-[#1e1e2d] border border-[#dbdbe6] dark:border-[#2a2a35] rounded-xl shadow-lg overflow-hidden"
-            >
-              <div
-                class="p-5 border-b border-[#dbdbe6] dark:border-[#2a2a35] bg-gray-50 dark:bg-[#252536]"
-              >
-                <h3 class="text-lg font-bold text-[#111118] dark:text-white">
-                  Selecciona entradas
-                </h3>
-                <p class="text-xs text-[#616189] dark:text-gray-400 mt-1">
-                  Los precios pueden aumentar a medida que se acerque la fecha.
+          <div class="space-y-8">
+            <!-- Location -->
+            <div class="flex gap-6 items-start">
+              <span class="font-mono text-primary text-4xl font-black">#01</span>
+              <div>
+                <p class="technical-mono mb-1">GEO_LOCATOR</p>
+                <p class="font-serif text-3xl font-bold italic uppercase">
+                  {{ event()!.venueName || 'VENUE' }}<br/>{{ event()!.location }}
                 </p>
               </div>
-              <div class="p-5 flex flex-col gap-6">
-                <!-- Handle ticketConfigurations (new format) -->
-                @for (config of ticketConfigurations(); track config.type) {
-                  <div
-                    [ngClass]="{ 'opacity-60': isTicketSoldOut(config) }"
-                    class="flex flex-col gap-3 pb-4 border-b border-dashed border-[#dbdbe6] dark:border-[#2a2a35] last:border-b-0"
-                  >
-                    <div class="flex justify-between items-start">
-                      <div>
-                        <h4 class="font-bold text-[#111118] dark:text-white">
-                          {{ getTicketName(config) }}
-                        </h4>
-                        <p class="text-xs text-[#616189] dark:text-gray-400">
-                          {{ getTicketTypeDescription(config) }}
-                        </p>
-                      </div>
-                      <div class="text-right">
-                        <span class="block text-lg font-black text-[#111118] dark:text-white">{{
-                          getTicketPrice(config) | currencyFormat
-                        }}</span>
-                        @if (getAvailableCount(config) < 500 && getAvailableCount(config) > 0) {
-                          <span
-                            class="text-[10px] text-orange-600 dark:text-orange-400 font-bold bg-orange-100 dark:bg-orange-900/30 px-1.5 py-0.5 rounded flex items-center gap-1 justify-end mt-1"
-                          >
-                            <span class="material-symbols-outlined text-[10px]"
-                              >local_fire_department</span
-                            >
-                            Low Stock
-                          </span>
-                        }
-                        @if (getAvailableCount(config) >= 500) {
-                          <span
-                            class="text-[10px] text-green-600 font-bold bg-green-100 dark:bg-green-900/30 px-1.5 py-0.5 rounded"
-                            >Best Value</span
-                          >
-                        }
-                      </div>
-                    </div>
-
-                    <div class="flex justify-between items-center">
-                      @if (!isTicketSoldOut(config)) {
-                        <div class="flex items-center gap-3">
-                          <button
-                            (click)="decreaseQty(config)"
-                            class="w-8 h-8 rounded-full border border-[#dbdbe6] dark:border-[#4a4a5a] flex items-center justify-center text-[#616189] hover:bg-gray-100 dark:hover:bg-[#2a2a35] transition-colors"
-                          >
-                            <span class="material-symbols-outlined text-sm">remove</span>
-                          </button>
-                          <span class="text-[#111118] dark:text-white font-bold w-4 text-center">{{
-                            selectedQuantities[config.type] || 0
-                          }}</span>
-                          <button
-                            (click)="increaseQty(config)"
-                            class="w-8 h-8 rounded-full border border-primary bg-primary/10 dark:bg-primary/20 flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-colors"
-                          >
-                            <span class="material-symbols-outlined text-sm">add</span>
-                          </button>
-                        </div>
-                      } @else {
-                        <div
-                          class="flex justify-between items-center bg-red-50 dark:bg-red-900/20 p-2 rounded-lg w-full border border-red-200 dark:border-red-800"
-                        >
-                          <span
-                            class="text-xs font-bold text-red-600 dark:text-red-400 pl-2 uppercase"
-                            >Entradas Vendidas</span
-                          >
-                          <button
-                            class="w-8 h-8 flex items-center justify-center rounded bg-red-300 dark:bg-red-700 text-white cursor-not-allowed"
-                            disabled=""
-                          >
-                            <span class="material-symbols-outlined text-sm">block</span>
-                          </button>
-                        </div>
-                      }
-                    </div>
-                  </div>
-                }
-                <!-- Handle ticketTypes (old format) -->
-                @for (type of ticketTypes(); track type.id) {
-                  <div
-                    [ngClass]="{ 'opacity-60': isTicketSoldOut(type) }"
-                    class="flex flex-col gap-3 pb-4 border-b border-dashed border-[#dbdbe6] dark:border-[#2a2a35] last:border-b-0"
-                  >
-                    <div class="flex justify-between items-start">
-                      <div>
-                        <h4 class="font-bold text-[#111118] dark:text-white">
-                          {{ getTicketName(type) }}
-                        </h4>
-                        <p class="text-xs text-[#616189] dark:text-gray-400">
-                          {{ getTicketTypeDescription(type) }}
-                        </p>
-                      </div>
-                      <div class="text-right">
-                        <span class="block text-lg font-black text-[#111118] dark:text-white">{{
-                          getTicketPrice(type) | currencyFormat
-                        }}</span>
-                        @if (getAvailableCount(type) < 50 && getAvailableCount(type) > 0) {
-                          <span
-                            class="text-[10px] text-orange-600 dark:text-orange-400 font-bold bg-orange-100 dark:bg-orange-900/30 px-1.5 py-0.5 rounded flex items-center gap-1 justify-end mt-1"
-                          >
-                            <span class="material-symbols-outlined text-[10px]"
-                              >local_fire_department</span
-                            >
-                            Low Stock
-                          </span>
-                        }
-                        @if (getAvailableCount(type) >= 50) {
-                          <span
-                            class="text-[10px] text-green-600 font-bold bg-green-100 dark:bg-green-900/30 px-1.5 py-0.5 rounded"
-                            >Best Value</span
-                          >
-                        }
-                      </div>
-                    </div>
-
-                    <div class="flex justify-between items-center">
-                      @if (!isTicketSoldOut(type)) {
-                        <div class="flex items-center gap-3">
-                          <button
-                            (click)="decreaseQty(type)"
-                            class="w-8 h-8 rounded-full border border-[#dbdbe6] dark:border-[#4a4a5a] flex items-center justify-center text-[#616189] hover:bg-gray-100 dark:hover:bg-[#2a2a35] transition-colors"
-                          >
-                            <span class="material-symbols-outlined text-sm">remove</span>
-                          </button>
-                          <span class="text-[#111118] dark:text-white font-bold w-4 text-center">{{
-                            selectedQuantities[getConfigKey(type)] || 0
-                          }}</span>
-                          <button
-                            (click)="increaseQty(type)"
-                            class="w-8 h-8 rounded-full border border-primary bg-primary/10 dark:bg-primary/20 flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-colors"
-                          >
-                            <span class="material-symbols-outlined text-sm">add</span>
-                          </button>
-                        </div>
-                      } @else {
-                        <div
-                          class="flex justify-between items-center bg-red-50 dark:bg-red-900/20 p-2 rounded-lg w-full border border-red-200 dark:border-red-800"
-                        >
-                          <span
-                            class="text-xs font-bold text-red-600 dark:text-red-400 pl-2 uppercase"
-                            >Entradas Vendidas</span
-                          >
-                          <button
-                            class="w-8 h-8 flex items-center justify-center rounded bg-red-300 dark:bg-red-700 text-white cursor-not-allowed"
-                            disabled=""
-                          >
-                            <span class="material-symbols-outlined text-sm">block</span>
-                          </button>
-                        </div>
-                      }
-                    </div>
-                  </div>
-                }
-              </div>
-
-              <!-- Total & Checkout -->
-              <div
-                class="p-5 border-t border-[#dbdbe6] dark:border-[#2a2a35] bg-gray-50 dark:bg-[#252536]"
-              >
-                <div class="flex justify-between items-end mb-4">
-                  <span class="text-sm font-medium text-[#616189] dark:text-gray-400">Total</span>
-                  <span class="text-2xl font-black text-[#111118] dark:text-white">{{
-                    getTotal() | currencyFormat
-                  }}</span>
-                </div>
-                <checkout-button
-                  [items]="getSelectedItems()"
-                  [eventId]="event()!.id"
-                  [eventName]="event()!.name"
-                  [disabled]="getTotal() === 0"
-                >
-                </checkout-button>
-                <div
-                  class="flex items-center justify-center gap-2 mt-3 text-[#616189] dark:text-gray-500"
-                >
-                  <span class="material-symbols-outlined text-sm">lock</span>
-                  <span class="text-xs">Pago seguro con Stripe</span>
-                </div>
-              </div>
             </div>
 
-            <!-- Help Card -->
-            <div
-              class="hidden md:flex flex-col gap-2 p-4 rounded-lg bg-primary/5 dark:bg-blue-900/10 border border-primary/20 dark:border-primary/30/30"
-            >
-              <h4 class="text-sm font-bold text-[#111118] dark:text-white">¿Tienes preguntas?</h4>
-              <p class="text-xs text-[#616189] dark:text-gray-400">
-                Contacta al organizador para dudas sobre reembolsos o accesibilidad.
-              </p>
-              <a class="text-xs font-bold text-primary hover:underline" href="#"
-                >Contactar al organizador</a
-              >
+            <div class="glitch-line"></div>
+
+            <!-- Category -->
+            <div class="flex gap-6 items-start">
+              <span class="font-mono text-primary text-4xl font-black">#02</span>
+              <div>
+                <p class="technical-mono mb-1">SONIC_TAG</p>
+                <p class="font-serif text-3xl italic">{{ event()!.eventDetails?.[0]?.category || 'GENERAL' }}</p>
+              </div>
             </div>
           </div>
         </div>
+
+        <div class="pt-10 flex items-center justify-between">
+          <div class="font-mono text-[8px] leading-tight max-w-[150px] text-white/50">
+            ALL RIGHTS RESERVED. NO REPRODUCTION WITHOUT WRITTEN CONSENT. X-442-SYS.
+          </div>
+          <div class="text-8xl font-serif text-white/10">{{ event()!.date.substring(0, 4) }}</div>
+        </div>
       </div>
-    </div>
-  } @else {
-    <div class="flex justify-center items-center min-h-screen">
-      <p class="text-gray-500">Evento no encontrado.</p>
-    </div>
-  }
-</div>
+    </section>
+
+    <!-- CONTENT SECTION -->
+    <section class="grid grid-cols-1 lg:grid-cols-12 border-b-8 border-white">
+      <!-- Left Column: Info & Timeline -->
+      <div class="lg:col-span-7 p-8 md:p-16 border-r-8 border-white space-y-32">
+        <!-- Organizer Info -->
+        <div class="relative">
+          <div class="absolute -top-10 -left-10 text-[200px] font-brutal text-white/5 pointer-events-none select-none">INFO</div>
+          <div class="border-8 border-white p-12 bg-black relative z-10">
+            <div class="flex flex-col md:flex-row gap-10 items-start">
+              <div class="w-48 h-48 border-8 border-white overflow-hidden flex-shrink-0">
+                <img alt="Organizer"
+                     class="w-full h-full object-cover halftone-xerox"
+                     src="https://lh3.googleusercontent.com/aida-public/AB6AXuCsa7lWmASC0zIyGYfmumyEuDxkLrzVosdDLmZWUqZmO8yKMxYWIOBIXVa4i3lkhZJGZaMWkqmjDW67A9l83nwBBA4T--5Hc29VC8hWNw5RLizjIC3e3GFq5QT48SP75xQcegvgSDb8EkZExPcEmHCmgMw8T3evDxDs_EjgXPkzj4sEuczRpEwexLpy4HFKF113AyO-GbBWsAE2tcyIsAvBhsPlT0ZHkF0HzTKdOlaoADKyzRYRhGnxXW3u82JuucDiJ3ul6irTxwMv"/>
+              </div>
+              <div class="space-y-6">
+                <div class="sticker-tape">VERIFIED HOST</div>
+                <h3 class="font-serif italic text-5xl leading-none text-white">
+                  @if (event()?.organizer?.firstName) {
+                    {{ event()!.organizer!.firstName }} {{ event()!.organizer!.lastName }}
+                  } @else {
+                    Organizador del Evento
+                  }
+                </h3>
+                <div class="technical-mono">UID: {{ event()!.createdBy || '000-PRO-USER' }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div class="max-w-3xl space-y-12">
+          <h2 class="font-brutal text-7xl tracking-tighter border-b-8 border-white pb-4 inline-block">THE_CORE</h2>
+          <div class="font-serif text-3xl leading-[1.1] text-white space-y-12 italic">
+            <p>
+              <span class="bg-white text-black not-italic px-2">EXPERIENCIA ÚNICA.</span> {{ event()!.description || 'Un evento inolvidable que transformará tu percepción del entretenimiento.' }}
+            </p>
+            @if (event()?.eventDetails?.[0]) {
+              <p class="font-industrial text-base not-italic opacity-60 leading-relaxed uppercase">
+                TECHNICAL SPECS:<br/>
+                @if (event()!.eventDetails![0].capacity) {
+                  CAPACIDAD: {{ event()!.eventDetails![0].capacity }} PERSONAS /
+                }
+                @if (event()!.eventDetails![0].minAge) {
+                  EDAD MÍNIMA: {{ event()!.eventDetails![0].minAge }}+ /
+                }
+                @if (event()!.eventDetails![0].seating) {
+                  ASIENTOS: {{ event()!.eventDetails![0].seating }} /
+                }
+                DURACIÓN: {{ getDuration() }}
+              </p>
+            }
+          </div>
+        </div>
+
+        <!-- Timeline -->
+        <div class="space-y-12">
+          <h3 class="font-brutal text-7xl tracking-tighter">TIMELINE_</h3>
+          <div class="border-t-8 border-white">
+            <div class="border-b-8 border-white py-12 flex justify-between items-center group cursor-help hover:bg-white hover:text-black transition-none">
+              <div class="flex items-end gap-6">
+                <span class="font-mono text-6xl">01</span>
+                <div class="pb-1">
+                  <p class="technical-mono">STATUS: DOOR</p>
+                  <h4 class="text-4xl font-brutal uppercase">{{ getDoorsTime() }} HRS</h4>
+                </div>
+              </div>
+              <div class="font-mono text-6xl pr-4 opacity-0 group-hover:opacity-100">→</div>
+            </div>
+            <div class="border-b-8 border-white py-12 flex justify-between items-center group cursor-help hover:bg-white hover:text-black transition-none">
+              <div class="flex items-end gap-6">
+                <span class="font-mono text-6xl text-primary">02</span>
+                <div class="pb-1">
+                  <p class="technical-mono">STATUS: START</p>
+                  <h4 class="text-4xl font-brutal uppercase">{{ event()!.startTime || '20:00' }} HRS</h4>
+                </div>
+              </div>
+              <div class="font-mono text-6xl pr-4 opacity-0 group-hover:opacity-100">→</div>
+            </div>
+            @if (event()!.endTime) {
+              <div class="border-b-8 border-white py-12 flex justify-between items-center group cursor-help hover:bg-white hover:text-black transition-none">
+                <div class="flex items-end gap-6">
+                  <span class="font-mono text-6xl">03</span>
+                  <div class="pb-1">
+                    <p class="technical-mono">STATUS: END</p>
+                    <h4 class="text-4xl font-brutal uppercase">{{ event()!.endTime }} HRS</h4>
+                  </div>
+                </div>
+                <div class="font-mono text-6xl pr-4 opacity-0 group-hover:opacity-100">→</div>
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Map Section -->
+        @if (event()?.location) {
+          <div class="space-y-6">
+            <h3 class="font-brutal text-5xl tracking-tighter border-b-8 border-white pb-4 inline-block">LOCATION_MAP</h3>
+            <div class="border-8 border-white overflow-hidden" style="min-height: 400px">
+              <app-map-viewer [location]="event()!.location" [venueName]="event()!.venueName"></app-map-viewer>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Right Column: Ticket Selection -->
+      <div class="lg:col-span-5 p-8 md:p-12 bg-white/5 relative">
+        <div class="sticky top-40">
+          <div class="bg-white text-black border-8 border-white p-10 space-y-10 relative overflow-hidden">
+            <div class="absolute top-0 right-0 p-4 rotated-text border-l-8 border-b-8 border-black font-mono text-[10px] uppercase font-bold">
+              TKT_SYS_2.0
+            </div>
+
+            <div class="border-b-8 border-black pb-8">
+              <h3 class="font-brutal text-7xl tracking-tighter mb-2">ACCESS</h3>
+              @if (hasLowStock()) {
+                <div class="sticker-tape !bg-black !text-white">LOW STOCK</div>
+              }
+            </div>
+
+            <div class="space-y-12">
+              <!-- TicketConfigurations -->
+              @for (config of ticketConfigurations(); track config.type) {
+                <div class="flex justify-between items-center">
+                  <div class="space-y-1">
+                    <div class="flex items-center gap-2">
+                      <h4 class="font-brutal text-2xl uppercase">{{ getTicketName(config) }}</h4>
+                      @if (getAvailableCount(config) < 50 && getAvailableCount(config) > 0) {
+                        <span class="bg-primary text-black px-1 font-mono text-[10px] font-bold">LTD</span>
+                      }
+                    </div>
+                    <p class="font-mono text-4xl font-black">{{ getTicketPrice(config) | currencyFormat }}</p>
+                  </div>
+                  
+                  @if (!isTicketSoldOut(config)) {
+                    <div class="flex items-center border-8 border-black">
+                      <button (click)="decreaseQty(config)"
+                              class="w-16 h-16 flex items-center justify-center bg-primary text-black font-black text-3xl hover:bg-black hover:text-white transition-none border-r-8 border-black">
+                        -
+                      </button>
+                      <span class="w-20 text-center font-mono text-3xl font-black">{{ selectedQuantities[config.type] || 0 }}</span>
+                      <button (click)="increaseQty(config)"
+                              class="w-16 h-16 flex items-center justify-center bg-primary text-black font-black text-3xl hover:bg-black hover:text-white transition-none">
+                        +
+                      </button>
+                    </div>
+                  } @else {
+                    <div class="border-8 border-black bg-black/10 px-6 py-4">
+                      <span class="font-mono text-xs font-black uppercase">SOLD OUT</span>
+                    </div>
+                  }
+                </div>
+                
+                @if (!$last) {
+                  <div class="glitch-line !bg-black/20"></div>
+                }
+              }
+
+              <!-- TicketTypes -->
+              @for (type of ticketTypes(); track type.id) {
+                <div class="flex justify-between items-center">
+                  <div class="space-y-1">
+                    <div class="flex items-center gap-2">
+                      <h4 class="font-brutal text-2xl uppercase">{{ getTicketName(type) }}</h4>
+                      @if (getAvailableCount(type) < 50 && getAvailableCount(type) > 0) {
+                        <span class="bg-primary text-black px-1 font-mono text-[10px] font-bold">LTD</span>
+                      }
+                    </div>
+                    <p class="font-mono text-4xl font-black">{{ getTicketPrice(type) | currencyFormat }}</p>
+                  </div>
+                  
+                  @if (!isTicketSoldOut(type)) {
+                    <div class="flex items-center border-8 border-black">
+                      <button (click)="decreaseQty(type)"
+                              class="w-16 h-16 flex items-center justify-center bg-primary text-black font-black text-3xl hover:bg-black hover:text-white transition-none border-r-8 border-black">
+                        -
+                      </button>
+                      <span class="w-20 text-center font-mono text-3xl font-black">{{ selectedQuantities[getConfigKey(type)] || 0 }}</span>
+                      <button (click)="increaseQty(type)"
+                              class="w-16 h-16 flex items-center justify-center bg-primary text-black font-black text-3xl hover:bg-black hover:text-white transition-none">
+                        +
+                      </button>
+                    </div>
+                  } @else {
+                    <div class="border-8 border-black bg-black/10 px-6 py-4">
+                      <span class="font-mono text-xs font-black uppercase">SOLD OUT</span>
+                    </div>
+                  }
+                </div>
+                
+                @if (!$last) {
+                  <div class="glitch-line !bg-black/20"></div>
+                }
+              }
+            </div>
+
+            <div class="pt-10 border-t-8 border-black flex justify-between items-end">
+              <span class="technical-mono !text-black font-black">TOTAL_DUE</span>
+              <span class="font-mono text-7xl font-black leading-none">{{ getTotal() | currencyFormat }}</span>
+            </div>
+          </div>
+
+          <checkout-button
+            [items]="getSelectedItems()"
+            [eventId]="event()!.id"
+            [eventName]="event()!.name"
+            [disabled]="getTotal() === 0"
+            class="w-full bg-primary text-black mt-8 py-10 font-brutal text-4xl uppercase border-8 border-white hover:bg-white hover:text-black transition-none flex items-center justify-center gap-6 group block"
+          >
+          </checkout-button>
+
+          <div class="mt-8 flex justify-between items-center px-4">
+            <div class="rotated-text font-mono text-[8px] opacity-40 text-white">ENCRYPTED_TRANSACTION_ID_{{ event()!.id }}</div>
+            <div class="font-serif text-[40px] opacity-20 tracking-[-0.2em] text-white">||||||||||||||||||</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+} @else {
+  <div class="flex justify-center items-center min-h-screen bg-black">
+    <p class="text-white/50 font-mono uppercase">Evento no encontrado.</p>
+  </div>
+}

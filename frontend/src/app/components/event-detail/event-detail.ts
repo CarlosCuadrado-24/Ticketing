@@ -311,4 +311,40 @@ export class EventDetail implements OnInit, OnDestroy {
 
     return `${environment.apiUrl}/events/file/${filename}`;
   }
+
+  hasLowStock(): boolean {
+    const configs = this.ticketConfigurations();
+    const types = this.ticketTypes();
+    
+    return configs.some(c => this.getAvailableCount(c) < 50 && this.getAvailableCount(c) > 0) ||
+           types.some(t => this.getAvailableCount(t) < 50 && this.getAvailableCount(t) > 0);
+  }
+
+  getDuration(): string {
+    const event = this.event();
+    if (!event?.startTime || !event?.endTime) {
+      return '3-4 HOURS APPROX.';
+    }
+    
+    const start = event.startTime.split(':');
+    const end = event.endTime.split(':');
+    const startHour = parseInt(start[0]);
+    const endHour = parseInt(end[0]);
+    const duration = endHour - startHour;
+    
+    return `${duration} HOURS`;
+  }
+
+  getDoorsTime(): string {
+    const event = this.event();
+    if (!event?.startTime) {
+      return '19:00';
+    }
+    
+    const parts = event.startTime.split(':');
+    const hour = parseInt(parts[0]);
+    const doorsHour = hour - 1;
+    
+    return `${doorsHour.toString().padStart(2, '0')}:${parts[1] || '00'}`;
+  }
 }

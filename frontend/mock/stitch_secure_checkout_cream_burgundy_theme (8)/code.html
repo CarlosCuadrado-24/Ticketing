@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>REQUIEM - HARDCORE BRUTALISM</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&amp;family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&amp;family=JetBrains+Mono:wght@400;800&amp;family=Space+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
+<script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#FF4D00", // Vibrant Neon Orange
+              black: "#000000",
+              white: "#FFFFFF",
+            },
+            fontFamily: {
+              brutal: ["'Archivo Black'", "sans-serif"],
+              serif: ["'Libre Baskerville'", "serif"],
+              mono: ["'JetBrains Mono'", "monospace"],
+              industrial: ["'Space Mono'", "monospace"],
+            },
+            borderWidth: {
+              '8': '8px',
+            }
+          },
+        },
+      };
+    </script>
+<style type="text/tailwindcss">
+    @layer base {
+        body {
+            @apply bg-black text-white selection:bg-primary selection:text-black overflow-x-hidden;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3BaseFilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/baseFilter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            background-repeat: repeat;
+            background-size: 150px 150px;
+        }
+    }
+    .halftone-xerox {
+        filter: contrast(300%) grayscale(100%) brightness(100%) blur(0.5px);
+        mix-blend-mode: hard-light;
+    }
+    .sticker-tape {
+        @apply bg-primary text-black font-industrial font-bold px-4 py-1 inline-block uppercase text-[14px] transform -rotate-1;
+        box-shadow: 6px 6px 0 rgba(0,0,0,1);
+    }
+    .rotated-text {
+        writing-mode: vertical-rl;
+        text-orientation: mixed;
+    }
+    .glitch-line {
+        height: 2px;
+        @apply bg-white w-full opacity-50;
+    }
+    .pasted-block {
+        @apply relative border-8 border-white bg-black;
+    }
+    .anti-design-title {
+        @apply font-serif font-bold italic tracking-tighter leading-[0.75] uppercase;
+        font-size: clamp(80px, 15vw, 240px);
+    }
+    .technical-mono {
+        font-size: 9px;
+        letter-spacing: 0.1em;
+        @apply font-mono uppercase opacity-70;
+    }
+    </style>
+</head>
+<body class="min-h-screen">
+<header class="border-b-8 border-white bg-black sticky top-0 z-[100]">
+<div class="max-w-full mx-auto px-6 h-20 flex items-center justify-between">
+<div class="flex items-center gap-10">
+<span class="font-brutal text-5xl tracking-[-0.1em]">OPUS.SYS</span>
+<div class="technical-mono hidden lg:block">REF_001.X_TERMINAL</div>
+</div>
+<nav class="hidden lg:flex items-center gap-0 font-industrial font-bold text-sm">
+<a class="border-x-8 border-white px-6 py-2 hover:bg-primary hover:text-black transition-none" href="#">NAV_01</a>
+<a class="border-r-8 border-white px-6 py-2 hover:bg-primary hover:text-black transition-none" href="#">NAV_02</a>
+<a class="border-r-8 border-white px-6 py-2 hover:bg-primary hover:text-black transition-none" href="#">NAV_03</a>
+</nav>
+<button class="bg-primary text-black px-8 py-3 font-brutal text-sm border-l-8 border-white hover:bg-white transition-none">
+            LOG_ACCESS
+        </button>
+</div>
+</header>
+<main class="w-full">
+<section class="grid grid-cols-1 lg:grid-cols-12 min-h-screen border-b-8 border-white relative">
+<div class="lg:col-span-1 border-r-8 border-white flex flex-col items-center justify-center p-4">
+<span class="rotated-text font-mono text-[10px] tracking-[0.5em] uppercase opacity-50">SCROLL_DOWN_TO_DECAY</span>
+<div class="mt-10 font-mono text-xl">↓</div>
+</div>
+<div class="lg:col-span-7 relative overflow-hidden group">
+<img alt="Orchestra" class="w-full h-full object-cover halftone-xerox scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC6wv7JHp-HHUtdKcSfz_5_j_Grl05xHSnvhyZy5itUAHdyCc3RMAyVGa0rM_WEsn9SahjFxVIFZ5Mmyed4HNcgKE7XaYoWs5JSoPfq-BmNx5d09wegzWrgmEqx_1pSre9b-W5OaSLLlZaTaLOP0F2H2VsO-ol3jule0CTpXTZE7Lz-Y_4HHIQN96Fi4YyWn-ooPQ4HuHim7ZjD1fVIcUDxGhmN0T560oMZ6gZH7v01UvPbx8O39VNYjwN91PWhrOIu14RGTASoYz4u"/>
+<div class="absolute inset-0 bg-primary/10 mix-blend-overlay"></div>
+<div class="absolute inset-0 flex flex-col justify-end p-8 md:p-12 z-10 pointer-events-none">
+<div class="sticker-tape mb-8 scale-150 origin-left">OFFICIAL SELECTION // 2024</div>
+<h1 class="anti-design-title break-all text-white">
+                    REQ<br/>
+<span class="text-primary">UIEM</span><br/>
+                    MOZART
+                </h1>
+</div>
+</div>
+<div class="lg:col-span-4 border-l-8 border-white bg-black p-8 md:p-16 flex flex-col justify-between">
+<div class="space-y-12">
+<div class="border-8 border-white p-6 -ml-16 bg-black relative z-20">
+<div class="technical-mono mb-2">TIMESTAMP.STAMP</div>
+<p class="font-brutal text-6xl">24/11</p>
+<p class="font-mono text-xl mt-2 tracking-widest">20:00_HRS</p>
+</div>
+<div class="space-y-8">
+<div class="flex gap-6 items-start">
+<span class="font-mono text-primary text-4xl font-black">#01</span>
+<div>
+<p class="technical-mono mb-1">GEO_LOCATOR</p>
+<p class="font-serif text-3xl font-bold italic uppercase">TEATRO REAL<br/>MADRID_ESP</p>
+</div>
+</div>
+<div class="glitch-line"></div>
+<div class="flex gap-6 items-start">
+<span class="font-mono text-primary text-4xl font-black">#02</span>
+<div>
+<p class="technical-mono mb-1">SONIC_TAG</p>
+<p class="font-serif text-3xl italic">CLASSICAL_RAW</p>
+</div>
+</div>
+</div>
+</div>
+<div class="pt-10 flex items-center justify-between">
+<div class="font-mono text-[8px] leading-tight max-w-[150px]">
+                    ALL RIGHTS RESERVED. NO REPRODUCTION WITHOUT WRITTEN CONSENT. X-442-SYS.
+                </div>
+<div class="text-8xl font-serif text-white/10">024</div>
+</div>
+</div>
+</section>
+<section class="grid grid-cols-1 lg:grid-cols-12 border-b-8 border-white">
+<div class="lg:col-span-7 p-8 md:p-16 border-r-8 border-white space-y-32">
+<div class="relative">
+<div class="absolute -top-10 -left-10 text-[200px] font-brutal text-white/5 pointer-events-none select-none">INFO</div>
+<div class="border-8 border-white p-12 bg-black relative z-10">
+<div class="flex flex-col md:flex-row gap-10 items-start">
+<div class="w-48 h-48 border-8 border-white overflow-hidden flex-shrink-0">
+<img alt="Organizer" class="w-full h-full object-cover halftone-xerox" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCsa7lWmASC0zIyGYfmumyEuDxkLrzVosdDLmZWUqZmO8yKMxYWIOBIXVa4i3lkhZJGZaMWkqmjDW67A9l83nwBBA4T--5Hc29VC8hWNw5RLizjIC3e3GFq5QT48SP75xQcegvgSDb8EkZExPcEmHCmgMw8T3evDxDs_EjgXPkzj4sEuczRpEwexLpy4HFKF113AyO-GbBWsAE2tcyIsAvBhsPlT0ZHkF0HzTKdOlaoADKyzRYRhGnxXW3u82JuucDiJ3ul6irTxwMv"/>
+</div>
+<div class="space-y-6">
+<div class="sticker-tape">VERIFIED HOST</div>
+<h3 class="font-serif italic text-5xl leading-none">Fundación Filarmónica Real</h3>
+<div class="technical-mono">UID: 992-PRO-REAL</div>
+</div>
+</div>
+</div>
+</div>
+<div class="max-w-3xl space-y-12">
+<h2 class="font-brutal text-7xl tracking-tighter border-b-8 border-white pb-4 inline-block">THE_CORE</h2>
+<div class="font-serif text-3xl leading-[1.1] text-white space-y-12 italic">
+<p>
+<span class="bg-white text-black not-italic px-2">MASSIVE</span> MUSICAL DESTRUCTION. EXPERIENCE MOZART AS IT WAS INTENDED: RAW, UNFILTERED, AND OVERWHELMING.
+                    </p>
+<p class="font-industrial text-base not-italic opacity-60 leading-relaxed uppercase">
+                        TECHNICAL SPECS:<br/>
+                        100+ PERFORMERS / 40 CHORUS VOICES / DURATION: 150M / FREQUENCY: HIGH_DB
+                    </p>
+</div>
+</div>
+<div class="space-y-12">
+<h3 class="font-brutal text-7xl tracking-tighter">TIMELINE_</h3>
+<div class="border-t-8 border-white">
+<div class="border-b-8 border-white py-12 flex justify-between items-center group cursor-help hover:bg-white hover:text-black transition-none">
+<div class="flex items-end gap-6">
+<span class="font-mono text-6xl">01</span>
+<div class="pb-1">
+<p class="technical-mono">STATUS: DOOR</p>
+<h4 class="text-4xl font-brutal uppercase">19:15 HRS</h4>
+</div>
+</div>
+<div class="font-mono text-6xl pr-4 opacity-0 group-hover:opacity-100">→</div>
+</div>
+<div class="border-b-8 border-white py-12 flex justify-between items-center group cursor-help hover:bg-white hover:text-black transition-none">
+<div class="flex items-end gap-6">
+<span class="font-mono text-6xl text-primary">02</span>
+<div class="pb-1">
+<p class="technical-mono">STATUS: START</p>
+<h4 class="text-4xl font-brutal uppercase">20:00 HRS</h4>
+</div>
+</div>
+<div class="font-mono text-6xl pr-4 opacity-0 group-hover:opacity-100">→</div>
+</div>
+</div>
+</div>
+</div>
+<div class="lg:col-span-5 p-8 md:p-12 bg-white/5 relative">
+<div class="sticky top-40">
+<div class="bg-white text-black border-8 border-white p-10 space-y-10 relative overflow-hidden">
+<div class="absolute top-0 right-0 p-4 rotated-text border-l-8 border-b-8 border-black font-mono text-[10px] uppercase font-bold">
+                        TKT_SYS_2.0
+                    </div>
+<div class="border-b-8 border-black pb-8">
+<h3 class="font-brutal text-7xl tracking-tighter mb-2">ACCESS</h3>
+<div class="sticker-tape !bg-black !text-white">LOW STOCK</div>
+</div>
+<div class="space-y-12">
+<div class="flex justify-between items-center">
+<div class="space-y-1">
+<h4 class="font-brutal text-2xl uppercase">GENERAL</h4>
+<p class="font-mono text-4xl font-black">85.00€</p>
+</div>
+<div class="flex items-center border-8 border-black">
+<button class="w-16 h-16 flex items-center justify-center bg-primary text-black font-black text-3xl hover:bg-black hover:text-white transition-none border-r-8 border-black">-</button>
+<span class="w-20 text-center font-mono text-3xl font-black">02</span>
+<button class="w-16 h-16 flex items-center justify-center bg-primary text-black font-black text-3xl hover:bg-black hover:text-white transition-none">+</button>
+</div>
+</div>
+<div class="glitch-line !bg-black/20"></div>
+<div class="flex justify-between items-center">
+<div class="space-y-1">
+<div class="flex items-center gap-2">
+<h4 class="font-brutal text-2xl uppercase">VIP.X</h4>
+<span class="bg-primary text-black px-1 font-mono text-[10px] font-bold">LTD</span>
+</div>
+<p class="font-mono text-4xl font-black">145.00€</p>
+</div>
+<div class="flex items-center border-8 border-black">
+<button class="w-16 h-16 flex items-center justify-center bg-primary text-black font-black text-3xl hover:bg-black hover:text-white transition-none border-r-8 border-black">-</button>
+<span class="w-20 text-center font-mono text-3xl font-black">00</span>
+<button class="w-16 h-16 flex items-center justify-center bg-primary text-black font-black text-3xl hover:bg-black hover:text-white transition-none">+</button>
+</div>
+</div>
+</div>
+<div class="pt-10 border-t-8 border-black flex justify-between items-end">
+<span class="technical-mono !text-black font-black">TOTAL_DUE</span>
+<span class="font-mono text-7xl font-black leading-none">170€</span>
+</div>
+</div>
+<button class="w-full bg-primary text-black mt-8 py-10 font-brutal text-4xl uppercase border-8 border-white hover:bg-white hover:text-black transition-none flex items-center justify-center gap-6 group">
+                    GET TICKETS
+                    <span class="material-symbols-outlined text-6xl font-black">arrow_forward</span>
+</button>
+<div class="mt-8 flex justify-between items-center px-4">
+<div class="rotated-text font-mono text-[8px] opacity-40">ENCRYPTED_TRANSACTION_ID_7721</div>
+<div class="font-serif text-[40px] opacity-20 tracking-[-0.2em]">||||||||||||||||||</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<footer class="bg-black border-t-8 border-white pt-40 pb-20 relative">
+<div class="absolute top-0 left-0 w-full h-2 bg-primary"></div>
+<div class="max-w-full mx-auto px-8 grid grid-cols-1 lg:grid-cols-12 gap-20">
+<div class="lg:col-span-7 space-y-16">
+<h2 class="font-brutal text-[10vw] leading-none tracking-tighter">OPUS_SYS</h2>
+<p class="text-white text-5xl font-serif italic max-w-2xl leading-[0.9]">
+                REDEFINING THE <span class="not-italic bg-white text-black px-4">CORE</span> OF CULTURE.
+            </p>
+<div class="flex gap-0 border-8 border-white w-fit">
+<a class="w-24 h-24 flex items-center justify-center border-r-8 border-white hover:bg-primary hover:text-black transition-none" href="#">
+<span class="material-symbols-outlined text-5xl">terminal</span>
+</a>
+<a class="w-24 h-24 flex items-center justify-center border-r-8 border-white hover:bg-primary hover:text-black transition-none" href="#">
+<span class="material-symbols-outlined text-5xl">qr_code_2</span>
+</a>
+<a class="w-24 h-24 flex items-center justify-center hover:bg-primary hover:text-black transition-none" href="#">
+<span class="material-symbols-outlined text-5xl">api</span>
+</a>
+</div>
+</div>
+<div class="lg:col-span-5 grid grid-cols-2 gap-10">
+<div class="space-y-8">
+<h4 class="technical-mono text-primary !text-lg">ROOT_DIR</h4>
+<ul class="space-y-4 font-brutal uppercase text-2xl">
+<li><a class="hover:underline decoration-8 decoration-primary" href="#">INDEX</a></li>
+<li><a class="hover:underline decoration-8 decoration-primary" href="#">SENSORS</a></li>
+<li><a class="hover:underline decoration-8 decoration-primary" href="#">LOGS</a></li>
+</ul>
+</div>
+<div class="space-y-8">
+<h4 class="technical-mono text-primary !text-lg">PROTOCOL</h4>
+<ul class="space-y-4 font-mono text-xs opacity-50 uppercase">
+<li><a href="#">PRIVACY_v1</a></li>
+<li><a href="#">TERMS_v2</a></li>
+<li><a href="#">EULA_00</a></li>
+</ul>
+<div class="pt-8 text-6xl font-serif opacity-10">||||||||</div>
+</div>
+</div>
+</div>
+<div class="max-w-full mx-auto px-8 mt-40 pt-12 border-t-8 border-white flex flex-col md:flex-row justify-between items-center gap-8 font-mono text-[10px] font-bold uppercase tracking-[0.5em]">
+<span>© 2024 HARDCORE_BRUTALIST_ENGINE</span>
+<span class="bg-primary text-black px-4 py-1 tracking-normal">SYSTEM_STATUS: NOMINAL</span>
+<span>BUILD_VERSION: 0.9.4-BETA</span>
+</div>
+</footer>
+
+</body></html>
