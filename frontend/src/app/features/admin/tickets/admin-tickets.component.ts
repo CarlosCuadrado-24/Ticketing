@@ -198,4 +198,33 @@ export class AdminTicketsComponent implements OnInit {
     this.error = null;
     this.loadTickets();
   }
+
+  getPaginationPages(): number[] {
+    if (!this.pagination) return [];
+    const current = this.pagination.page;
+    const total = this.pagination.totalPages;
+    
+    // Show max 3 pages
+    const maxPages = 3;
+    let pages: number[] = [];
+    
+    if (total <= maxPages) {
+      // Show all pages if total is less than max
+      for (let i = 1; i <= total; i++) {
+        pages.push(i);
+      }
+    } else {
+      // Show current page and neighbors
+      if (current === 1) {
+        pages = [1, 2, 3];
+      } else if (current === total) {
+        pages = [total - 2, total - 1, total];
+      } else {
+        pages = [current - 1, current, current + 1];
+      }
+    }
+    
+    return pages;
+  }
 }
+

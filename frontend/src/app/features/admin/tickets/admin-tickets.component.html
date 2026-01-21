@@ -1,137 +1,194 @@
-<div class="admin-tickets">
-  <div class="header">
-    <h2>Gestión de Tickets</h2>
-  </div>
+<!-- Header Title -->
+<header class="relative pt-12 mb-16">
+  <h1 class="font-display text-6xl md:text-9xl font-black uppercase italic leading-[0.85] tracking-tighter text-white drop-shadow-[10px_10px_0px_#FF4D00] relative z-10">
+    GESTIÓN DE<br/>TICKETS
+  </h1>
+  <div class="absolute -bottom-4 left-0 w-48 h-4 bg-primary z-0"></div>
+</header>
 
-  <div class="filters">
-    <div class="filter-group">
-      <label for="event">Evento:</label>
+<!-- Filters Section -->
+<div class="grid grid-cols-1 md:grid-cols-12 border-6 border-white bg-charcoal mb-16">
+  <!-- Event Filter -->
+  <div class="md:col-span-5 p-10 border-b-6 md:border-b-0 md:border-r-6 border-white">
+    <label class="block font-display font-black uppercase text-xs mb-6 text-primary tracking-widest">// SELECCIONAR EVENTO</label>
+    <div class="relative">
       <select
-        id="event"
         [(ngModel)]="filters.eventId"
         (change)="loadTickets()"
-        (ngModelChange)="onEventFilterChange($event)"
+        class="w-full bg-charcoal border-4 border-white text-white p-5 font-mono text-lg font-bold appearance-none focus:outline-none focus:ring-0 focus:border-primary uppercase"
       >
-        <option value="">Todos los eventos</option>
+        <option value="">Todos los Eventos</option>
         @for (event of events; track event.id) {
-          <option [value]="event.id">
-            {{ event.name }}
-          </option>
+          <option [value]="event.id">{{ event.name }}</option>
         }
       </select>
-    </div>
-
-    <div class="filter-group">
-      <label for="status">Estado:</label>
-      <select
-        id="status"
-        [(ngModel)]="filters.status"
-        (change)="loadTickets()"
-        (ngModelChange)="onStatusFilterChange($event)"
-      >
-        <option value="">Todos los estados</option>
-        <option value="PAID">Pagado</option>
-        <option value="USED">Usado</option>
-      </select>
-    </div>
-
-    <div class="filter-actions">
-      <button type="button" class="btn btn-secondary" (click)="clearFilters()">
-        Limpiar Filtros
-      </button>
+      <span class="material-symbols-outlined absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-white font-black">expand_more</span>
     </div>
   </div>
 
-  @if (!loading) {
-    <div class="tickets-table">
-      <table>
-        <thead>
-          <tr>
-            <th>Código</th>
-            <th>Evento</th>
-            <th>Tipo</th>
-            <th>Comprador</th>
-            <th>Precio</th>
-            <th>Fecha de Compra</th>
-            <th>Estado</th>
-            <th>Fecha de Uso</th>
+  <!-- Status Filter -->
+  <div class="md:col-span-4 p-10 border-b-6 md:border-b-0 md:border-r-6 border-white bg-white/5">
+    <label class="block font-display font-black uppercase text-xs mb-6 text-primary tracking-widest">// ESTADO ACTUAL</label>
+    <div class="relative">
+      <select
+        [(ngModel)]="filters.status"
+        (change)="loadTickets()"
+        class="w-full bg-charcoal border-4 border-white text-white p-5 font-mono text-lg font-bold appearance-none focus:outline-none focus:ring-0 focus:border-primary uppercase"
+      >
+        <option value="">Todos los Estados</option>
+        <option value="PAID">Pagado</option>
+        <option value="USED">Usado</option>
+        <option value="CANCELLED">Cancelado</option>
+      </select>
+      <span class="material-symbols-outlined absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-white font-black">expand_more</span>
+    </div>
+  </div>
+
+  <!-- Clear Button -->
+  <div class="md:col-span-3 p-10 flex items-center justify-center">
+    <button
+      (click)="clearFilters()"
+      class="w-full h-full py-6 border-4 border-white hover:bg-white hover:text-black transition-all font-display font-black uppercase text-sm flex items-center justify-center gap-3"
+    >
+      Limpiar <span class="material-symbols-outlined font-black">close</span>
+    </button>
+  </div>
+</div>
+
+<!-- Loading State -->
+@if (loading) {
+  <div class="flex items-center justify-center py-20">
+    <div class="font-display font-black text-2xl text-primary uppercase italic animate-pulse">
+      CARGANDO TICKETS...
+    </div>
+  </div>
+}
+
+<!-- Tickets Table -->
+@if (!loading) {
+  <div class="overflow-x-auto">
+    <table class="w-full border-collapse">
+      <thead>
+        <tr class="bg-white text-black border-x-6 border-t-6 border-white">
+          <th class="p-5 text-left font-display font-black uppercase text-sm tracking-tighter italic">CÓDIGO</th>
+          <th class="p-5 text-left font-display font-black uppercase text-sm tracking-tighter italic border-l-4 border-black">EVENTO</th>
+          <th class="p-5 text-left font-display font-black uppercase text-sm tracking-tighter italic border-l-4 border-black">TIPO</th>
+          <th class="p-5 text-left font-display font-black uppercase text-sm tracking-tighter italic border-l-4 border-black">COMPRADOR</th>
+          <th class="p-5 text-left font-display font-black uppercase text-sm tracking-tighter italic border-l-4 border-black">PRECIO</th>
+          <th class="p-5 text-left font-display font-black uppercase text-sm tracking-tighter italic border-l-4 border-black">ESTADO</th>
+          <th class="p-5 text-left font-display font-black uppercase text-sm tracking-tighter italic border-l-4 border-black">FECHA</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody class="border-6 border-white divide-y-4 divide-white">
           @for (ticket of tickets; track ticket.code) {
-            <tr>
-              <td>
-                <code>{{ ticket.code }}</code>
-              </td>
-              <td>
-                <div class="event-info">
-                  <strong>{{ ticket.eventName || 'Evento no encontrado' }}</strong>
-                  <small>{{ ticket.eventId }}</small>
+            <tr class="group hover:bg-white/10 transition-colors">
+              <!-- Código with Barcode -->
+              <td class="p-8 font-mono font-bold">
+                <div class="flex items-center gap-6">
+                  <div class="w-10 h-16 barcode-strip shrink-0 border-r-2 border-white/20"></div>
+                  <span class="text-2xl tracking-tight">{{ ticket.code }}</span>
                 </div>
               </td>
-              <td>
-                <span class="ticket-type">{{ ticket.type }}</span>
+
+              <!-- Evento -->
+              <td class="p-8 border-l-4 border-white/20">
+                <div class="font-display font-black text-xl uppercase leading-none mb-2">
+                  {{ ticket.eventName || 'Evento desconocido' }}
+                </div>
+                <div class="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">
+                  {{ ticket.eventId }}
+                </div>
               </td>
-              <td>{{ ticket.buyerEmail }}</td>
-              <td class="price">
+
+              <!-- Tipo -->
+              <td class="p-8 italic font-black text-sm border-l-4 border-white/20">
+                {{ ticket.type }}
+              </td>
+
+              <!-- Comprador -->
+              <td class="p-8 font-mono text-sm group-hover:text-primary transition-colors border-l-4 border-white/20">
+                {{ ticket.buyerEmail }}
+              </td>
+
+              <!-- Precio -->
+              <td class="p-8 font-black text-2xl border-l-4 border-white/20">
                 {{ ticket.price.amount | currencyFormat: ticket.price.currency }}
+                <span class="text-xs text-primary italic">{{ ticket.price.currency }}</span>
               </td>
-              <td>{{ ticket.purchaseDate | date: 'short' }}</td>
-              <td>
-                <span class="status-badge" [class]="'status-' + ticket.status.toLowerCase()">
-                  {{ ticket.status }}
-                </span>
+
+              <!-- Estado -->
+              <td class="p-8 border-l-4 border-white/20">
+                @if (ticket.status === 'PAID') {
+                  <span class="sticker-badge bg-accent-green text-black">PAID</span>
+                }
+                @if (ticket.status === 'USED') {
+                  <span class="sticker-badge bg-accent-grey text-white border-white opacity-60">USED</span>
+                }
+                @if (ticket.status === 'CANCELLED') {
+                  <span class="sticker-badge bg-red-600 text-white border-white">CANCELLED</span>
+                }
               </td>
-              <td>
-                {{ ticket.usedAt ? (ticket.usedAt | date: 'short') : '-' }}
+
+              <!-- Fecha -->
+              <td class="p-8 text-sm border-l-4 border-white/20">
+                <div class="font-bold">{{ ticket.purchaseDate | date: 'M/d/yy' }}</div>
+                <div class="text-zinc-500 text-xs">{{ ticket.purchaseDate | date: 'HH:mm' }} {{ ticket.purchaseDate | date: 'a' }}</div>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="7" class="p-16 text-center">
+                <div class="font-display font-black text-3xl uppercase italic text-zinc-500">
+                  NO HAY TICKETS DISPONIBLES
+                </div>
               </td>
             </tr>
           }
         </tbody>
       </table>
+    </div>
 
-      @if (pagination) {
-        <div class="pagination">
-          <button
-            class="btn btn-sm"
-            [disabled]="pagination.page <= 1"
-            (click)="changePage(pagination.page - 1)"
-          >
-            Anterior
-          </button>
+    <!-- Pagination -->
+    @if (pagination) {
+      <div class="flex flex-col md:flex-row items-center justify-between gap-12 py-12 border-t-6 border-white">
+        <!-- Previous Button -->
+        <button
+          (click)="changePage(pagination.page - 1)"
+          [disabled]="pagination.page <= 1"
+          class="brutalist-btn-orange bg-primary text-black px-12 py-6 font-display font-black uppercase flex items-center gap-6 border-4 border-white group disabled:opacity-30 disabled:cursor-not-allowed"
+        >
+          <span class="material-symbols-outlined font-black group-hover:-translate-x-2 transition-transform">arrow_back</span>
+          Anterior
+        </button>
 
-          <span class="page-info">
-            Página {{ pagination.page }} de {{ pagination.totalPages }} ({{ pagination.total }}
-            tickets)
-          </span>
-
-          <button
-            class="btn btn-sm"
-            [disabled]="pagination.page >= pagination.totalPages"
-            (click)="changePage(pagination.page + 1)"
-          >
-            Siguiente
-          </button>
+        <!-- Page Indicator -->
+        <div class="flex flex-col items-center gap-4">
+          <span class="text-[10px] uppercase font-black tracking-[0.3em] text-primary">SYSTEM_INDEX</span>
+          <div class="flex gap-4">
+            @for (pageNum of getPaginationPages(); track pageNum) {
+              <button
+                (click)="changePage(pageNum)"
+                [class]="pageNum === pagination.page 
+                  ? 'w-12 h-12 border-4 border-primary flex items-center justify-center text-primary font-black italic bg-primary/10' 
+                  : 'w-12 h-12 border-4 border-white flex items-center justify-center opacity-30 font-black italic hover:opacity-60'"
+              >
+                {{ pageNum < 10 ? '0' + pageNum : pageNum }}
+              </button>
+            }
+          </div>
         </div>
-      }
 
-      @if (tickets.length === 0) {
-        <div class="no-tickets">
-          <p>No se encontraron tickets.</p>
-        </div>
-      }
+      <!-- Next Button -->
+      <button
+        (click)="changePage(pagination.page + 1)"
+        [disabled]="pagination.page >= pagination.totalPages"
+        class="brutalist-btn-orange bg-primary text-black px-12 py-6 font-display font-black uppercase flex items-center gap-6 border-4 border-white group disabled:opacity-30 disabled:cursor-not-allowed"
+      >
+        Siguiente
+        <span class="material-symbols-outlined font-black group-hover:translate-x-2 transition-transform">arrow_forward</span>
+      </button>
     </div>
   }
+}
 
-  @if (loading) {
-    <div class="loading">
-      <p>Cargando tickets...</p>
-    </div>
-  }
 
-  @if (error) {
-    <div class="error">
-      <p>Error: {{ error }}</p>
-    </div>
-  }
-</div>

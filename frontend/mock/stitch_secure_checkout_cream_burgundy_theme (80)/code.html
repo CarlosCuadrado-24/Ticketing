@@ -1,0 +1,194 @@
+<html><head><script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+<script>
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          primary: "#FF4D00", // Neon Orange/Red
+          "background-light": "#000000",
+          "background-dark": "#000000",
+          "neon-green": "#39FF14",
+        },
+        fontFamily: {
+          display: ["'Space Grotesk'", "sans-serif"],
+          serif: ["'DM Serif Display'", "serif"],
+          mono: ["'JetBrains Mono'", "monospace"],
+        },
+        borderWidth: {
+          '5': '5px',
+        },
+      },
+    },
+  };
+</script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&amp;family=JetBrains+Mono:wght@400;700&amp;family=Space+Grotesk:wght@300;400;700&amp;display=swap" rel="stylesheet"/>
+<style>body {
+    background-color: #000;background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuBCymljuGQ7bD7eCcB0u6JGt-csRAcaeLLJDGENomFOuJa2KDj4Z1ogwPrNB4TiZiHLOknBaubMM2eGhVH_dzXdh8sNW4x8eqIbqVGnJCesfGsYsHC7Q2X5x3AMGTfqueQqq5qH24sGm-Vf2Sjzw6J21zjdp0-zQdxwMv6G-NbBgB1DORxZif3uNyM1QZC7OeYjOod5YziWBhiA3NRWxAoyJrW4tkiof4znOfoA6xnSErZw73T70Co8dI-okYlYBMEQVvcYuXJr6ICi);
+    background-blend-mode: overlay;
+    color: white
+    }
+.brutalist-border {
+    border: 5px solid white
+    }
+.glitch-line {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, white, transparent);
+    width: 100%;
+    margin: 10px 0
+    }
+.sticker-badge {
+    padding: 2px 8px;
+    transform: rotate(-2deg);
+    display: inline-block;
+    font-weight: 800;
+    text-transform: uppercase
+    }</style>
+</head><body class="font-display overflow-x-hidden">
+<nav class="border-b-5 border-white bg-black p-6 flex justify-between items-center sticky top-0 z-50">
+<div class="flex items-center gap-4">
+<div class="bg-white text-black p-1 font-black text-2xl tracking-tighter px-3">EO</div>
+<span class="text-2xl font-bold tracking-tighter uppercase italic">EventOrganizer</span>
+</div>
+<div class="flex items-center gap-8 font-bold uppercase text-sm tracking-widest">
+<a class="hover:underline decoration-4 underline-offset-8" href="#">Dashboard</a>
+<a class="hover:underline decoration-4 underline-offset-8" href="#">Events</a>
+<a class="hover:underline decoration-4 underline-offset-8" href="#">Tickets</a>
+<a class="bg-white text-black px-4 py-2 hover:bg-primary transition-colors" href="#">Create New Event</a>
+<div class="w-10 h-10 border-2 border-white overflow-hidden">
+<img alt="Admin user avatar" class="grayscale contrast-125" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD1Xd1PezZrcBqctMkxZKF3xXwQ9loMIC5JQbpWXU4xVX_KTvdBftDKpYsif9epfqaBB2qzpzKmR5YYU5KFBhN2mijpr201-XT66L3XnZ91Ljt6UXmykh-LjvQudxAheNUzLCWOoUdyapV8ehLWiJnHPpcjckST_0iHHHm5ZQMHn_rBBjRmsLNi_C-XTwxg3DiiwYNVdJnxwBjOZRjX1WwiqvZ5D6DRcQOe9RBEpa4oKUw9SzeLAcdIeYNw0q9048vJSryAEJQonDYO"/>
+</div>
+</div>
+</nav>
+<main class="max-w-7xl mx-auto px-6 py-12">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16 relative">
+<div class="relative">
+<h1 class="text-7xl md:text-9xl font-serif font-black leading-none tracking-tighter uppercase text-white select-none">
+          GESTIÓN <br/> DE USUARIOS
+        </h1>
+<div class="absolute -top-4 -left-4 text-xs font-mono text-primary opacity-70">SYSTEM_AUTH_REQUIRED_V2.0</div>
+</div>
+<button class="brutalist-border bg-white text-black px-8 py-4 text-2xl font-black uppercase hover:bg-primary hover:text-white transition-all transform hover:-translate-y-1 hover:-translate-x-1 active:translate-y-0 active:translate-x-0">
+        + Create Usuario
+      </button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+<div class="space-y-2">
+<label class="block text-xs font-mono uppercase text-gray-400">Filter_by_role</label>
+<div class="relative">
+<select class="w-full bg-black brutalist-border rounded-none appearance-none p-4 text-white focus:outline-none focus:border-primary">
+<option>ALL_ROLES</option>
+<option>ADMIN</option>
+<option>BUYER</option>
+</select>
+<div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"></path></svg>
+</div>
+</div>
+</div>
+<div class="md:col-span-2 space-y-2">
+<label class="block text-xs font-mono uppercase text-gray-400">Search_records</label>
+<input class="w-full bg-black brutalist-border rounded-none p-4 text-white placeholder-gray-600 focus:outline-none focus:border-primary uppercase font-bold" placeholder="TYPE_NAME_OR_EMAIL..." type="text"/>
+</div>
+</div>
+<div class="brutalist-border overflow-hidden bg-white/5 backdrop-blur-sm">
+<div class="overflow-x-auto">
+<table class="w-full border-collapse">
+<thead>
+<tr class="border-b-5 border-white bg-white text-black font-black uppercase text-left">
+<th class="p-6">ID</th>
+<th class="p-6">NAME / IDENTITY</th>
+<th class="p-6">EMAIL_ADDRESS</th>
+<th class="p-6">ROLE</th>
+<th class="p-6">TIMESTAMP</th>
+<th class="p-6 text-right">OPERATIONS</th>
+</tr>
+</thead>
+<tbody class="divide-y-2 divide-white/20">
+<tr class="hover:bg-white/10 transition-colors group">
+<td class="p-6 font-mono text-sm text-gray-400">
+<div class="flex items-center gap-3">
+<span class="text-white opacity-20 text-xs">|||||</span>
+                  EF596F7D...
+                </div>
+</td>
+<td class="p-6">
+<div class="text-xl font-bold uppercase tracking-tight">Admin User</div>
+<div class="text-[10px] text-primary font-mono">VERIFIED_ACCESS</div>
+</td>
+<td class="p-6 text-gray-300 font-mono italic">admin@ticketapp.com</td>
+<td class="p-6">
+<span class="sticker-badge bg-primary text-black text-sm">ADMIN</span>
+</td>
+<td class="p-6 text-xs font-mono uppercase leading-tight">
+                1/20/26<br/>17:06 PM
+              </td>
+<td class="p-6 text-right">
+<div class="flex justify-end gap-2">
+<button class="bg-white text-black px-4 py-1 font-black text-xs uppercase hover:bg-neon-green">Edit</button>
+<button class="bg-primary text-black px-4 py-1 font-black text-xs uppercase hover:bg-white">Delete</button>
+</div>
+</td>
+</tr>
+<tr class="hover:bg-white/10 transition-colors group">
+<td class="p-6 font-mono text-sm text-gray-400">
+<div class="flex items-center gap-3">
+<span class="text-white opacity-20 text-xs">|||||</span>
+                  00B89D44...
+                </div>
+</td>
+<td class="p-6">
+<div class="text-xl font-bold uppercase tracking-tight">Carlos Samuel Cuadrado</div>
+<div class="text-[10px] text-neon-green font-mono">CUSTOMER_LOG</div>
+</td>
+<td class="p-6 text-gray-300 font-mono italic">ccuadrado@unicartagena.edu.co</td>
+<td class="p-6">
+<span class="sticker-badge bg-neon-green text-black text-sm">BUYER</span>
+</td>
+<td class="p-6 text-xs font-mono uppercase leading-tight">
+                1/20/26<br/>17:54 PM
+              </td>
+<td class="p-6 text-right">
+<div class="flex justify-end gap-2">
+<button class="bg-white text-black px-4 py-1 font-black text-xs uppercase hover:bg-neon-green">Edit</button>
+<button class="bg-primary text-black px-4 py-1 font-black text-xs uppercase hover:bg-white">Delete</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="p-6 border-t-5 border-white flex justify-between items-center bg-black">
+<button class="text-white font-black uppercase text-sm border-2 border-white px-4 py-1 opacity-50 cursor-not-allowed">← Prev</button>
+<div class="flex items-center gap-4">
+<span class="font-mono text-xs uppercase">Page_01_of_01</span>
+<div class="h-1 w-24 bg-white/20">
+<div class="h-full w-full bg-primary"></div>
+</div>
+<span class="font-bold text-white uppercase">[ 2 ] USERS_FOUND</span>
+</div>
+<button class="text-white font-black uppercase text-sm border-2 border-white px-4 py-1 hover:bg-white hover:text-black transition-colors">Next →</button>
+</div>
+</div>
+<div class="mt-24 grid grid-cols-4 gap-4 opacity-30 select-none">
+<div class="border-t-2 border-white pt-2 font-mono text-[10px]">AUTH_TOKEN: 0x92182012</div>
+<div class="border-t-2 border-white pt-2 font-mono text-[10px]">LOC: 40.7128° N, 74.0060° W</div>
+<div class="border-t-2 border-white pt-2 font-mono text-[10px]">TERMINAL_ID: #B_88_B</div>
+<div class="border-t-2 border-white pt-2 font-mono text-[10px] text-right">STATUS: STABLE</div>
+</div>
+</main>
+<div class="fixed bottom-10 right-10 rotate-90 origin-bottom-right pointer-events-none">
+<div class="text-[120px] font-black text-white/5 uppercase leading-none select-none">
+      SYSTEM_ACCESS
+    </div>
+</div>
+<div class="fixed bottom-0 left-0 w-full h-1 bg-primary z-50 overflow-hidden">
+<div class="h-full bg-white w-1/4 animate-[slide_2s_infinite]"></div>
+</div>
+<style>
+    @keyframes slide {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(400%); }
+    }
+  </style>
+</body></html>
