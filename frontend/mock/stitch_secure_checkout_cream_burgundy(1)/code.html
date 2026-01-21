@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Checkout | Festival Pass</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Syne:wght@700;800&amp;family=Inter:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#FF4D00", // High-contrast orange accent
+                        accent: "#FF4D00",
+                        black: "#000000",
+                        surface: "#0A0A0A",
+                        border: "#262626",
+                    },
+                    fontFamily: {
+                        display: ["Syne", "sans-serif"],
+                        sans: ["Space Grotesk", "sans-serif"],
+                        mono: ["Inter", "monospace"],
+                    },
+                },
+            },
+        };
+    </script>
+<style type="text/tailwindcss">
+        @layer base {
+            body {
+                @apply bg-black text-white;
+            }
+        }
+        .pass-texture {
+            background-image: radial-gradient(circle at 2px 2px, rgba(255,255,255,0.05) 1px, transparent 0);
+            background-size: 24px 24px;
+        }
+        .sharp-border {
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+        }
+    </style>
+</head>
+<body class="font-sans min-h-screen">
+<header class="border-b border-border bg-black/80 backdrop-blur-md sticky top-0 z-50">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<img alt="Company Logo" class="h-8 w-auto brightness-0 invert" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBEc9QtcqI_r4YFJutl9i5_Yq5pirKvGaKCOmv3DdLktO2-YnUq_nrwWAh1DsRU8utS-30nku-wT9I7b2kmH6-vMpQvvfudzlK6dWbJcoiLrSPzLeIEmJ0NENNSa0pcQMGjNpLMKV43wIfh5eJLtpQ-yGdGXVf-k1C6-uH1SXIaqSeEVC29VqqR1qf3PN2wXYDdaSK8girl07MEg7ox2jjz6ucyb6SGHB7M4LKipWFBsnwXTem4UW3zbMf5iYxXx9He9B-HCy95gBrI"/>
+</div>
+<nav class="hidden md:flex items-center space-x-12">
+<div class="flex items-center gap-4 group">
+<span class="text-[10px] font-bold text-accent border border-accent rounded-full w-5 h-5 flex items-center justify-center">1</span>
+<span class="text-xs font-bold uppercase tracking-[0.2em] text-accent">Entradas</span>
+</div>
+<div class="h-[1px] w-12 bg-border"></div>
+<div class="flex items-center gap-4 group">
+<span class="text-[10px] font-bold bg-accent text-black rounded-full w-5 h-5 flex items-center justify-center">2</span>
+<span class="text-xs font-bold uppercase tracking-[0.2em] text-white">Pago</span>
+</div>
+<div class="h-[1px] w-12 bg-border"></div>
+<div class="flex items-center gap-4 opacity-30">
+<span class="text-[10px] font-bold border border-white rounded-full w-5 h-5 flex items-center justify-center text-white">3</span>
+<span class="text-xs font-bold uppercase tracking-[0.2em] text-white">Confirmación</span>
+</div>
+</nav>
+<div class="w-10"></div>
+</div>
+</header>
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-16">
+<div class="lg:col-span-7 space-y-16">
+<section>
+<div class="flex items-baseline gap-4 mb-10">
+<h2 class="text-4xl font-display font-extrabold uppercase tracking-tighter italic">Información <span class="text-accent">/</span> Contacto</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<div class="space-y-3">
+<label class="block text-[10px] font-bold uppercase tracking-widest text-zinc-500">Nombre Completo</label>
+<input class="w-full bg-transparent border-border focus:border-accent focus:ring-0 text-white placeholder:text-zinc-700 py-4 px-0 border-t-0 border-l-0 border-r-0 border-b-2 transition-colors" placeholder="JUAN PEREZ" type="text"/>
+</div>
+<div class="space-y-3">
+<label class="block text-[10px] font-bold uppercase tracking-widest text-zinc-500">Correo Electrónico</label>
+<input class="w-full bg-transparent border-border focus:border-accent focus:ring-0 text-white placeholder:text-zinc-700 py-4 px-0 border-t-0 border-l-0 border-r-0 border-b-2 transition-colors" placeholder="JUAN@FESTIVAL.COM" type="email"/>
+</div>
+<div class="space-y-3 md:col-span-2">
+<label class="block text-[10px] font-bold uppercase tracking-widest text-zinc-500">Teléfono Móvil</label>
+<input class="w-full bg-transparent border-border focus:border-accent focus:ring-0 text-white placeholder:text-zinc-700 py-4 px-0 border-t-0 border-l-0 border-r-0 border-b-2 transition-colors" placeholder="+34 000 000 000" type="tel"/>
+</div>
+</div>
+</section>
+<section>
+<div class="flex items-baseline gap-4 mb-10">
+<h2 class="text-4xl font-display font-extrabold uppercase tracking-tighter italic">Método <span class="text-accent">/</span> Pago</h2>
+</div>
+<div class="space-y-8">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<label class="relative group border border-border p-6 cursor-pointer hover:border-zinc-500 transition-all flex items-center justify-between bg-zinc-900/30 has-[:checked]:border-accent has-[:checked]:bg-zinc-900/80">
+<div class="flex items-center gap-4">
+<input checked="" class="h-4 w-4 text-accent border-zinc-700 focus:ring-offset-black bg-black focus:ring-accent" name="payment_method" type="radio"/>
+<div>
+<span class="block text-xs font-bold uppercase tracking-widest">Tarjeta Débito/Crédito</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-zinc-500 group-has-[:checked]:text-accent">credit_card</span>
+</label>
+<label class="relative group border border-border p-6 cursor-pointer hover:border-zinc-500 transition-all flex items-center justify-between bg-zinc-900/30 has-[:checked]:border-accent has-[:checked]:bg-zinc-900/80">
+<div class="flex items-center gap-4">
+<input class="h-4 w-4 text-accent border-zinc-700 focus:ring-offset-black bg-black focus:ring-accent" name="payment_method" type="radio"/>
+<div>
+<span class="block text-xs font-bold uppercase tracking-widest">PayPal</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-zinc-500 group-has-[:checked]:text-accent">account_balance_wallet</span>
+</label>
+</div>
+<div class="p-8 border-2 border-border bg-black space-y-8">
+<div class="space-y-3">
+<label class="block text-[10px] font-bold uppercase tracking-widest text-zinc-500">Número de Tarjeta</label>
+<div class="relative">
+<input class="w-full bg-transparent border-border focus:border-accent focus:ring-0 text-white placeholder:text-zinc-700 py-4 px-0 border-t-0 border-l-0 border-r-0 border-b-2 transition-colors" placeholder="0000 0000 0000 0000" type="text"/>
+<div class="absolute right-0 top-1/2 -translate-y-1/2 opacity-30">
+<span class="material-symbols-outlined text-2xl">credit_card</span>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-12">
+<div class="space-y-3">
+<label class="block text-[10px] font-bold uppercase tracking-widest text-zinc-500">Expiración</label>
+<input class="w-full bg-transparent border-border focus:border-accent focus:ring-0 text-white placeholder:text-zinc-700 py-4 px-0 border-t-0 border-l-0 border-r-0 border-b-2 transition-colors" placeholder="MM / AA" type="text"/>
+</div>
+<div class="space-y-3">
+<label class="block text-[10px] font-bold uppercase tracking-widest text-zinc-500">CVV</label>
+<input class="w-full bg-transparent border-border focus:border-accent focus:ring-0 text-white placeholder:text-zinc-700 py-4 px-0 border-t-0 border-l-0 border-r-0 border-b-2 transition-colors" placeholder="***" type="password"/>
+</div>
+</div>
+</div>
+</div>
+</section>
+<div class="flex items-center gap-4 py-8 border-t border-border opacity-50">
+<span class="material-symbols-outlined text-sm">lock</span>
+<p class="text-[10px] uppercase tracking-[0.2em] font-bold">Transacción encriptada • Servidores seguros 256-bit</p>
+</div>
+</div>
+<div class="lg:col-span-5">
+<div class="sticky top-28">
+<div class="relative pass-texture bg-zinc-950 border-2 border-white/10 p-1 group overflow-hidden">
+<div class="absolute -left-2 top-1/2 -translate-y-1/2 w-4 h-8 bg-black rounded-full border-r border-white/10"></div>
+<div class="absolute -right-2 top-1/2 -translate-y-1/2 w-4 h-8 bg-black rounded-full border-l border-white/10"></div>
+<div class="border border-white/10 p-8 space-y-10">
+<div class="flex items-center justify-between py-2 px-4 bg-accent/10 border border-accent/20">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-accent text-sm">bolt</span>
+<span class="text-[10px] font-bold uppercase tracking-widest text-accent">Manteniendo Reserva</span>
+</div>
+<span class="font-mono text-xl font-black text-accent">09:42</span>
+</div>
+<div class="space-y-6">
+<div class="flex gap-6">
+<div class="w-24 h-24 flex-shrink-0 bg-zinc-900 border border-border overflow-hidden grayscale contrast-125">
+<img alt="Event" class="h-full w-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC9u_gfZcUNB5gxnQSrTZdPAMMUzXFi4rz_Dd7kTfvzSzaxl6fvjk-1RA7SU0UEfu_JwOQCS3IlTddQtwaR9yEcoww8aNgHp7yuYK0fIOGz3-rTcYdzNctk-376jxXIkvcBWEsZFmeHI8wunTVh7urrWIGPI3y2edqiYpJGrADrYJfS3LqvbWpbJ-WIVNh0fdezV5b_TSVJ4qdOuvLJPEN0d14B2Raat_I8_YoCwtdeAj0kFA1L95Eu5BIyFIqCmx2Ee6y5URWcxTST"/>
+</div>
+<div class="flex flex-col justify-center">
+<h3 class="text-2xl font-display font-black uppercase leading-none italic tracking-tighter mb-2">Concierto Sinfónico de Gala</h3>
+<p class="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500">Teatro Real • Madrid</p>
+<p class="text-[10px] font-bold uppercase tracking-[0.2em] text-accent mt-1">24 Diciembre, 2024</p>
+</div>
+</div>
+</div>
+<div class="space-y-4 font-mono">
+<div class="flex justify-between items-baseline border-b border-border border-dashed pb-2">
+<span class="text-[10px] font-bold uppercase text-zinc-500 tracking-widest">Entrada General (x2)</span>
+<span class="text-sm font-bold">150.00 EUR</span>
+</div>
+<div class="flex justify-between items-baseline border-b border-border border-dashed pb-2">
+<span class="text-[10px] font-bold uppercase text-zinc-500 tracking-widest">Gastos Gestión</span>
+<span class="text-sm font-bold">04.50 EUR</span>
+</div>
+<div class="flex justify-between items-baseline border-b border-border border-dashed pb-2">
+<span class="text-[10px] font-bold uppercase text-zinc-500 tracking-widest">Impuestos</span>
+<span class="text-sm font-bold">31.50 EUR</span>
+</div>
+</div>
+<div class="pt-2 flex flex-col items-end gap-1">
+<span class="text-[10px] font-bold uppercase tracking-[0.3em] text-zinc-500">Importe Total</span>
+<div class="text-6xl font-display font-black tracking-tighter italic">
+                                186<span class="text-accent">.</span>00
+                                <span class="text-sm align-top ml-1 font-sans not-italic font-bold">€</span>
+</div>
+</div>
+<button class="w-full bg-white text-black hover:bg-accent hover:text-black font-display font-black py-6 text-lg uppercase tracking-widest transition-colors shadow-[8px_8px_0px_0px_rgba(255,77,0,0.3)] hover:shadow-none active:translate-x-1 active:translate-y-1">
+                            Autorizar Pago
+                        </button>
+<div class="flex justify-center gap-8 opacity-20 filter invert">
+<img alt="Visa" class="h-4" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBuaUhPTZcC0AB1XDDCnzfkz2aqZ-WFTz1dAjp2qWINVvCH0kC-0ANnwrYM8lyiUlUTnJZ-RUiy8Cg35Z_dy-8SH9B7pHMQtEMSPSoe35O4mNkkMXCi1V7OMUz90nFBDFHpKYB-1wx2rO_L7MEOczQCI4S7X5lUJUB9dJchyj_4-BveOfcGJLfEgmqElrTkfUrrDC3HRzC7G7l1454r66nIOrmIhofZVY7Zjt6DzsxsTRJmLANnHKdRKcYuZ35aQcVrhfWX-ewirZ_6"/>
+<img alt="Mastercard" class="h-4" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC0fb84xtNRivabrEo8Xob2h9prFkUjfyfbd1m7GomMKZW5qLlvcxp_kvh-8zvJ1KGqK_vO5sGXDdvRkZu6BcKfEq3qXfCqZsYwSoCc9cCKoKUY6RzCt2tZc36QE2nQ6W9z4nmi4wQJ_Apq2kYsgAvncyG2Mejo-ZWSZFOf1qE48QlY0c-NM__oqPTv3ti-OGLZKfEd_ghbVMWJyyoGqc6-XsbUHgAMPKwm2-E-r8dPU70hP5cwjiwEeBYIeJ39YTh5LGkdABjA_K_s"/>
+<img alt="PayPal" class="h-4" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA4KRfbMlwFvvUJf4M57slrp3Y2lMP42NR-0sNsKRSJTo_lBKgqX7xFZ22WtMpBdF6IzYeJJvfYtIr46dLSEPOvpsw79903CVcwaH1QYAz_jyDIDcUfuAWcXCxgufwjAzk9TeDAuNP1Q7it4Hlze4PDNxJ3hfd1feAB8uY4KO-5ksixdizR-q7IPWx1K4fNXU8Eb4ecCvxIqRQavoVepdNkjfKFI0BA0_k-m14FeucNzmPsug3Abe6NHUkeoKHY1ZvIqNQ8tiCTh7fl"/>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<footer class="mt-20 border-t border-border py-16 bg-zinc-950">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-12">
+<div class="flex flex-col items-center md:items-start gap-4">
+<img alt="Company Logo" class="h-6 w-auto brightness-0 invert opacity-30" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDq9lm1McAbh-O03eGFle1g-tTgIubwuQmMyDZoRExtSEQArRcCcihwc4zWPbZvGH76lFCe9mFNBFW9kaI6pcsoOee-2YLmWhv1b8G4TdvYI_V0Bq7RsQsi_hlW5r8uEaMnUtsufDEfcCkjJGlqivkWNZ5MfvuO4oT7ZpGt49hpVbGPOkzPAQxdd-m22cHfZEOaKthApmHhuohgcJU3XezTtk0M9RMRsZBqkct1t5JloO4T2RnDBM2E4WTDA0k5eRPhp0bvHwb2YoAU"/>
+<span class="text-[10px] text-zinc-600 font-bold uppercase tracking-[0.3em]">© 2024 Ticketing Premium SL // B88294022</span>
+</div>
+<div class="flex gap-12">
+<a class="text-[10px] font-bold uppercase tracking-widest text-zinc-500 hover:text-white transition-colors" href="#">Términos</a>
+<a class="text-[10px] font-bold uppercase tracking-widest text-zinc-500 hover:text-white transition-colors" href="#">Privacidad</a>
+<a class="text-[10px] font-bold uppercase tracking-widest text-zinc-500 hover:text-white transition-colors" href="#">Soporte</a>
+</div>
+</div>
+</footer>
+
+</body></html>

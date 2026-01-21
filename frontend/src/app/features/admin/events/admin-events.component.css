@@ -1,82 +1,112 @@
-/* Custom Checkbox - Orange Square Style */
-.custom-checkbox {
-  appearance: none;
-  background-color: transparent;
-  margin: 0;
-  font: inherit;
-  color: currentColor;
-  width: 1.25em;
-  height: 1.25em;
-  border: 2px solid #55423a;
-  border-radius: 0.15em;
-  transform: translateY(-0.075em);
-  display: grid;
-  place-content: center;
-  cursor: pointer;
+:host {
+  display: block;
+  font-family: 'Space Mono', monospace;
+  background: #000000;
 }
 
-.custom-checkbox::before {
-  content: "";
-  width: 0.65em;
-  height: 0.65em;
-  transform: scale(0);
-  transition: 120ms transform ease-in-out;
-  box-shadow: inset 1em 1em #FF4D00;
-  background-color: CanvasText;
-  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+/* Brutalist Typography */
+.font-brutal-sans {
+  font-family: 'Archivo Black', sans-serif;
 }
 
-.custom-checkbox:checked::before {
-  transform: scale(1);
+.font-brutal-serif {
+  font-family: 'Newsreader', serif;
 }
 
-.custom-checkbox:checked {
-  border-color: #FF4D00;
-  background-color: rgba(255, 77, 0, 0.1);
+.font-brutal-mono {
+  font-family: 'Space Mono', monospace;
 }
 
-/* Glow Badge Effect */
-.glow-badge {
-  box-shadow: 0 0 12px rgba(255, 77, 0, 0.3);
+/* Brutalist Colors */
+.bg-brutal-black {
+  background-color: #000000;
 }
 
-.shadow-glow-orange {
-  box-shadow: 0 0 15px rgba(255, 77, 0, 0.4);
+.bg-brutal-white {
+  background-color: #ffffff;
 }
 
-/* Material Symbols Override */
+.text-brutal-white {
+  color: #ffffff;
+}
+
+.border-brutal-white {
+  border-color: #ffffff;
+}
+
+/* Border Widths */
+.border-5 {
+  border-width: 5px;
+}
+
+.border-t-5 {
+  border-top-width: 5px;
+}
+
+.border-b-5 {
+  border-bottom-width: 5px;
+}
+
+.border-l-5 {
+  border-left-width: 5px;
+}
+
+.border-r-5 {
+  border-right-width: 5px;
+}
+
+.divide-y-5 > * + * {
+  border-top-width: 5px;
+}
+
+/* Massive Text Effect */
+.massive-text {
+  line-height: 0.8;
+  letter-spacing: -0.05em;
+}
+
+/* Halftone Effect */
+.halftone {
+  position: relative;
+  overflow: hidden;
+}
+
+.halftone::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, #000 20%, transparent 20%);
+  background-size: 3px 3px;
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+/* Torn Sticker Effect */
+.torn-sticker {
+  position: relative;
+  background: #ff4d00;
+  clip-path: polygon(2% 5%, 98% 2%, 100% 95%, 95% 100%, 5% 98%, 0% 90%);
+}
+
+/* Barcode Pattern */
+.barcode {
+  background: repeating-linear-gradient(
+    90deg,
+    currentColor,
+    currentColor 2px,
+    transparent 2px,
+    transparent 4px
+  );
+}
+
+/* Material Symbols */
 .material-symbols-outlined {
-  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  font-variation-settings: 'FILL' 1, 'wght' 700, 'GRAD' 0, 'opsz' 48;
 }
 
-/* Table Enhancements */
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-thead th {
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-tbody tr {
-  transition: background-color 0.2s ease;
-}
-
-tbody tr:hover {
-  background-color: rgba(255, 255, 255, 0.03);
-}
-
-/* Responsive adjustments */
+/* Responsive Typography */
 @media (max-width: 768px) {
-  .size-12 {
-    width: 2.5rem;
-    height: 2.5rem;
-  }
-  
-  .text-5xl {
-    font-size: 2.5rem;
+  .massive-text {
+    font-size: 12vw !important;
   }
 }
