@@ -17,11 +17,30 @@ export class EventFiltersComponent implements OnInit, OnDestroy {
   searchQuery = '';
   location = '';
   selectedCategory = 'All';
-  priceMax = 500;
+  priceMax = 750000; // Precio máximo en COP
   dateFrom = '';
 
   // Available categories
-  categories = ['All', 'Music', 'Arts & Theater', 'Sports', 'Technology', 'Business'];
+  categories = [
+    'All',
+    'Concierto',
+    'Deportes',
+    'Teatro',
+    'Cine',
+    'Comedia',
+    'Musical',
+    'Festival',
+    'Cultural',
+    'Recreativo',
+    'Stand-Up Comedy',
+    'Podcast',
+    'Circo',
+    'Feria',
+    'Turismo',
+    'Acción Extremo',
+    'Inmersiones a los centros de experiencias',
+    'Comfama'
+  ];
 
   ngOnInit(): void {
     // Initialize from service filters if they exist
@@ -41,6 +60,8 @@ export class EventFiltersComponent implements OnInit, OnDestroy {
       searchQuery: this.searchQuery || undefined,
       location: this.location || undefined,
       category: this.selectedCategory && this.selectedCategory !== 'All' ? this.selectedCategory : undefined,
+      priceMax: this.priceMax || undefined,
+      dateFrom: this.dateFrom || undefined,
     };
     this.eventService.updateFilters(filters);
   }
@@ -49,7 +70,7 @@ export class EventFiltersComponent implements OnInit, OnDestroy {
     this.searchQuery = '';
     this.location = '';
     this.selectedCategory = 'All';
-    this.priceMax = 500;
+    this.priceMax = 150000;
     this.dateFrom = '';
     this.eventService.clearFilters();
   }

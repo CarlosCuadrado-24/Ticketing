@@ -16,10 +16,27 @@ export class EventCard {
   @Input() event!: Event;
 
   getMinPrice(): number {
-    if (!this.event.ticketTypes || this.event.ticketTypes.length === 0) {
-      return 0;
+    // Primero intentar con ticketConfigurations (datos reales del backend)
+    if (this.event.ticketConfigurations && this.event.ticketConfigurations.length > 0) {
+      const prices = this.event.ticketConfigurations
+        .map((config) => Number(config.price))
+        .filter((price) => price > 0);
+      if (prices.length > 0) {
+        return Math.min(...prices);
+      }
     }
-    return Math.min(...this.event.ticketTypes.map((t) => Number(t.price)));
+    
+    // Fallback a ticketTypes si existe
+    if (this.event.ticketTypes && this.event.ticketTypes.length > 0) {
+      const prices = this.event.ticketTypes
+        .map((t) => Number(t.price))
+        .filter((price) => price > 0);
+      if (prices.length > 0) {
+        return Math.min(...prices);
+      }
+    }
+    
+    return 0;
   }
 
   getTotalAvailableTickets(): number {

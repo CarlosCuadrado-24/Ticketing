@@ -70,7 +70,12 @@ export class EventDetail implements OnInit, OnDestroy {
         console.log('%c=== EVENT LOADED ===', 'color: green; font-size: 14px; font-weight: bold;');
         console.log('ID:', eventData.id);
         console.log('Name:', eventData.name);
+        console.log('Description:', eventData.description);
+        console.log('Start Time:', eventData.startTime);
+        console.log('End Time:', eventData.endTime);
+        console.log('Date:', eventData.date);
         console.log('ticketConfigurations:', eventData.ticketConfigurations);
+        console.log('Full Event Object:', eventData);
         // Clamp selected quantities if new availability is lower
         this.clampSelectedQuantities();
       }
@@ -341,14 +346,29 @@ export class EventDetail implements OnInit, OnDestroy {
 
   getDoorsTime(): string {
     const event = this.event();
-    if (!event?.startTime) {
+    if (!event?.date) {
       return '19:00';
     }
     
-    const parts = event.startTime.split(':');
-    const hour = parseInt(parts[0]);
-    const doorsHour = hour - 1;
+    // Extraer hora del campo date en formato ISO
+    const eventDate = new Date(event.date);
+    const hours = eventDate.getHours().toString().padStart(2, '0');
+    const minutes = eventDate.getMinutes().toString().padStart(2, '0');
     
-    return `${doorsHour.toString().padStart(2, '0')}:${parts[1] || '00'}`;
+    return `${hours}:${minutes}`;
+  }
+
+  getStartTime(): string {
+    const event = this.event();
+    if (!event?.date) {
+      return '20:00';
+    }
+    
+    // Extraer hora del campo date y agregar 1 hora
+    const eventDate = new Date(event.date);
+    const startHour = (eventDate.getHours() + 1) % 24;
+    const minutes = eventDate.getMinutes().toString().padStart(2, '0');
+    
+    return `${startHour.toString().padStart(2, '0')}:${minutes}`;
   }
 }

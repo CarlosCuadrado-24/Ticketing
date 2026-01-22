@@ -10,6 +10,7 @@ export interface EventFilters {
   dateTo?: string;
   location?: string;
   searchQuery?: string;
+  priceMax?: number;
 }
 
 @Injectable({
@@ -41,6 +42,7 @@ export class EventService {
     const filters = this._filters();
 
     return events.filter((event) => {
+      // Filtro de búsqueda por texto
       if (filters.searchQuery) {
         const query = filters.searchQuery.toLowerCase();
         if (
@@ -51,24 +53,67 @@ export class EventService {
         }
       }
 
-      if (filters.category && event.id) {
-        // TODO: Add category filtering when Event model includes category
+      // Filtro de categoría
+      if (filters.category && event.eventDetails && event.eventDetails.length > 0) {
+        const eventCategory = event.eventDetails[0].category;
+        if (eventCategory && !eventCategory.toLowerCase().includes(filters.category.toLowerCase())) {
+          return false;
+        }
       }
 
+      // Filtro de ubicación
       if (filters.location) {
         if (!event.location.toLowerCase().includes(filters.location.toLowerCase())) {
           return false;
         }
       }
 
+      // Filtro de fecha desde
       if (filters.dateFrom) {
-        if (new Date(event.date) < new Date(filters.dateFrom)) {
+        const eventDate = new Date(event.date);
+        const filterDate = new Date(filters.dateFrom);
+        // Comparar solo las fechas sin hora
+        eventDate.setHours(0, 0, 0, 0);
+        filterDate.setHours(0, 0, 0, 0);
+        if (eventDate < filterDate) {
           return false;
         }
       }
 
+      // Filtro de fecha hasta
       if (filters.dateTo) {
-        if (new Date(event.date) > new Date(filters.dateTo)) {
+        const eventDate = new Date(event.date);
+        const filterDate = new Date(filters.dateTo);
+        eventDate.setHours(0, 0, 0, 0);
+        filterDate.setHours(0, 0, 0, 0);
+        if (eventDate > filterDate) {
+          return false;
+        }
+      }
+
+      // Filtro de precio máximo
+      if (filters.priceMax !== undefined && filters.priceMax > 0) {
+        let minPrice = 0;
+        
+        // Obtener precio mínimo del evento
+        if (event.ticketConfigurations && event.ticketConfigurations.length > 0) {
+          const prices = event.ticketConfigurations
+            .map((config) => Number(config.price))
+            .filter((price) => price > 0);
+          if (prices.length > 0) {
+            minPrice = Math.min(...prices);
+          }
+        } else if (event.ticketTypes && event.ticketTypes.length > 0) {
+          const prices = event.ticketTypes
+            .map((t) => Number(t.price))
+            .filter((price) => price > 0);
+          if (prices.length > 0) {
+            minPrice = Math.min(...prices);
+          }
+        }
+        
+        // Filtrar si el precio mínimo supera el máximo del filtro
+        if (minPrice > filters.priceMax) {
           return false;
         }
       }

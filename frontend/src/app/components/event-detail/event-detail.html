@@ -38,7 +38,7 @@
           <div class="border-8 border-white p-6 -ml-16 bg-black relative z-20">
             <div class="technical-mono mb-2">TIMESTAMP.STAMP</div>
             <p class="font-brutal text-6xl">{{ event()!.date | dateFormat: 'short' }}</p>
-            <p class="font-mono text-xl mt-2 tracking-widest">{{ event()!.startTime || '20:00' }}_HRS</p>
+            <p class="font-mono text-xl mt-2 tracking-widest">{{ getDoorsTime() }}_HRS</p>
           </div>
 
           <div class="space-y-8">
@@ -109,7 +109,11 @@
           <h2 class="font-brutal text-7xl tracking-tighter border-b-8 border-white pb-4 inline-block">THE_CORE</h2>
           <div class="font-serif text-3xl leading-[1.1] text-white space-y-12 italic">
             <p>
-              <span class="bg-white text-black not-italic px-2">EXPERIENCIA ÚNICA.</span> {{ event()!.description || 'Un evento inolvidable que transformará tu percepción del entretenimiento.' }}
+              <span class="bg-white text-black not-italic px-2">EXPERIENCIA ÚNICA.</span> @if (event()!.description) {
+                Un evento inolvidable. {{ event()!.description }}
+              } @else {
+                Un evento inolvidable que transformará tu percepción del entretenimiento.
+              }
             </p>
             @if (event()?.eventDetails?.[0]) {
               <p class="font-industrial text-base not-italic opacity-60 leading-relaxed uppercase">
@@ -148,7 +152,7 @@
                 <span class="font-mono text-6xl text-primary">02</span>
                 <div class="pb-1">
                   <p class="technical-mono">STATUS: START</p>
-                  <h4 class="text-4xl font-brutal uppercase">{{ event()!.startTime || '20:00' }} HRS</h4>
+                  <h4 class="text-4xl font-brutal uppercase">{{ getStartTime() }} HRS</h4>
                 </div>
               </div>
               <div class="font-mono text-6xl pr-4 opacity-0 group-hover:opacity-100">→</div>

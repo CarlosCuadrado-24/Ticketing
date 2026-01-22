@@ -33,19 +33,19 @@
   <div class="space-y-8 pt-8 border-t border-zinc-800">
     <!-- Price Range -->
     <div class="mono">
-      <p class="text-xs text-primary mb-4 font-bold">PRICE_THROTTLE [0 - {{ priceMax }}]</p>
+      <p class="text-xs text-primary mb-4 font-bold">PRICE_THROTTLE [0 - {{ (priceMax / 1000).toFixed(0) }}K]</p>
       <input 
         [(ngModel)]="priceMax"
         (ngModelChange)="applyFilters()"
         class="w-full h-8 bg-zinc-900 border-2 border-white appearance-none cursor-crosshair accent-primary" 
         type="range"
         min="0"
-        max="1000"
-        step="50"
+        max="150000"
+        step="5000"
       />
       <div class="flex justify-between mt-2 text-xs text-zinc-500">
         <span>$0</span>
-        <span>${{ priceMax }}+</span>
+        <span>${{ (priceMax / 1000).toFixed(0) }}K+</span>
       </div>
     </div>
     
