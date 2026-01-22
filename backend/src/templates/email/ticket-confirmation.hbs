@@ -16,11 +16,17 @@
         body {
             font-family: 'Space Mono', monospace;
             line-height: 1.6;
-            color: #fff;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .main-wrapper {
             background-color: #000;
-            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj48ZmlsdGVyIGlkPSJhIj48ZmVUdXJidWxlbmNlIGJhc2VGcmVxdWVuY3k9Ii43NSIgc3RpdGNoVGlsZXM9InN0aXRjaCIgdHlwZT0iZnJhY3RhbE5vaXNlIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbHRlcj0idXJsKCNhKSIgb3BhY2l0eT0iLjA1Ii8+PC9zdmc+');
+            background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuD-b1Si7ddB12sSufK8ZpTgMwdLtzudEL2px5MHb75DpkrNBTJQJUCiMH0SlxMmuIeBnS7E4T53Gd36sdXJpRf70DEZDm4_PwVL7y3AGYUqfQPGCMcZmLW2K7Pmi2x3VgOYVpJLY98BBbTVDZXl7N3bIybiYGgkP1FhDQN7HwYGJBOov7yPRlYWrWAy02wKRF-ZcdYuiDkuNtCQrwCxbtznbppoeI3cwATeAjOg7e3OFn9UK8FR2Cpls_Aa1s7TGyhWPgwDhyN5OTbk');
             background-repeat: repeat;
+            color: #fff;
             padding: 20px 10px;
+            min-height: 100vh;
         }
         
         .email-container {
@@ -458,9 +464,10 @@
     </style>
 </head>
 <body>
-    <div class="email-container">
-        <!-- Header -->
-        <header class="header">
+    <div class="main-wrapper">
+        <div class="email-container">
+            <!-- Header -->
+            <header class="header">
             <div class="ref-id">REF_ID: {{orderId}}</div>
             <span class="check-icon">✓</span>
             <h1>¡PAGO EXITOSO!</h1>
@@ -580,6 +587,7 @@
             </div>
             <div class="footer-arrow">⬇</div>
         </footer>
+        </div>
     </div>
 </body>
 </html>
