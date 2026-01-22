@@ -87,10 +87,10 @@ export class EventFormComponent implements OnInit {
         next: (event) => {
           this.populateForm(event);
         },
-        error: (err) => {
-          console.error('Error loading event:', err);
-          this.toastService.error('Error al cargar el evento');
-        },
+        error: (err: any) => {
+            console.error('Error loading event:', err);
+            this.toastService.error('Error al cargar el evento');
+          },
       });
     }
   }
@@ -196,6 +196,35 @@ export class EventFormComponent implements OnInit {
       return;
     }
 
+    // If editing and no image selected, send JSON body so backend validation (UpdateEventDto) works
+    if (this.isEditing() && !this.selectedImage) {
+      // Build eventDetails without nulls (class-validator treats null as present)
+      const eventDetails: any[] = [
+        {
+          category: this.form.get('category')?.value || 'General',
+          seating: 'General Admission',
+          capacity: ticketConfigurations.reduce((total, config) => total + config.quantity, 0),
+          foodSale: false,
+          liquorSale: false,
+          reducedMobilityAccess: false,
+          pregnantAccess: false,
+        },
+      ];
+
+      const payload: any = {
+        name: this.form.get('name')?.value,
+        date: this.form.get('date')?.value,
+        location: this.form.get('location')?.value,
+        venueName: this.form.get('venueName')?.value,
+        ticketConfigurations,
+        eventDetails,
+      };
+
+      const request$ = this.adminService.updateEvent(this.route.snapshot.paramMap.get('id')!, payload);
+      this.executeRequest(request$);
+      return;
+    }
+
     formData.append('ticketConfigurations', JSON.stringify(ticketConfigurations));
 
     // Add event details
@@ -221,19 +250,7 @@ export class EventFormComponent implements OnInit {
       ? this.adminService.updateEvent(this.route.snapshot.paramMap.get('id')!, formData)
       : this.adminService.createEvent(formData);
 
-    request$.subscribe({
-      next: () => {
-        this.toastService.success(
-          this.isEditing() ? 'Evento actualizado correctamente' : 'Evento creado correctamente',
-        );
-        this.router.navigate(['/admin/events']);
-      },
-      error: (err) => {
-        console.error('Error saving event:', err);
-        this.toastService.error('Error al guardar el evento');
-        this.loading.set(false);
-      },
-    });
+    this.executeRequest(request$);
   }
 
   onCancel() {
@@ -282,6 +299,22 @@ export class EventFormComponent implements OnInit {
     if (imageInput) {
       imageInput.value = '';
     }
+  }
+
+  private executeRequest(request$: any) {
+    request$.subscribe({
+      next: () => {
+        this.toastService.success(
+          this.isEditing() ? 'Evento actualizado correctamente' : 'Evento creado correctamente',
+        );
+        this.router.navigate(['/admin/events']);
+      },
+      error: (err: any) => {
+        console.error('Error saving event:', err);
+        this.toastService.error('Error al guardar el evento');
+        this.loading.set(false);
+      },
+    });
   }
 }
 

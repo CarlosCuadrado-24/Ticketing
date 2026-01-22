@@ -188,7 +188,7 @@ export class MyTicketsComponent implements OnInit {
             this.isLoading.set(false);
             this.showAuthWarning.set(false);
           },
-          error: (err) => {
+          error: (err: any) => {
             console.error('[MyTickets] Error loading events:', err);
             // Still show tickets without event enrichment
             const tickets = this.mapBackendTickets(backendTickets);

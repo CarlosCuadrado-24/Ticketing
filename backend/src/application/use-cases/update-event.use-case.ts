@@ -52,16 +52,20 @@ export class UpdateEventUseCase {
       throw new Error("Event not found");
     }
 
-    // Create updated ticket configurations
-    const ticketConfigurations = input.ticketConfigurations.map(
-      (config) =>
-        new TicketConfiguration(
-          config.type,
-          Money.create(config.price, config.currency),
-          config.quantity,
-          config.quantity, // Reset available quantity to total when updating
-        ),
-    );
+    // Preserve existing ticket configuration IDs to ensure UPDATE instead of INSERT
+    const ticketConfigurations = input.ticketConfigurations.map((config) => {
+      const existingConfig = existingEvent.ticketConfigurations.find(
+        (ec) => ec.type === config.type,
+      );
+
+      return new TicketConfiguration(
+        config.type,
+        Money.create(config.price, config.currency),
+        config.quantity,
+        config.quantity,
+        existingConfig?.id,
+      );
+    });
 
     // Create updated event entity
     const updatedEvent = new Event(

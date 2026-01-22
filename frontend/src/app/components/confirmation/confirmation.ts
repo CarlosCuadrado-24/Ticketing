@@ -179,7 +179,7 @@ export class Confirmation implements OnInit {
           },
         });
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('[Confirmation] Error loading tickets (by ids):', err);
         this._error.set('No se pudieron cargar tus entradas');
         this._isLoading.set(false);
@@ -259,7 +259,7 @@ export class Confirmation implements OnInit {
             this._tickets.set(enriched);
             this._isLoading.set(false);
           },
-          error: (err) => {
+          error: (err: any) => {
             console.error('Error loading event details:', err);
             // Still show tickets without event details
             this._tickets.set(ticketsToShow as EnrichedTicket[]);
@@ -267,7 +267,7 @@ export class Confirmation implements OnInit {
           },
         });
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('[Confirmation] Error loading tickets:', err);
         console.error('[Confirmation] Error status:', err.status);
         console.error('[Confirmation] Error details:', err.error);
@@ -361,7 +361,7 @@ export class Confirmation implements OnInit {
           },
         });
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('[Confirmation] Error loading tickets (order):', err);
         this._error.set('Unable to load your tickets');
         this._isLoading.set(false);

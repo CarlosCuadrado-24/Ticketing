@@ -65,7 +65,7 @@ export class AdminEventsComponent implements OnInit {
           this.filteredEvents.set(loadedEvents);
           resolve();
         },
-        error: (err) => {
+        error: (err: any) => {
           console.warn('[AdminEvents] Error loading events');
           reject(err);
         },
@@ -101,7 +101,7 @@ export class AdminEventsComponent implements OnInit {
               console.log(`[AdminEvents] Stats loaded for event ${event.id}`);
               resolve();
             },
-            error: (error) => {
+            error: (error: any) => {
               console.warn(`Error loading stats for event ${event.id}`);
               resolve();
             },

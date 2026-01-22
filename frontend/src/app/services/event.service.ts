@@ -92,7 +92,7 @@ export class EventService {
         // Emit the events for subscribers waiting for the data
         this.eventsLoaded$.next(data);
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('Error loading events:', err);
         this._isLoading.set(false);
         this.eventsLoaded$.error(err);
@@ -113,7 +113,7 @@ export class EventService {
           this.subscribeToEventUpdates(data.id);
         }
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('Error loading event:', err);
         this._isLoading.set(false);
       },
@@ -173,7 +173,7 @@ export class EventService {
               // Force a new object reference to ensure change detection
               this._selectedEvent.set({ ...data });
             },
-            error: (err) => {
+            error: (err: any) => {
               console.error('[EventService] Error refetching event after WebSocket update:', err);
             },
           });
@@ -220,7 +220,7 @@ export class EventService {
           observer.next();
           observer.complete();
         },
-        error: (err) => {
+        error: (err: any) => {
           console.error('[EventService] Error deleting event:', err);
           observer.error(err);
         },

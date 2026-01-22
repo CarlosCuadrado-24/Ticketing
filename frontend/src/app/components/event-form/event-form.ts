@@ -112,7 +112,7 @@ export class EventForm implements OnInit {
         this.eventService.loadEvents();
         this.router.navigate(['/']);
       },
-      error: (err) => {
+      error: (err: any) => {
         this.isLoading = false;
         console.error('Error saving event:', err);
         this.toastService.show('Error al guardar el evento. Inténtalo nuevamente.', 'error');
@@ -192,7 +192,7 @@ export class EventForm implements OnInit {
         }
         this.isLoading = false;
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('Error loading event:', err);
         this.isLoading = false;
       },

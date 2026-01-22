@@ -534,7 +534,7 @@ export class EventController {
   })
   async update(
     @Param("id") id: string,
-    @Body() updateEventDto: UpdateEventDto,
+    @Body() body: any,
     @UploadedFile() file?: Express.Multer.File,
   ): Promise<EventResponse> {
     try {
@@ -559,21 +559,32 @@ export class EventController {
         imageUrl = await this.minioService.uploadFile(file);
       }
 
-      // Merge existing data with updates
-      const eventDate = updateEventDto.date
-        ? new Date(updateEventDto.date)
-        : existingEvent.date;
-      const name = updateEventDto.name ?? existingEvent.name;
-      const location = updateEventDto.location ?? existingEvent.location;
-      const venueName = updateEventDto.venueName ?? existingEvent.venueName;
-      const ticketConfigurations =
-        updateEventDto.ticketConfigurations ??
-        existingEvent.ticketConfigurations.map((config) => ({
-          type: config.type,
-          price: config.price.amount,
-          currency: config.price.currency,
-          quantity: config.totalQuantity,
-        }));
+      // Merge existing data with updates (body may come from multipart/form-data)
+      const eventDate = body.date ? new Date(body.date) : existingEvent.date;
+      const name = body.name ?? existingEvent.name;
+      const location = body.location ?? existingEvent.location;
+      const venueName = body.venueName ?? existingEvent.venueName;
+
+      // Parse ticketConfigurations when provided as string (multipart) or object
+      let ticketConfigurations: any;
+      try {
+        ticketConfigurations = body.ticketConfigurations
+          ? typeof body.ticketConfigurations === 'string'
+            ? JSON.parse(body.ticketConfigurations)
+            : body.ticketConfigurations
+          : existingEvent.ticketConfigurations.map((config) => ({
+              type: config.type,
+              price: config.price.amount,
+              currency: config.price.currency,
+              quantity: config.totalQuantity,
+            }));
+      } catch (err) {
+        throw new BadRequestException('Invalid ticketConfigurations JSON format');
+      }
+
+      if (body.ticketConfigurations && (!Array.isArray(ticketConfigurations) || ticketConfigurations.length === 0)) {
+        throw new BadRequestException('At least one ticket configuration is required');
+      }
 
       // Execute use case
       const event = await this.updateEventUseCase.execute({
