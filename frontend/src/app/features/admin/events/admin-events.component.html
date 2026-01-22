@@ -122,13 +122,6 @@
                   <span class="material-symbols-outlined text-5xl">edit_note</span>
                 </button>
                 <button 
-                  [routerLink]="['/admin/events', event.id]"
-                  class="hover:text-primary transform hover:scale-125 transition-all"
-                  title="ANALÍTICAS"
-                >
-                  <span class="material-symbols-outlined text-5xl">bar_chart_4_bars</span>
-                </button>
-                <button 
                   (click)="deleteEvent(event.id.toString(), event.name)"
                   class="text-red-600 hover:text-red-400 transform hover:scale-125 transition-all"
                   title="ELIMINAR"
