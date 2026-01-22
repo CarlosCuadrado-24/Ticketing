@@ -60,14 +60,14 @@ services:
       MINIO_ACCESS_KEY: minioadmin
       MINIO_SECRET_KEY: minioadmin123
       MINIO_EXTERNAL_URL: http://127.0.0.1:9001
-      # Email Configuration (Gmail SMTP)
+      # Email Configuration - Gmail SMTP
       SMTP_HOST: smtp.gmail.com
       SMTP_PORT: 587
       SMTP_SECURE: false
-      SMTP_USER: rapidoysabrosocol23@gmail.com
-      SMTP_PASSWORD: cvpidcmqaoxbfasd
+      SMTP_USER: notificationnoreply90@gmail.com
+      SMTP_PASSWORD: rhdpzslvhlgfkhcl
       FROM_NAME: TicketSales
-      FROM_EMAIL: rapidoysabrosocol23@gmail.com
+      FROM_EMAIL: noreply@ticketsales.com
       SUPPORT_EMAIL: soporte@ticketsales.com
       COMPANY_NAME: TicketSales
       FRONTEND_URL: http://localhost:4200
