@@ -109,11 +109,7 @@
           <h2 class="font-brutal text-7xl tracking-tighter border-b-8 border-white pb-4 inline-block">THE_CORE</h2>
           <div class="font-serif text-3xl leading-[1.1] text-white space-y-12 italic">
             <p>
-              <span class="bg-white text-black not-italic px-2">EXPERIENCIA ÚNICA.</span> @if (event()!.description) {
-                Un evento inolvidable. {{ event()!.description }}
-              } @else {
-                Un evento inolvidable que transformará tu percepción del entretenimiento.
-              }
+              <span class="bg-white text-black not-italic px-2">EXPERIENCIA ÚNICA.</span> {{ event()!.description || 'Un evento inolvidable que transformará tu percepción del entretenimiento.' }}
             </p>
             @if (event()?.eventDetails?.[0]) {
               <p class="font-industrial text-base not-italic opacity-60 leading-relaxed uppercase">

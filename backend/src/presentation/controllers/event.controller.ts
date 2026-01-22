@@ -850,6 +850,7 @@ export class EventController {
       location: event.location,
       venueName: event.venueName,
       imageUrl: event.imageUrl || null,
+      description: event.description || null,
       createdBy: event.createdBy || null,
       organizer,
       ticketConfigurations: event.ticketConfigurations.map((config) => ({
@@ -875,6 +876,7 @@ interface EventResponse {
   location: string;
   venueName: string;
   imageUrl: string | null;
+  description: string | null;
   createdBy: string | null;
   organizer: {
     id: string;
