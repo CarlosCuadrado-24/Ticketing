@@ -374,18 +374,21 @@ export class TypeOrmTicketRepository implements ITicketRepository {
   > {
     const result = await this.repository
       .createQueryBuilder("ticket")
+      .leftJoin("events", "event", "event.id = ticket.eventId")
       .select("ticket.eventId", "eventId")
+      .addSelect("event.name", "eventName")
       .addSelect("COUNT(*)", "ticketsSold")
       .addSelect("SUM(ticket.price)", "revenue")
       .where("ticket.status = :status", { status: TicketStatus.PAID })
       .groupBy("ticket.eventId")
+      .addGroupBy("event.name")
       .orderBy("COUNT(*)", "DESC")
       .limit(limit)
       .getRawMany();
 
     return result.map((row) => ({
       eventId: row.eventId,
-      eventName: `Event ${row.eventId}`, // TODO: Join with event table to get actual name
+      eventName: row.eventName || `Event ${row.eventId}`,
       ticketsSold: parseInt(row.ticketsSold, 10),
       revenue: parseFloat(row.revenue || "0"),
     }));

@@ -32,7 +32,6 @@
         <div class="stat-content">
           <h3>{{ stats()!.overview.totalUsers }}</h3>
           <p>Total Usuarios</p>
-          <span class="stat-trend">+12% vs mes anterior</span>
         </div>
       </div>
 
@@ -43,7 +42,6 @@
         <div class="stat-content">
           <h3>{{ stats()!.overview.totalEvents }}</h3>
           <p>Total Eventos</p>
-          <span class="stat-trend">{{ stats()!.overview.totalEvents > 5 ? '+' : '' }}{{ stats()!.overview.totalEvents - 3 }} este mes</span>
         </div>
       </div>
 
@@ -54,7 +52,6 @@
         <div class="stat-content">
           <h3>{{ stats()!.overview.totalTicketsSold }}</h3>
           <p>Tickets Vendidos</p>
-          <span class="stat-trend">+{{ ((stats()!.overview.totalTicketsSold / 10) | number: '1.0-0') }}% esta semana</span>
         </div>
       </div>
 
@@ -65,7 +62,6 @@
         <div class="stat-content">
           <h3>{{ stats()!.overview.totalRevenue | currencyFormat }}</h3>
           <p>Ingresos Totales</p>
-          <span class="stat-trend">+18% vs mes anterior</span>
         </div>
       </div>
 
@@ -76,37 +72,12 @@
         <div class="stat-content">
           <h3>{{ stats()!.overview.activeReservations }}</h3>
           <p>Reservas Activas</p>
-          <span class="stat-trend">Tiempo prom: 8 min</span>
         </div>
       </div>
     </div>
 
-    <!-- Charts Section -->
+    <!-- Top Events Chart -->
     <div class="charts-section">
-      <div class="chart-container large">
-        <div class="chart-header">
-          <h3>
-            <span class="material-symbols-outlined">trending_up</span>
-            Ventas de Tickets (Últimos 6 Meses)
-          </h3>
-        </div>
-        <div class="chart-body">
-          <canvas #salesChart></canvas>
-        </div>
-      </div>
-
-      <div class="chart-container large">
-        <div class="chart-header">
-          <h3>
-            <span class="material-symbols-outlined">attach_money</span>
-            Ingresos Mensuales
-          </h3>
-        </div>
-        <div class="chart-body">
-          <canvas #revenueChart></canvas>
-        </div>
-      </div>
-
       <div class="chart-container medium">
         <div class="chart-header">
           <h3>
@@ -122,12 +93,12 @@
       <div class="chart-container medium">
         <div class="chart-header">
           <h3>
-            <span class="material-symbols-outlined">pie_chart</span>
-            Distribución de Tickets
+            <span class="material-symbols-outlined">bar_chart</span>
+            Eventos Creados por Mes
           </h3>
         </div>
         <div class="chart-body">
-          <canvas #ticketsStatusChart></canvas>
+          <canvas #eventsByMonthChart></canvas>
         </div>
       </div>
     </div>
@@ -140,7 +111,6 @@
             <span class="material-symbols-outlined">event</span>
             Eventos Recientes
           </h3>
-          <button class="view-all-btn">Ver Todos</button>
         </div>
         <div class="events-list">
           @for (event of stats()!.recentEvents; track event.id) {
@@ -179,7 +149,6 @@
             <span class="material-symbols-outlined">local_fire_department</span>
             Eventos Más Vendidos
           </h3>
-          <button class="view-all-btn">Ver Todos</button>
         </div>
         <div class="top-events-list">
           @for (event of stats()!.topEvents; track event.eventName; let i = $index) {

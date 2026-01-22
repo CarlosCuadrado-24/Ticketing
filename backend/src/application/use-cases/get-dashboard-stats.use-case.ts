@@ -32,6 +32,7 @@ export class GetDashboardStatsUseCase {
       activeReservations,
       recentEvents,
       topEvents,
+      eventsByMonth,
     ] = await Promise.all([
       this.userRepository.count(),
       this.eventRepository.count(),
@@ -40,6 +41,7 @@ export class GetDashboardStatsUseCase {
       this.reservationRepository.countActive(),
       this.eventRepository.findRecent(5),
       this.ticketRepository.getTopSellingEvents(5),
+      this.eventRepository.getEventsByMonth(),
     ]);
 
     return {
@@ -52,6 +54,7 @@ export class GetDashboardStatsUseCase {
       },
       recentEvents,
       topEvents,
+      eventsByMonth,
     };
   }
 }

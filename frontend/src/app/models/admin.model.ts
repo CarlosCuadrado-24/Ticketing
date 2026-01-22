@@ -68,6 +68,7 @@ export interface DashboardStats {
     ticketsSold: number;
     revenue: number;
   }>;
+  eventsByMonth: Array<{ month: string; count: number }>;
 }
 
 export interface EventStats {
