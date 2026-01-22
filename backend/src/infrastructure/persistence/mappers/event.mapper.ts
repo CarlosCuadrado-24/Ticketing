@@ -44,6 +44,7 @@ export class EventMapper {
       ormEntity.venueName,
       ticketConfigurations,
       ormEntity.imageUrl,
+      ormEntity.description,
       details,
       ormEntity.createdBy,
     );
@@ -62,6 +63,7 @@ export class EventMapper {
     ormEntity.location = domainEvent.location;
     ormEntity.venueName = domainEvent.venueName;
     ormEntity.imageUrl = domainEvent.imageUrl;
+    ormEntity.description = domainEvent.description;
     ormEntity.createdBy = domainEvent.createdBy;
 
     // Create ticket configurations with proper relationships

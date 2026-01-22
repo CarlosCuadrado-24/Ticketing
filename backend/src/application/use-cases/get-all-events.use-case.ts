@@ -57,6 +57,7 @@ export class GetAllEventsUseCase {
           event.venueName,
           updatedConfigurations,
           event.imageUrl,
+          event.description,
           event.details,
           event.createdBy,
         );

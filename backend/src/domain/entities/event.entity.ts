@@ -16,6 +16,7 @@ export class Event {
     public readonly venueName: string,
     private _ticketConfigurations: TicketConfiguration[],
     public readonly imageUrl?: string,
+    public readonly description?: string,
     public readonly details?: any[], // EventDetails[] (puedes tipar luego)
     public readonly createdBy?: string,
   ) {}

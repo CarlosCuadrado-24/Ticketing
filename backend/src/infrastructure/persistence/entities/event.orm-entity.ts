@@ -42,6 +42,9 @@ export class EventOrmEntity {
   @Column({ type: "text", nullable: true })
   imageUrl?: string;
 
+  @Column({ type: "text", nullable: true })
+  description?: string;
+
   @Column({ type: "uuid", nullable: true, name: "created_by" })
   createdBy?: string;
 

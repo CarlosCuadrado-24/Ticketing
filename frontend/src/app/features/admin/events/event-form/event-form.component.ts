@@ -101,7 +101,7 @@ export class EventFormComponent implements OnInit {
       date: this.formatDateForInput(event.date),
       location: event.location,
       venueName: event.venueName,
-      description: event.eventDetails?.[0]?.seating || '',
+      description: event.description || '',
       category: event.eventDetails?.[0]?.category || '',
     });
 
@@ -162,6 +162,11 @@ export class EventFormComponent implements OnInit {
     formData.append('date', this.form.get('date')?.value);
     formData.append('location', this.form.get('location')?.value);
     formData.append('venueName', this.form.get('venueName')?.value);
+    
+    const description = this.form.get('description')?.value;
+    if (description) {
+      formData.append('description', description);
+    }
 
     // Build ticket configurations array
     const ticketConfigurations = [];
@@ -219,6 +224,11 @@ export class EventFormComponent implements OnInit {
         ticketConfigurations,
         eventDetails,
       };
+
+      const description = this.form.get('description')?.value;
+      if (description) {
+        payload.description = description;
+      }
 
       const request$ = this.adminService.updateEvent(this.route.snapshot.paramMap.get('id')!, payload);
       this.executeRequest(request$);

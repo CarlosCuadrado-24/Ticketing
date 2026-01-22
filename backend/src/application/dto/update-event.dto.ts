@@ -80,4 +80,8 @@ export class UpdateEventDto {
   @IsOptional()
   @IsString({ message: "Image URL must be a string" })
   imageUrl?: string;
+
+  @IsOptional()
+  @IsString({ message: "Description must be a string" })
+  description?: string;
 }

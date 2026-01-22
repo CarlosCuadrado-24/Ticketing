@@ -23,6 +23,7 @@ export interface CreateEventInput {
   location: string;
   venueName: string;
   imageUrl?: string;
+  description?: string;
   ticketConfigurations: Array<{
     type: TicketType;
     price: number;
@@ -75,6 +76,7 @@ export class CreateEventUseCase {
       input.venueName,
       ticketConfigurations,
       input.imageUrl,
+      input.description,
       input.eventDetails || [],
       input.createdBy,
     );

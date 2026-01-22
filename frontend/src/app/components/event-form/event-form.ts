@@ -73,6 +73,11 @@ export class EventForm implements OnInit {
     formData.append('date', new Date(this.form.get('date')?.value).toISOString());
     formData.append('location', this.form.get('location')?.value);
     formData.append('venueName', this.form.get('venueName')?.value || '');
+    
+    const description = this.form.get('description')?.value;
+    if (description) {
+      formData.append('description', description);
+    }
 
     // Add event details
     const eventDetails = {
@@ -131,6 +136,7 @@ export class EventForm implements OnInit {
       date: ['', Validators.required],
       location: ['', [Validators.required, Validators.minLength(3)]],
       venueName: ['', [Validators.required, Validators.minLength(3)]],
+      description: [''],
       category: [EventCategory.CUALQUIER_CATEGORIA, Validators.required],
       minAge: [null],
       seating: [''],
@@ -168,6 +174,7 @@ export class EventForm implements OnInit {
           date: new Date(event.date).toISOString().slice(0, 16),
           location: event.location,
           venueName: event.venueName || '',
+          description: event.description || '',
           category: event.eventDetails?.[0]?.category || EventCategory.CUALQUIER_CATEGORIA,
           minAge: event.eventDetails?.[0]?.minAge || null,
           seating: event.eventDetails?.[0]?.seating || '',

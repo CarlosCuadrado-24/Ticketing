@@ -19,6 +19,7 @@ export interface UpdateEventInput {
   location: string;
   venueName: string;
   imageUrl?: string;
+  description?: string;
   ticketConfigurations: Array<{
     type: TicketType;
     price: number;
@@ -76,6 +77,7 @@ export class UpdateEventUseCase {
       input.venueName,
       ticketConfigurations,
       input.imageUrl,
+      input.description,
       input.eventDetails || [],
     );
 

@@ -305,6 +305,7 @@ export class EventController {
         imageUrl,
         ticketConfigurations,
         eventDetails,
+        description: body.description,
         createdBy: req?.user?.id, // Extract user ID from JWT token
       });
 
@@ -432,6 +433,7 @@ export class EventController {
       event.venueName,
       updatedConfigurations,
       event.imageUrl,
+      event.description,
       event.details,
       event.createdBy,
     );
@@ -564,6 +566,7 @@ export class EventController {
       const name = body.name ?? existingEvent.name;
       const location = body.location ?? existingEvent.location;
       const venueName = body.venueName ?? existingEvent.venueName;
+      const description = body.description ?? existingEvent.description;
 
       // Parse ticketConfigurations when provided as string (multipart) or object
       let ticketConfigurations: any;
@@ -594,6 +597,7 @@ export class EventController {
         location,
         venueName,
         ticketConfigurations,
+        description,
       });
 
       // Update event with new image URL if it changed
@@ -606,6 +610,7 @@ export class EventController {
           event.venueName,
           [...event.ticketConfigurations], // Convert readonly to mutable array
           imageUrl, // Set new image URL
+          event.description,
           event.details,
           event.createdBy,
         );
@@ -621,6 +626,7 @@ export class EventController {
         event.venueName,
         [...event.ticketConfigurations], // Convert readonly to mutable array
         imageUrl,
+        event.description,
         event.details,
         event.createdBy,
       );
