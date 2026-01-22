@@ -2,8 +2,8 @@ const http = require('http');
 
 // Configuration
 const API_BASE = 'localhost:3000';
-const EMAIL = 'admin@ticketapp.com';
-const PASSWORD = 'Admin123!';
+const EMAIL = 'ccuadradot@unicartagena.edu.co';
+const PASSWORD = '13456789';
 
 let TOKEN = '';
 let EVENT_ID = '';

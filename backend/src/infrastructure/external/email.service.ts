@@ -133,299 +133,351 @@ export class EmailService {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            border-radius: 0 !important;
           }
           
           body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 20px;
+            font-family: 'Arial Black', 'Helvetica', sans-serif;
+            background: #000000;
+            padding: 40px;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
           }
           
-          .ticket-container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            overflow: hidden;
-            width: 600px;
-            max-width: 100%;
-          }
-          
-          .ticket-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 30px;
-            text-align: center;
+          .page-container {
+            max-width: 800px;
             position: relative;
-          }
-          
-          .ticket-header::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 20px;
-            height: 20px;
-            background: white;
-            border-radius: 50%;
-          }
-          
-          .ticket-title {
-            font-size: 28px;
-            font-weight: 300;
-            margin-bottom: 10px;
-          }
-          
-          .ticket-subtitle {
-            font-size: 16px;
-            opacity: 0.9;
-          }
-          
-          .ticket-body {
-            padding: 40px 30px;
-          }
-          
-          .event-info {
-            margin-bottom: 30px;
-          }
-          
-          .event-name {
-            font-size: 24px;
-            font-weight: bold;
-            color: #2c3e50;
-            margin-bottom: 20px;
-            text-align: center;
-          }
-          
-          .event-details {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 30px;
-          }
-          
-          .event-detail {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-          }
-          
-          .detail-icon {
-            font-size: 24px;
-            margin-bottom: 8px;
-            color: #667eea;
-          }
-          
-          .detail-label {
-            font-size: 12px;
-            color: #7f8c8d;
-            text-transform: uppercase;
-            font-weight: bold;
-            margin-bottom: 4px;
-          }
-          
-          .detail-value {
-            font-size: 16px;
-            color: #2c3e50;
-            font-weight: 600;
-          }
-          
-          .ticket-info {
-            border-top: 2px dashed #e0e0e0;
-            padding-top: 30px;
-            display: grid;
-            grid-template-columns: 1fr auto;
-            gap: 30px;
-            align-items: center;
-          }
-          
-          .ticket-details {
-            display: grid;
-            gap: 15px;
-          }
-          
-          .ticket-detail {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-          }
-          
-          .ticket-label {
-            font-size: 14px;
-            color: #7f8c8d;
-            font-weight: 600;
-          }
-          
-          .ticket-value {
-            font-size: 16px;
-            color: #2c3e50;
-            font-weight: bold;
-          }
-          
-          .ticket-code {
-            font-family: 'Courier New', monospace;
-            background: #f8f9fa;
-            padding: 8px 12px;
-            border-radius: 6px;
-            border: 2px solid #e9ecef;
-          }
-          
-          .ticket-type {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
-            text-transform: uppercase;
-          }
-          
-          .qr-section {
-            text-align: center;
-          }
-          
-          .qr-code {
-            width: 150px;
-            height: 150px;
-            border: 3px solid #e9ecef;
-            border-radius: 12px;
-            margin-bottom: 10px;
-          }
-          
-          .qr-instructions {
-            font-size: 12px;
-            color: #7f8c8d;
-            max-width: 150px;
-            line-height: 1.4;
-          }
-          
-          .ticket-footer {
-            background: #f8f9fa;
-            padding: 20px 30px;
-            text-align: center;
-            border-top: 1px solid #e9ecef;
-          }
-          
-          .footer-text {
-            font-size: 12px;
-            color: #6c757d;
-            line-height: 1.5;
           }
           
           .status-badge {
             position: absolute;
-            top: 20px;
-            right: 20px;
-            background: #28a745;
-            color: white;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 12px;
+            top: -20px;
+            right: -20px;
+            background: #FF4D00;
+            color: #000;
+            padding: 8px 24px;
+            font-size: 18px;
+            font-weight: 900;
+            text-transform: uppercase;
+            transform: rotate(-5deg);
+            box-shadow: 4px 4px 0 #000;
+            border: 2px solid #000;
+            z-index: 20;
+          }
+          
+          header {
+            margin-bottom: 40px;
+            position: relative;
+          }
+          
+          .header-title {
+            font-size: 120px;
+            font-weight: 900;
+            color: #FFF;
+            line-height: 0.9;
+            letter-spacing: -0.05em;
+            text-transform: uppercase;
+            font-style: italic;
+            transform: skew(-2deg);
+            display: inline-block;
+          }
+          
+          .header-subtitle {
+            font-family: 'Courier New', monospace;
+            font-size: 10px;
+            color: #FFF;
+            margin-top: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.5em;
+            border-left: 4px solid #FF4D00;
+            padding-left: 16px;
+          }
+          
+          main {
+            background: #FFF;
+            color: #000;
+            border: 8px solid #000;
+            box-shadow: 16px 16px 0 #FF4D00;
+            overflow: hidden;
+          }
+          
+          .event-section {
+            display: flex;
+            border-bottom: 8px solid #000;
+          }
+          
+          .event-name-container {
+            width: 66.666%;
+            padding: 32px;
+            border-right: 8px solid #000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+          }
+          
+          .event-label {
+            font-family: 'Courier New', monospace;
+            font-size: 9px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            letter-spacing: 0.2em;
+          }
+          
+          .event-name {
+            font-size: 80px;
+            font-weight: 900;
+            line-height: 0.85;
+            text-transform: uppercase;
+            letter-spacing: -0.05em;
+            transform: skew(-2deg);
+            display: inline-block;
+          }
+          
+          .qr-container {
+            width: 33.333%;
+            padding: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+          }
+          
+          .vertical-text {
+            position: absolute;
+            left: 8px;
+            top: 50%;
+            transform: translateY(-50%) rotate(180deg);
+            writing-mode: vertical-rl;
+            font-family: 'Courier New', monospace;
+            font-size: 10px;
             font-weight: bold;
+            letter-spacing: 0.2em;
+          }
+          
+          .qr-wrapper {
+            border: 6px solid #000;
+            padding: 8px;
+            background: #FFF;
+          }
+          
+          .qr-code {
+            width: 180px;
+            height: 180px;
+            display: block;
+            filter: grayscale(100%) contrast(1.25);
+          }
+          
+          .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+          }
+          
+          .info-item {
+            padding: 32px;
+            border-bottom: 8px solid #000;
+          }
+          
+          .info-item:nth-child(odd) {
+            border-right: 8px solid #000;
+          }
+          
+          .info-item:nth-last-child(-n+2) {
+            border-bottom: none;
+          }
+          
+          .info-label {
+            font-family: 'Courier New', monospace;
+            font-size: 10px;
+            text-transform: uppercase;
+            opacity: 0.6;
+            margin-bottom: 4px;
+          }
+          
+          .info-value {
+            font-size: 48px;
+            font-weight: 900;
+            color: #FF4D00;
+            text-transform: uppercase;
+            word-break: break-all;
+            line-height: 1.1;
+          }
+          
+          .glitch-line {
+            height: 4px;
+            background: repeating-linear-gradient(
+              90deg,
+              #FFF,
+              #FFF 20px,
+              transparent 20px,
+              transparent 25px,
+              #FF4D00 25px,
+              #FF4D00 30px
+            );
+          }
+          
+          .barcode-strip {
+            height: 100px;
+            width: 100%;
+            background: repeating-linear-gradient(
+              90deg,
+              #000,
+              #000 2px,
+              transparent 2px,
+              transparent 4px,
+              #000 4px,
+              #000 5px
+            );
+            border-top: 8px solid #000;
+          }
+          
+          footer {
+            margin-top: 32px;
+            background: #FFF;
+            color: #000;
+            padding: 32px;
+            border: 8px solid #000;
+          }
+          
+          .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+          }
+          
+          .footer-company {
+            font-size: 24px;
+            font-weight: 900;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+          }
+          
+          .footer-text {
+            font-family: 'Courier New', monospace;
+            font-size: 10px;
+            line-height: 1.5;
+            max-width: 500px;
+          }
+          
+          .footer-highlight {
+            background: #000;
+            color: #FFF;
+            padding: 0 4px;
+          }
+          
+          .footer-right {
+            font-family: 'Courier New', monospace;
+            font-size: 10px;
+            text-align: right;
+          }
+          
+          .serial-footer {
+            margin-top: 32px;
+            display: flex;
+            justify-content: space-between;
+            font-family: 'Courier New', monospace;
+            font-size: 9px;
+            color: #FFF;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            opacity: 0.5;
+          }
+          
+          .void-watermark {
+            margin-top: 48px;
+            text-align: center;
+            opacity: 0.2;
+            pointer-events: none;
+          }
+          
+          .void-text {
+            font-size: 120px;
+            font-weight: 900;
+            text-transform: uppercase;
+            color: #FFF;
+            line-height: 1;
+            overflow: hidden;
+            white-space: nowrap;
           }
         </style>
       </head>
       <body>
-        <div class="ticket-container">
-          <div class="ticket-header">
+        <div class="page-container">
+          <header>
             <div class="status-badge">✓ CONFIRMADO</div>
-            <div class="ticket-title">ENTRADA DIGITAL</div>
-            <div class="ticket-subtitle">Ticket Electrónico</div>
-          </div>
+            <div class="header-title">ENTRADA<br/>DIGITAL</div>
+            <div class="header-subtitle">Ticket Electrónico / No: ${ticket.code}</div>
+          </header>
           
-          <div class="ticket-body">
-            <div class="event-info">
-              <div class="event-name">${eventName}</div>
+          <main>
+            <div class="event-section">
+              <div class="event-name-container">
+                <div class="event-label">EVENTO / UNDERGROUND PHASE</div>
+                <div class="event-name">${eventName}</div>
+              </div>
               
-              <div class="event-details">
-                <div class="event-detail">
-                  <div class="detail-icon">📅</div>
-                  <div class="detail-label">Fecha</div>
-                  <div class="detail-value">${new Date(
-                    eventDate,
-                  ).toLocaleDateString("es-ES", {
-                    weekday: "short",
-                    day: "numeric",
-                    month: "short",
-                    year: "numeric",
-                  })}</div>
+              <div class="qr-container">
+                <div class="vertical-text">ESCANEAME_NOW</div>
+                <div class="qr-wrapper">
+                  <img src="${qrBase64}" alt="QR Code" class="qr-code">
                 </div>
-                
-                ${
-                  eventStartTime
-                    ? `
-                <div class="event-detail">
-                  <div class="detail-icon">🕐</div>
-                  <div class="detail-label">Hora</div>
-                  <div class="detail-value">${eventStartTime}${eventEndTime ? ` - ${eventEndTime}` : ""}</div>
-                </div>
-                `
-                    : ""
-                }
-                
-                <div class="event-detail">
-                  <div class="detail-icon">📍</div>
-                  <div class="detail-label">Ubicación</div>
-                  <div class="detail-value">${eventLocation}</div>
-                </div>
-                
-                ${
-                  eventVenueName
-                    ? `
-                <div class="event-detail">
-                  <div class="detail-icon">🏢</div>
-                  <div class="detail-label">Venue</div>
-                  <div class="detail-value">${eventVenueName}</div>
-                </div>
-                `
-                    : ""
-                }
               </div>
             </div>
             
-            <div class="ticket-info">
-              <div class="ticket-details">
-                <div class="ticket-detail">
-                  <span class="ticket-label">Código de Ticket:</span>
-                  <span class="ticket-value ticket-code">${ticket.code}</span>
-                </div>
-                
-                <div class="ticket-detail">
-                  <span class="ticket-label">Tipo:</span>
-                  <span class="ticket-type">${ticket.type}</span>
-                </div>
-                
-                <div class="ticket-detail">
-                  <span class="ticket-label">Precio:</span>
-                  <span class="ticket-value">${ticket.price.amount.toLocaleString("es-ES")} ${ticket.price.currency}</span>
-                </div>
-                
-                <div class="ticket-detail">
-                  <span class="ticket-label">Fecha de Compra:</span>
-                  <span class="ticket-value">${ticket.purchaseDate.toLocaleDateString("es-ES")}</span>
-                </div>
+            <div class="info-grid">
+              <div class="info-item">
+                <div class="info-label">CÓDIGO DE TICKET</div>
+                <div class="info-value">${ticket.code}</div>
               </div>
               
-              <div class="qr-section">
-                <img src="${qrBase64}" alt="Código QR" class="qr-code">
-                <div class="qr-instructions">
-                  Presenta este código en la entrada del evento
-                </div>
+              <div class="info-item">
+                <div class="info-label">TIPO</div>
+                <div class="info-value">${ticket.type}</div>
               </div>
             </div>
+            
+            <div class="glitch-line"></div>
+            
+            <div class="info-grid">
+              <div class="info-item">
+                <div class="info-label">PRECIO</div>
+                <div class="info-value">${ticket.price.amount.toLocaleString("es-ES")} ${ticket.price.currency}</div>
+              </div>
+              
+              <div class="info-item">
+                <div class="info-label">FECHA DE COMPRA</div>
+                <div class="info-value">${ticket.purchaseDate.toLocaleDateString("es-ES", { day: "numeric", month: "numeric", year: "numeric" })}</div>
+              </div>
+            </div>
+            
+            <div class="barcode-strip"></div>
+          </main>
+          
+          <footer>
+            <div class="footer-content">
+              <div>
+                <div class="footer-company">TICKETSALES</div>
+                <div class="footer-text">
+                  ESTE TICKET ES VÁLIDO PARA UN INGRESO ÚNICO AL EVENTO. PROHIBIDA SU REVENTA NO AUTORIZADA. 
+                  SOPORTE TÉCNICO: <span class="footer-highlight">${this.configService.get<string>("SUPPORT_EMAIL", "SOPORTE@TICKETSALES.COM")}</span>
+                </div>
+              </div>
+              <div class="footer-right">
+                <p>© 2026 BRUTALIST RECORDS</p>
+                <p>ALL RIGHTS DESTROYED</p>
+              </div>
+            </div>
+          </footer>
+          
+          <div class="serial-footer">
+            <span>S/N: 994-001-X992</span>
+            <span>SYSTEM_CORE_V.2.0.4</span>
+            <span>ORIGIN: BOG_CO</span>
           </div>
           
-          <div class="ticket-footer">
-            <div class="footer-text">
-              <strong>${this.configService.get<string>("COMPANY_NAME", "TicketSales")}</strong><br>
-              Este ticket es válido para un ingreso único al evento<br>
-              Soporte: ${this.configService.get<string>("SUPPORT_EMAIL", "soporte@ticketsales.com")}
-            </div>
+          <div class="void-watermark">
+            <div class="void-text">VOID VOID VOID VOID VOID VOID VOID</div>
           </div>
         </div>
       </body>
@@ -648,164 +700,184 @@ export class EmailService {
       const page = await browser.newPage();
 
       const professionalHTML = `
-        <html>
-          <head>
-            <style>
-              * { margin: 0; padding: 0; box-sizing: border-box; }
-              body { 
-                font-family: 'Arial', sans-serif; 
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                padding: 20px;
-                min-height: 100vh;
-              }
-              .ticket-container {
-                background: white;
-                border-radius: 15px;
-                box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-                overflow: hidden;
-                max-width: 600px;
-                margin: 0 auto;
-              }
-              .ticket-header {
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                color: white;
-                padding: 30px;
-                text-align: center;
-                position: relative;
-              }
-              .ticket-title {
-                font-size: 28px;
-                font-weight: bold;
-                margin-bottom: 10px;
-              }
-              .ticket-subtitle {
-                font-size: 16px;
-                opacity: 0.9;
-              }
-              .status-badge {
-                position: absolute;
-                top: 15px;
-                right: 15px;
-                background: #28a745;
-                color: white;
-                padding: 5px 10px;
-                border-radius: 15px;
-                font-size: 12px;
-                font-weight: bold;
-              }
-              .ticket-body {
-                padding: 30px;
-              }
-              .event-name {
-                font-size: 24px;
-                font-weight: bold;
-                color: #2c3e50;
-                margin-bottom: 20px;
-                text-align: center;
-              }
-              .ticket-details {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 20px;
-                margin-bottom: 30px;
-              }
-              .detail-item {
-                text-align: center;
-              }
-              .detail-label {
-                font-size: 12px;
-                color: #7f8c8d;
-                text-transform: uppercase;
-                font-weight: bold;
-                margin-bottom: 5px;
-              }
-              .detail-value {
-                font-size: 16px;
-                color: #2c3e50;
-                font-weight: bold;
-              }
-              .ticket-code {
-                font-family: 'Courier New', monospace;
-                background: #f8f9fa;
-                padding: 8px 12px;
-                border-radius: 6px;
-                border: 2px solid #e9ecef;
-              }
-              .qr-section {
-                text-align: center;
-                border-top: 2px dashed #e0e0e0;
-                padding-top: 20px;
-              }
-              .qr-code {
-                width: 120px;
-                height: 120px;
-                border: 2px solid #dee2e6;
-                border-radius: 8px;
-                margin-bottom: 10px;
-              }
-              .qr-instructions {
-                font-size: 12px;
-                color: #6c757d;
-                margin-top: 10px;
-              }
-              .footer {
-                background: #f8f9fa;
-                padding: 20px;
-                text-align: center;
-                font-size: 12px;
-                color: #6c757d;
-                border-top: 1px solid #e9ecef;
-              }
-            </style>
-          </head>
-          <body>
-            <div class="ticket-container">
-              <div class="ticket-header">
-                <div class="status-badge">✓ CONFIRMADO</div>
-                <div class="ticket-title">ENTRADA DIGITAL</div>
-                <div class="ticket-subtitle">Ticket Electrónico</div>
-              </div>
-              
-              <div class="ticket-body">
-                <div class="event-name">${eventName}</div>
-                
-                <div class="ticket-details">
-                  <div class="detail-item">
-                    <div class="detail-label">Código de Ticket</div>
-                    <div class="detail-value ticket-code">${ticket.code}</div>
-                  </div>
-                  
-                  <div class="detail-item">
-                    <div class="detail-label">Tipo</div>
-                    <div class="detail-value">${ticket.type}</div>
-                  </div>
-                  
-                  <div class="detail-item">
-                    <div class="detail-label">Precio</div>
-                    <div class="detail-value">${ticket.price.amount.toLocaleString("es-ES")} ${ticket.price.currency}</div>
-                  </div>
-                  
-                  <div class="detail-item">
-                    <div class="detail-label">Fecha de Compra</div>
-                    <div class="detail-value">${ticket.purchaseDate.toLocaleDateString("es-ES")}</div>
-                  </div>
+        <!DOCTYPE html>
+        <html lang="es">
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <style>
+            * { margin: 0; padding: 0; box-sizing: border-box; border-radius: 0 !important; }
+            body { 
+              font-family: 'Arial Black', 'Helvetica', sans-serif;
+              background: #000000;
+              padding: 40px;
+              min-height: 100vh;
+            }
+            .page-container { max-width: 800px; position: relative; }
+            .status-badge {
+              position: absolute; top: -20px; right: -20px;
+              background: #FF4D00; color: #000;
+              padding: 8px 24px; font-size: 18px; font-weight: 900;
+              text-transform: uppercase; transform: rotate(-5deg);
+              box-shadow: 4px 4px 0 #000; border: 2px solid #000; z-index: 20;
+            }
+            header { margin-bottom: 40px; position: relative; }
+            .header-title {
+              font-size: 80px; font-weight: 900; color: #FFF;
+              line-height: 0.9; letter-spacing: -0.05em;
+              text-transform: uppercase; font-style: italic;
+              transform: skew(-2deg); display: inline-block;
+            }
+            .header-subtitle {
+              font-family: 'Courier New', monospace; font-size: 10px;
+              color: #FFF; margin-top: 16px; text-transform: uppercase;
+              letter-spacing: 0.5em; border-left: 4px solid #FF4D00; padding-left: 16px;
+            }
+            main {
+              background: #FFF; color: #000;
+              border: 8px solid #000; box-shadow: 16px 16px 0 #FF4D00; overflow: hidden;
+            }
+            .event-section { display: flex; border-bottom: 8px solid #000; }
+            .event-name-container {
+              width: 66.666%; padding: 32px; border-right: 8px solid #000;
+              display: flex; flex-direction: column; justify-content: center;
+            }
+            .event-label {
+              font-family: 'Courier New', monospace; font-size: 9px;
+              text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.2em;
+            }
+            .event-name {
+              font-size: 50px; font-weight: 900; line-height: 0.85;
+              text-transform: uppercase; letter-spacing: -0.05em;
+              transform: skew(-2deg); display: inline-block;
+            }
+            .qr-container {
+              width: 33.333%; padding: 32px;
+              display: flex; align-items: center; justify-content: center; position: relative;
+            }
+            .vertical-text {
+              position: absolute; left: 8px; top: 50%;
+              transform: translateY(-50%) rotate(180deg); writing-mode: vertical-rl;
+              font-family: 'Courier New', monospace; font-size: 10px;
+              font-weight: bold; letter-spacing: 0.2em;
+            }
+            .qr-wrapper { border: 6px solid #000; padding: 8px; background: #FFF; }
+            .qr-code { width: 180px; height: 180px; display: block; filter: grayscale(100%) contrast(1.25); }
+            .info-grid { display: grid; grid-template-columns: 1fr 1fr; }
+            .info-item { padding: 32px; border-bottom: 8px solid #000; }
+            .info-item:nth-child(odd) { border-right: 8px solid #000; }
+            .info-item:nth-last-child(-n+2) { border-bottom: none; }
+            .info-label {
+              font-family: 'Courier New', monospace; font-size: 10px;
+              text-transform: uppercase; opacity: 0.6; margin-bottom: 4px;
+            }
+            .info-value {
+              font-size: 36px; font-weight: 900; color: #FF4D00;
+              text-transform: uppercase; word-break: break-all; line-height: 1.1;
+            }
+            .glitch-line {
+              height: 4px;
+              background: repeating-linear-gradient(
+                90deg, #FFF, #FFF 20px, transparent 20px, transparent 25px,
+                #FF4D00 25px, #FF4D00 30px
+              );
+            }
+            .barcode-strip {
+              height: 100px; width: 100%;
+              background: repeating-linear-gradient(
+                90deg, #000, #000 2px, transparent 2px, transparent 4px,
+                #000 4px, #000 5px
+              );
+              border-top: 8px solid #000;
+            }
+            footer {
+              margin-top: 32px; background: #FFF; color: #000;
+              padding: 32px; border: 8px solid #000;
+            }
+            .footer-content { display: flex; justify-content: space-between; align-items: flex-end; }
+            .footer-company {
+              font-size: 24px; font-weight: 900;
+              text-transform: uppercase; margin-bottom: 8px;
+            }
+            .footer-text {
+              font-family: 'Courier New', monospace; font-size: 10px;
+              line-height: 1.5; max-width: 500px;
+            }
+            .footer-highlight { background: #000; color: #FFF; padding: 0 4px; }
+            .footer-right {
+              font-family: 'Courier New', monospace; font-size: 10px; text-align: right;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="page-container">
+            <header>
+              <div class="status-badge">✓ CONFIRMADO</div>
+              <div class="header-title">ENTRADA<br/>DIGITAL</div>
+              <div class="header-subtitle">Ticket Electrónico / No: ${ticket.code}</div>
+            </header>
+            
+            <main>
+              <div class="event-section">
+                <div class="event-name-container">
+                  <div class="event-label">EVENTO / UNDERGROUND PHASE</div>
+                  <div class="event-name">${eventName}</div>
                 </div>
                 
-                <div class="qr-section">
-                  <img src="${qrBase64}" alt="Código QR" class="qr-code">
-                  <div class="qr-instructions">
-                    Presenta este código en la entrada del evento
+                <div class="qr-container">
+                  <div class="vertical-text">ESCANEAME_NOW</div>
+                  <div class="qr-wrapper">
+                    <img src="${qrBase64}" alt="QR Code" class="qr-code">
                   </div>
                 </div>
               </div>
               
-              <div class="footer">
-                <strong>TicketSales</strong><br>
-                Este ticket es válido para un ingreso único al evento<br>
-                Soporte: soporte@ticketsales.com
+              <div class="info-grid">
+                <div class="info-item">
+                  <div class="info-label">CÓDIGO DE TICKET</div>
+                  <div class="info-value">${ticket.code}</div>
+                </div>
+                
+                <div class="info-item">
+                  <div class="info-label">TIPO</div>
+                  <div class="info-value">${ticket.type}</div>
+                </div>
               </div>
-            </div>
-          </body>
+              
+              <div class="glitch-line"></div>
+              
+              <div class="info-grid">
+                <div class="info-item">
+                  <div class="info-label">PRECIO</div>
+                  <div class="info-value">${ticket.price.amount.toLocaleString("es-ES")} ${ticket.price.currency}</div>
+                </div>
+                
+                <div class="info-item">
+                  <div class="info-label">FECHA DE COMPRA</div>
+                  <div class="info-value">${ticket.purchaseDate.toLocaleDateString("es-ES", { day: "numeric", month: "numeric", year: "numeric" })}</div>
+                </div>
+              </div>
+              
+              <div class="barcode-strip"></div>
+            </main>
+            
+            <footer>
+              <div class="footer-content">
+                <div>
+                  <div class="footer-company">TICKETSALES</div>
+                  <div class="footer-text">
+                    ESTE TICKET ES VÁLIDO PARA UN INGRESO ÚNICO AL EVENTO. PROHIBIDA SU REVENTA NO AUTORIZADA. 
+                    SOPORTE TÉCNICO: <span class="footer-highlight">SOPORTE@TICKETSALES.COM</span>
+                  </div>
+                </div>
+                <div class="footer-right">
+                  <p>© 2026 BRUTALIST RECORDS</p>
+                  <p>ALL RIGHTS DESTROYED</p>
+                </div>
+              </div>
+            </footer>
+          </div>
+        </body>
         </html>
       `;
 
@@ -867,70 +939,184 @@ export class EmailService {
 
       // Usar HTML simplificado pero profesional
       const professionalHTML = `
-        <html>
-          <head>
-            <style>
-              body { 
-                font-family: Arial, sans-serif; 
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                padding: 20px; margin: 0;
-              }
-              .ticket { 
-                background: white; border-radius: 15px; 
-                box-shadow: 0 10px 30px rgba(0,0,0,0.2); 
-                max-width: 600px; margin: 0 auto; overflow: hidden;
-              }
-              .header { 
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                color: white; padding: 30px; text-align: center;
-              }
-              .title { font-size: 28px; font-weight: bold; margin-bottom: 10px; }
-              .body { padding: 30px; }
-              .event-name { font-size: 24px; font-weight: bold; color: #2c3e50; margin-bottom: 20px; text-align: center; }
-              .details { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px; }
-              .detail { text-align: center; }
-              .label { font-size: 12px; color: #7f8c8d; text-transform: uppercase; font-weight: bold; margin-bottom: 5px; }
-              .value { font-size: 16px; color: #2c3e50; font-weight: bold; }
-              .code { font-family: 'Courier New', monospace; background: #f8f9fa; padding: 8px 12px; border-radius: 6px; }
-              .qr-section { text-align: center; border-top: 2px dashed #e0e0e0; padding-top: 20px; }
-              .qr-code { width: 120px; height: 120px; border: 2px solid #dee2e6; border-radius: 8px; }
-            </style>
-          </head>
-          <body>
-            <div class="ticket">
-              <div class="header">
-                <div class="title">ENTRADA DIGITAL</div>
-                <div>Ticket Electrónico</div>
-              </div>
-              <div class="body">
-                <div class="event-name">${eventName}</div>
-                <div class="details">
-                  <div class="detail">
-                    <div class="label">Código</div>
-                    <div class="value code">${ticket.code}</div>
-                  </div>
-                  <div class="detail">
-                    <div class="label">Tipo</div>
-                    <div class="value">${ticket.type}</div>
-                  </div>
-                  <div class="detail">
-                    <div class="label">Precio</div>
-                    <div class="value">${ticket.price.amount.toLocaleString("es-ES")} ${ticket.price.currency}</div>
-                  </div>
-                  <div class="detail">
-                    <div class="label">Fecha</div>
-                    <div class="value">${ticket.purchaseDate.toLocaleDateString("es-ES")}</div>
+        <!DOCTYPE html>
+        <html lang="es">
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <style>
+            * { margin: 0; padding: 0; box-sizing: border-box; border-radius: 0 !important; }
+            body { 
+              font-family: 'Arial Black', 'Helvetica', sans-serif;
+              background: #000000;
+              padding: 40px;
+              min-height: 100vh;
+            }
+            .page-container { max-width: 800px; position: relative; }
+            .status-badge {
+              position: absolute; top: -20px; right: -20px;
+              background: #FF4D00; color: #000;
+              padding: 8px 24px; font-size: 18px; font-weight: 900;
+              text-transform: uppercase; transform: rotate(-5deg);
+              box-shadow: 4px 4px 0 #000; border: 2px solid #000; z-index: 20;
+            }
+            header { margin-bottom: 40px; position: relative; }
+            .header-title {
+              font-size: 80px; font-weight: 900; color: #FFF;
+              line-height: 0.9; letter-spacing: -0.05em;
+              text-transform: uppercase; font-style: italic;
+              transform: skew(-2deg); display: inline-block;
+            }
+            .header-subtitle {
+              font-family: 'Courier New', monospace; font-size: 10px;
+              color: #FFF; margin-top: 16px; text-transform: uppercase;
+              letter-spacing: 0.5em; border-left: 4px solid #FF4D00; padding-left: 16px;
+            }
+            main {
+              background: #FFF; color: #000;
+              border: 8px solid #000; box-shadow: 16px 16px 0 #FF4D00; overflow: hidden;
+            }
+            .event-section { display: flex; border-bottom: 8px solid #000; }
+            .event-name-container {
+              width: 66.666%; padding: 32px; border-right: 8px solid #000;
+              display: flex; flex-direction: column; justify-content: center;
+            }
+            .event-label {
+              font-family: 'Courier New', monospace; font-size: 9px;
+              text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.2em;
+            }
+            .event-name {
+              font-size: 50px; font-weight: 900; line-height: 0.85;
+              text-transform: uppercase; letter-spacing: -0.05em;
+              transform: skew(-2deg); display: inline-block;
+            }
+            .qr-container {
+              width: 33.333%; padding: 32px;
+              display: flex; align-items: center; justify-content: center; position: relative;
+            }
+            .vertical-text {
+              position: absolute; left: 8px; top: 50%;
+              transform: translateY(-50%) rotate(180deg); writing-mode: vertical-rl;
+              font-family: 'Courier New', monospace; font-size: 10px;
+              font-weight: bold; letter-spacing: 0.2em;
+            }
+            .qr-wrapper { border: 6px solid #000; padding: 8px; background: #FFF; }
+            .qr-code { width: 180px; height: 180px; display: block; filter: grayscale(100%) contrast(1.25); }
+            .info-grid { display: grid; grid-template-columns: 1fr 1fr; }
+            .info-item { padding: 32px; border-bottom: 8px solid #000; }
+            .info-item:nth-child(odd) { border-right: 8px solid #000; }
+            .info-item:nth-last-child(-n+2) { border-bottom: none; }
+            .info-label {
+              font-family: 'Courier New', monospace; font-size: 10px;
+              text-transform: uppercase; opacity: 0.6; margin-bottom: 4px;
+            }
+            .info-value {
+              font-size: 36px; font-weight: 900; color: #FF4D00;
+              text-transform: uppercase; word-break: break-all; line-height: 1.1;
+            }
+            .glitch-line {
+              height: 4px;
+              background: repeating-linear-gradient(
+                90deg, #FFF, #FFF 20px, transparent 20px, transparent 25px,
+                #FF4D00 25px, #FF4D00 30px
+              );
+            }
+            .barcode-strip {
+              height: 100px; width: 100%;
+              background: repeating-linear-gradient(
+                90deg, #000, #000 2px, transparent 2px, transparent 4px,
+                #000 4px, #000 5px
+              );
+              border-top: 8px solid #000;
+            }
+            footer {
+              margin-top: 32px; background: #FFF; color: #000;
+              padding: 32px; border: 8px solid #000;
+            }
+            .footer-content { display: flex; justify-content: space-between; align-items: flex-end; }
+            .footer-company {
+              font-size: 24px; font-weight: 900;
+              text-transform: uppercase; margin-bottom: 8px;
+            }
+            .footer-text {
+              font-family: 'Courier New', monospace; font-size: 10px;
+              line-height: 1.5; max-width: 500px;
+            }
+            .footer-highlight { background: #000; color: #FFF; padding: 0 4px; }
+            .footer-right {
+              font-family: 'Courier New', monospace; font-size: 10px; text-align: right;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="page-container">
+            <header>
+              <div class="status-badge">✓ CONFIRMADO</div>
+              <div class="header-title">ENTRADA<br/>DIGITAL</div>
+              <div class="header-subtitle">Ticket Electrónico / No: ${ticket.code}</div>
+            </header>
+            
+            <main>
+              <div class="event-section">
+                <div class="event-name-container">
+                  <div class="event-label">EVENTO / UNDERGROUND PHASE</div>
+                  <div class="event-name">${eventName}</div>
+                </div>
+                
+                <div class="qr-container">
+                  <div class="vertical-text">ESCANEAME_NOW</div>
+                  <div class="qr-wrapper">
+                    <img src="${qrBase64}" alt="QR Code" class="qr-code">
                   </div>
                 </div>
-                <div class="qr-section">
-                  <img src="${qrBase64}" alt="QR" class="qr-code">
-                  <div style="font-size: 12px; color: #6c757d; margin-top: 10px;">
-                    Presenta este código en la entrada
-                  </div>
+              </div>
+              
+              <div class="info-grid">
+                <div class="info-item">
+                  <div class="info-label">CÓDIGO DE TICKET</div>
+                  <div class="info-value">${ticket.code}</div>
+                </div>
+                
+                <div class="info-item">
+                  <div class="info-label">TIPO</div>
+                  <div class="info-value">${ticket.type}</div>
                 </div>
               </div>
-            </div>
-          </body>
+              
+              <div class="glitch-line"></div>
+              
+              <div class="info-grid">
+                <div class="info-item">
+                  <div class="info-label">PRECIO</div>
+                  <div class="info-value">${ticket.price.amount.toLocaleString("es-ES")} ${ticket.price.currency}</div>
+                </div>
+                
+                <div class="info-item">
+                  <div class="info-label">FECHA DE COMPRA</div>
+                  <div class="info-value">${ticket.purchaseDate.toLocaleDateString("es-ES", { day: "numeric", month: "numeric", year: "numeric" })}</div>
+                </div>
+              </div>
+              
+              <div class="barcode-strip"></div>
+            </main>
+            
+            <footer>
+              <div class="footer-content">
+                <div>
+                  <div class="footer-company">TICKETSALES</div>
+                  <div class="footer-text">
+                    ESTE TICKET ES VÁLIDO PARA UN INGRESO ÚNICO AL EVENTO. PROHIBIDA SU REVENTA NO AUTORIZADA. 
+                    SOPORTE TÉCNICO: <span class="footer-highlight">SOPORTE@TICKETSALES.COM</span>
+                  </div>
+                </div>
+                <div class="footer-right">
+                  <p>© 2026 BRUTALIST RECORDS</p>
+                  <p>ALL RIGHTS DESTROYED</p>
+                </div>
+              </div>
+            </footer>
+          </div>
+        </body>
         </html>
       `;
 
