@@ -30,27 +30,7 @@
       <div class="scan-line"></div>
     </div>
 
-    <!-- Manual Search -->
-    <div class="manual-search">
-      <div class="search-container">
-        <span class="material-symbols-outlined search-icon">barcode_scanner</span>
-        <input
-          type="text"
-          [value]="manualTicketId()"
-          (input)="manualTicketId.set($any($event.target).value)"
-          placeholder="Buscar por ID de ticket..."
-          class="search-input"
-          (keyup.enter)="validateManualTicket()"
-        />
-        <button 
-          class="search-button"
-          (click)="validateManualTicket()"
-          [disabled]="!manualTicketId() || isLoading()"
-        >
-          <span class="material-symbols-outlined">search</span>
-        </button>
-      </div>
-    </div>
+    <!-- Manual Search: removed input container as requested -->
 
     <!-- Staff Session Info -->
     <div class="staff-session">
