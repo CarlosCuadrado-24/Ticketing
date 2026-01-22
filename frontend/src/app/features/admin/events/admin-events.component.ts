@@ -170,6 +170,31 @@ export class AdminEventsComponent implements OnInit {
   }
 
   /**
+   * VIP helpers
+   */
+  getVipSoldByEvent(event: Event): number {
+    if (!event.ticketConfigurations || !event.ticketConfigurations[1]) {
+      return 0;
+    }
+    const cfg = event.ticketConfigurations[1];
+    return (cfg.totalQuantity || 0) - (cfg.availableQuantity || 0);
+  }
+
+  getVipTotalCapacity(event: Event): number {
+    if (!event.ticketConfigurations || !event.ticketConfigurations[1]) {
+      return 0;
+    }
+    return event.ticketConfigurations[1].totalQuantity || 0;
+  }
+
+  getVipPercentage(event: Event): number {
+    const total = this.getVipTotalCapacity(event);
+    if (total === 0) return 0;
+    const sold = this.getVipSoldByEvent(event);
+    return Math.round((sold / total) * 100);
+  }
+
+  /**
    * Obtiene la imagen del evento o usa un placeholder
    */
   getEventImage(event: Event): string {
