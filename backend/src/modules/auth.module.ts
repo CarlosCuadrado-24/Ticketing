@@ -24,7 +24,7 @@ import { USER_REPOSITORY } from "../domain/interfaces/repository-tokens";
     PassportModule,
     JwtModule.register({
       secret: process.env.JWT_SECRET ?? "your-secret-key",
-      signOptions: { expiresIn: "15m" },
+      signOptions: { expiresIn: "24h" },
     }),
   ],
   controllers: [AuthController, CsrfController],

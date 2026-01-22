@@ -52,7 +52,7 @@ export interface AuthResponse {
 @Injectable()
 export class AuthService {
   private readonly JWT_SECRET = process.env.JWT_SECRET ?? "your-secret-key";
-  private readonly JWT_EXPIRATION = "15m";
+  private readonly JWT_EXPIRATION = "24h";
   private readonly REFRESH_TOKEN_EXPIRATION = "7d";
 
   constructor(

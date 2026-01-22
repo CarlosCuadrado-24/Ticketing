@@ -49,7 +49,7 @@ import { ReservationExpirationScheduler } from "../infrastructure/schedulers/res
     ]),
     JwtModule.register({
       secret: process.env.JWT_SECRET ?? "your-secret-key",
-      signOptions: { expiresIn: "15m" },
+      signOptions: { expiresIn: "24h" },
     }),
     WebSocketModule,
   ],
