@@ -127,17 +127,7 @@
                   <span class="material-symbols-outlined text-5xl">close</span>
                 </button>
               </div>
-              <div 
-                [routerLink]="['/admin/events', event.id]"
-                class="p-4 font-brutal-sans flex justify-between items-center cursor-pointer transition-colors"
-                [ngClass]="{
-                  'bg-brutal-white text-black hover:bg-primary': isPublished(event),
-                  'bg-zinc-800 text-white hover:bg-primary hover:text-black': !isPublished(event)
-                }"
-              >
-                <span class="uppercase font-bold">{{ isPublished(event) ? 'GESTIONAR_ENTRADA' : 'ACTIVAR' }}</span>
-                <span class="material-symbols-outlined">{{ isPublished(event) ? 'arrow_forward' : 'power_settings_new' }}</span>
-              </div>
+              <!-- 'GESTIONAR_ENTRADA' action removed as requested -->
             </div>
           </div>
         } @empty {
