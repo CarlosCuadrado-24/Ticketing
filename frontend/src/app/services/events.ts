@@ -45,6 +45,17 @@ export class Events {
       .pipe(catchError(this.handleError('updateEvent')));
   }
 
+  /**
+   * Deletes an event by ID
+   * @param id - Event ID
+   * @returns Observable<void>
+   */
+  deleteEvent(id: string | number): Observable<void> {
+    return this.http
+      .delete<void>(`${this.apiUrl}/${id}`)
+      .pipe(catchError(this.handleError('deleteEvent')));
+  }
+
   private handleError(operation = 'operation') {
     return (error: HttpErrorResponse): Observable<never> => {
       console.error(`[Events Service] ${operation} failed:`, error.message);

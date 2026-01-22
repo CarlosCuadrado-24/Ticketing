@@ -210,16 +210,21 @@ export class EventService {
   }
 
   deleteEvent(id: string | number): Observable<void> {
-    // TODO: Implement actual delete API call
     return new Observable((observer) => {
-      // Simulate API call
-      setTimeout(() => {
-        const events = this._events();
-        const updatedEvents = events.filter((event) => event.id !== id);
-        this._events.set(updatedEvents);
-        observer.next();
-        observer.complete();
-      }, 500);
+      this.eventsApi.deleteEvent(id).subscribe({
+        next: () => {
+          console.log('[EventService] Event deleted successfully:', id);
+          const events = this._events();
+          const updatedEvents = events.filter((event) => event.id !== id);
+          this._events.set(updatedEvents);
+          observer.next();
+          observer.complete();
+        },
+        error: (err) => {
+          console.error('[EventService] Error deleting event:', err);
+          observer.error(err);
+        },
+      });
     });
   }
 }

@@ -199,20 +199,37 @@ export class AdminEventsComponent implements OnInit {
   }
 
   deleteEvent(eventId: string, eventName: string) {
-    if (confirm(`¿Estás seguro de que quieres eliminar el evento "${eventName}"?`)) {
-      this.eventService.deleteEvent(eventId).subscribe({
-        next: () => {
-          const updatedEvents = this.events().filter((e) => e.id !== eventId);
-          this.events.set(updatedEvents);
-          this.filterEvents();
-        },
-        error: (error) => {
-          this.toastService.show(
-            'Error al eliminar el evento: ' + (error.message || 'Error desconocido'),
-            'error',
-          );
-        },
-      });
+    const confirmed = confirm(
+      `¿Estás seguro de que deseas eliminar el evento "${eventName}"?\n\n` +
+      'Esta acción no se puede deshacer. Se eliminarán:\n' +
+      '• El evento\n' +
+      '• Todas las configuraciones de tickets\n' +
+      '• Los registros asociados\n\n' +
+      '⚠️ ADVERTENCIA: Esta acción es permanente.'
+    );
+
+    if (!confirmed) {
+      return;
     }
+
+    this.loading.set(true);
+    this.eventService.deleteEvent(eventId).pipe(
+      finalize(() => this.loading.set(false))
+    ).subscribe({
+      next: () => {
+        this.toastService.success(`Evento "${eventName}" eliminado exitosamente`);
+        // Update local state
+        const updatedEvents = this.events().filter((e) => e.id.toString() !== eventId);
+        this.events.set(updatedEvents);
+        this.filterEvents();
+      },
+      error: (error) => {
+        console.error('[AdminEvents] Error deleting event:', error);
+        this.toastService.error(
+          'Error al eliminar el evento. ' + 
+          (error.message || 'Intenta nuevamente.')
+        );
+      },
+    });
   }
 }
