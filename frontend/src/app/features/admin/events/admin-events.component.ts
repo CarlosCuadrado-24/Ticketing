@@ -23,6 +23,8 @@ export class AdminEventsComponent implements OnInit {
   categories = Object.values(EventCategory);
   selectedCategory = signal('');
   searchTerm = signal('');
+  page = signal(1);
+  private readonly pageSize = 6;
   loading = signal(true);
   error = signal<string | null>(null);
 
@@ -126,6 +128,27 @@ export class AdminEventsComponent implements OnInit {
       return matchesCategory && matchesSearch;
     });
     this.filteredEvents.set(filtered);
+    this.page.set(1);
+  }
+
+  /**
+   * Pagination helpers
+   */
+  getTotalPages(): number {
+    const total = this.filteredEvents().length;
+    return Math.max(1, Math.ceil(total / this.pageSize));
+  }
+
+  getVisibleEvents(): Event[] {
+    const all = this.filteredEvents();
+    const start = (this.page() - 1) * this.pageSize;
+    return all.slice(start, start + this.pageSize);
+  }
+
+  changePage(newPage: number) {
+    const total = this.getTotalPages();
+    const target = Math.min(Math.max(1, Math.trunc(newPage)), total);
+    this.page.set(target);
   }
 
   onCategoryChange(event: any) {

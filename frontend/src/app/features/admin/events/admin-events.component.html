@@ -49,7 +49,7 @@
   @if (!loading() && !error()) {
     <div class="px-4 lg:px-20">
       <div class="grid grid-cols-1 gap-12 mb-20">
-        @for (event of filteredEvents(); track event.id; let idx = $index) {
+        @for (event of getVisibleEvents(); track event.id; let idx = $index) {
           <div 
             class="group relative grid grid-cols-1 lg:grid-cols-12 border-5 border-brutal-white bg-brutal-black hover:bg-white/5 transition-all p-0"
             [class.lg:ml-12]="idx % 3 === 1"
@@ -150,23 +150,23 @@
       <!-- Pagination Section -->
       <div class="flex flex-col md:flex-row items-center justify-between border-5 border-brutal-white p-6 bg-brutal-black gap-6 mb-12">
         <p class="text-xl font-black uppercase tracking-tighter">
-          PÁGINA: 01 // TOTAL: {{ filteredEvents().length }}
+          PÁGINA: {{ page() }} / {{ getTotalPages() }} // TOTAL: {{ filteredEvents().length }}
         </p>
         <div class="flex flex-wrap gap-2">
-          <button class="w-12 h-12 border-2 border-brutal-white flex items-center justify-center font-bold hover:bg-primary hover:text-black transition-colors">
+          <button (click)="changePage(page() - 1)" class="w-12 h-12 border-2 border-brutal-white flex items-center justify-center font-bold hover:bg-primary hover:text-black transition-colors">
             &lt;
           </button>
-          <button class="w-12 h-12 bg-brutal-white text-black flex items-center justify-center font-black">
-            01
+          <button (click)="changePage(page())" [ngClass]="{'bg-brutal-white text-black': page()===1}" class="w-12 h-12 flex items-center justify-center font-black">
+            {{ page() < 10 ? ('0' + page()) : page() }}
           </button>
-          <button class="w-12 h-12 border-2 border-brutal-white flex items-center justify-center font-bold hover:bg-primary hover:text-black transition-colors">
-            02
+          <button (click)="changePage(page() + 1)" class="w-12 h-12 border-2 border-brutal-white flex items-center justify-center font-bold hover:bg-primary hover:text-black transition-colors">
+            {{ (page() + 1) < 10 ? ('0' + (page() + 1)) : (page() + 1) }}
           </button>
-          <button class="w-12 h-12 border-2 border-brutal-white flex items-center justify-center font-bold hover:bg-primary hover:text-black transition-colors">
-            03
+          <button (click)="changePage(page() + 2)" class="w-12 h-12 border-2 border-brutal-white flex items-center justify-center font-bold hover:bg-primary hover:text-black transition-colors">
+            {{ (page() + 2) < 10 ? ('0' + (page() + 2)) : (page() + 2) }}
           </button>
           <div class="w-12 h-12 flex items-center justify-center font-bold">...</div>
-          <button class="w-12 h-12 border-2 border-brutal-white flex items-center justify-center font-bold hover:bg-primary hover:text-black transition-colors">
+          <button (click)="changePage(page() + 1)" class="w-12 h-12 border-2 border-brutal-white flex items-center justify-center font-bold hover:bg-primary hover:text-black transition-colors">
             &gt;
           </button>
         </div>
