@@ -280,6 +280,7 @@
             [items]="getSelectedItems()"
             [eventId]="event()!.id"
             [eventName]="event()!.name"
+            [eventImageUrl]="getEventImage()"
             [disabled]="getTotal() === 0"
             class="w-full bg-primary text-black mt-8 py-10 font-brutal text-4xl uppercase border-8 border-white hover:bg-white hover:text-black transition-none flex items-center justify-center gap-6 group block"
           >

@@ -22,6 +22,7 @@ export class CheckoutButton {
   @Input() items: CartItem[] = [];
   @Input() eventId?: string | number;
   @Input() eventName?: string;
+  @Input() eventImageUrl?: string;
   @Input() disabled: boolean = false;
 
   goToCheckout(): void {
@@ -54,14 +55,15 @@ export class CheckoutButton {
       );
     }
 
-    // Save event info for confirmation page
-    this.checkoutService.setEventInfo(this.eventId, this.eventName);
+    // Save event info for confirmation page (include image URL if available)
+    this.checkoutService.setEventInfo(this.eventId, this.eventName, this.eventImageUrl);
 
     // Navigate to checkout
     this.router.navigate(['/checkout'], {
       queryParams: {
         eventId: this.eventId,
         eventName: this.eventName,
+        eventImageUrl: this.eventImageUrl,
       },
     });
   }

@@ -23,15 +23,15 @@
       @for (item of cart(); track item.ticketTypeId) {
         <div class="flex gap-4">
           <div class="w-20 h-20 brutal-border border-2 overflow-hidden flex-shrink-0 bg-white">
-            @if (checkoutService.eventImageUrl()) {
-              <img 
-                [alt]="item.ticketTypeName" 
-                class="w-full h-full object-cover grayscale contrast-150" 
-                [src]="checkoutService.eventImageUrl()"
-              />
-            } @else {
-              <div class="w-full h-full bg-zinc-800"></div>
-            }
+              @if (checkoutService.eventImageUrl()) {
+                <img
+                  [alt]="item.ticketTypeName"
+                  class="w-full h-full object-cover grayscale contrast-150"
+                  [src]="checkoutService.eventImageUrl()"
+                />
+              } @else {
+                <div class="w-full h-full bg-zinc-800">VIP</div>
+              }
           </div>
           <div class="flex-1">
             <h3 class="font-mono font-bold text-sm uppercase leading-tight mb-1">
