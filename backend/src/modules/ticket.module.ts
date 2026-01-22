@@ -73,6 +73,7 @@ import { ReservationExpirationScheduler } from "../infrastructure/schedulers/res
     EmailService,
 
     // Repositories
+    TypeOrmTicketRepository,
     {
       provide: TICKET_REPOSITORY,
       useClass: TypeOrmTicketRepository,

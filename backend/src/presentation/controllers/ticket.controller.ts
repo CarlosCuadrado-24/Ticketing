@@ -6,12 +6,14 @@ import {
   Param,
   Query,
   Req,
+  Res,
   HttpCode,
   HttpStatus,
   BadRequestException,
   NotFoundException,
   UseGuards,
 } from "@nestjs/common";
+import { Response } from 'express';
 import {
   ApiTags,
   ApiOperation,
@@ -36,6 +38,11 @@ import {
   SendReminderDto,
 } from "../../application/dto/resend-email.dto";
 import { JwtAuthGuard } from "../../application/services/jwt-auth.guard";
+import { EmailService } from "../../infrastructure/external/email.service";
+import { TypeOrmTicketRepository } from "../../infrastructure/persistence/repositories/typeorm-ticket.repository";
+import { IEventRepository } from "../../domain/interfaces/event-repository.interface";
+import { Inject } from "@nestjs/common";
+import { EVENT_REPOSITORY } from "../../domain/interfaces/repository-tokens";
 
 /**
  * TicketController
@@ -51,7 +58,84 @@ export class TicketController {
     private readonly purchaseTicketUseCase: PurchaseTicketUseCase,
     private readonly validateQRUseCase: ValidateQRUseCase,
     private readonly resendEmailUseCase: ResendEmailUseCase,
+    private readonly emailService: EmailService,
+    private readonly ticketRepository: TypeOrmTicketRepository,
+    @Inject(EVENT_REPOSITORY)
+    private readonly eventRepository: IEventRepository,
   ) {}
+
+  /**
+   * GET /tickets/:id/download
+   * Download ticket as PNG with brutalist design
+   *
+   * @param id - Ticket ID
+   * @param res - Express response
+   * @returns PNG file stream
+   */
+  @Get(":id/download")
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: "Download ticket as PNG",
+    description: "Downloads a ticket with brutalist design as PNG file",
+  })
+  @ApiParam({
+    name: "id",
+    required: true,
+    description: "Ticket ID",
+    example: "9c53eb32-48db-4379-8eeb-6defb90b8f7c",
+  })
+  @ApiResponse({
+    status: 200,
+    description: "PNG file downloaded",
+    content: {
+      "image/png": {
+        schema: {
+          type: "string",
+          format: "binary",
+        },
+      },
+    },
+  })
+  @ApiResponse({
+    status: 404,
+    description: "Ticket not found",
+  })
+  async downloadTicketPNG(
+    @Param("id") id: string,
+    @Res() res: Response,
+  ): Promise<void> {
+    try {
+      // Get ticket from repository
+      const ticket = await this.ticketRepository.findById(id);
+      if (!ticket) {
+        throw new NotFoundException(`Ticket with ID ${id} not found`);
+      }
+
+      // Get event to retrieve event name
+      const event = await this.eventRepository.findById(ticket.eventId);
+      const eventName = event ? event.name : 'Event';
+
+      // Generate PNG using the same method as email attachments
+      const pngBuffer = await this.emailService['generateSimpleTicketPNG'](ticket, eventName);
+
+      // Set headers and send file
+      res.set({
+        'Content-Type': 'image/png',
+        'Content-Disposition': `attachment; filename="ticket-${ticket.code}.png"`,
+        'Content-Length': pngBuffer.length,
+      });
+
+      res.send(pngBuffer);
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      if (error instanceof Error) {
+        throw new BadRequestException(error.message);
+      }
+      throw error;
+    }
+  }
 
   /**
    * GET /tickets/user OR /tickets/me
