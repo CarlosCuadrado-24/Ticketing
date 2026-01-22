@@ -58,14 +58,14 @@
     <!-- Events Section -->
     <div class="flex-grow">
       <!-- Events Counter and Sort -->
-      <div class="mb-20 flex justify-between items-end mono border-b-[6px] border-white pb-4">
+      <div class="mb-12 flex justify-between items-end mono border-b-[6px] border-white pb-4">
         <div class="flex items-baseline gap-4">
-          <span class="text-8xl font-black leading-none">{{ events().length.toString().padStart(2, '0') }}</span>
-          <span class="text-xl text-primary font-bold">ENTITY_FOUND</span>
+          <span class="text-6xl font-black leading-none">{{ events().length.toString().padStart(2, '0') }}</span>
+          <span class="text-lg text-primary font-bold">ENTITY_FOUND</span>
         </div>
         <div class="text-right">
-          <p class="text-[10px] text-zinc-500 uppercase">sort_order</p>
-          <p class="text-lg font-bold">CHRONOLOGICAL</p>
+          <p class="text-[10px] text-zinc-500 uppercase">page_info</p>
+          <p class="text-lg font-bold">{{ currentPage() }} / {{ totalPages }}</p>
         </div>
       </div>
       
@@ -75,13 +75,13 @@
           <app-loading-spinner size="lg" message="LOADING_ENTITIES..."></app-loading-spinner>
         </div>
       } @else {
-        <!-- Events List -->
-        <div class="grid grid-cols-1 gap-32">
-          @for (event of events(); track event.id) {
+        <!-- Events Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 mb-16">
+          @for (event of paginatedEvents; track event.id) {
             <app-event-card [event]="event"></app-event-card>
           } @empty {
-            <div class="md:ml-40 max-w-xl">
-              <div class="brutalist-border-orange bg-zinc-900 p-12 relative overflow-hidden">
+            <div class="col-span-full">
+              <div class="brutalist-border-orange bg-zinc-900 p-12 relative overflow-hidden max-w-xl mx-auto">
                 <div class="halftone absolute inset-0 opacity-20"></div>
                 <div class="relative z-10 flex flex-col items-center text-center">
                   <span class="barcode text-white/20 text-6xl mb-6">NO_ENTITIES_FOUND</span>
@@ -92,6 +92,76 @@
             </div>
           }
         </div>
+        
+        <!-- Pagination Controls -->
+        @if (events().length > eventsPerPage) {
+          <div class="mt-16 flex flex-col items-center gap-8 pagination-container">
+            <!-- Page Info Banner -->
+            <div class="brutalist-border bg-black px-8 py-4">
+              <p class="mono text-primary font-bold text-center">
+                VIEWING {{ ((currentPage() - 1) * eventsPerPage + 1) }} - {{ Math.min(currentPage() * eventsPerPage, events().length) }} OF {{ events().length }} EVENTS
+              </p>
+            </div>
+            
+            <!-- Navigation Buttons -->
+            <div class="flex items-center gap-6">
+              <!-- Previous Button -->
+              <button 
+                (click)="previousPage()" 
+                [disabled]="currentPage() === 1"
+                [class.opacity-30]="currentPage() === 1"
+                [class.cursor-not-allowed]="currentPage() === 1"
+                class="brutalist-border bg-black px-8 py-4 hover:bg-primary hover:text-black transition-colors disabled:hover:bg-black disabled:hover:text-white">
+                <span class="mono font-bold text-xl">&lt; PREV</span>
+              </button>
+              
+              <!-- Page Numbers -->
+              <div class="flex gap-3">
+                @for (pageNum of pageNumbers; track pageNum) {
+                  @if (pageNum === 1 || pageNum === totalPages || (pageNum >= currentPage() - 1 && pageNum <= currentPage() + 1)) {
+                    <button 
+                      (click)="goToPage(pageNum)"
+                      [class.bg-primary]="currentPage() === pageNum"
+                      [class.text-black]="currentPage() === pageNum"
+                      [class.border-primary]="currentPage() === pageNum"
+                      class="brutalist-border bg-black w-14 h-14 hover:bg-primary hover:text-black transition-colors">
+                      <span class="mono font-black text-xl">{{ pageNum }}</span>
+                    </button>
+                  } @else if (pageNum === currentPage() - 2 || pageNum === currentPage() + 2) {
+                    <span class="mono text-white/30 font-bold text-2xl flex items-center">...</span>
+                  }
+                }
+              </div>
+              
+              <!-- Next Button -->
+              <button 
+                (click)="nextPage()" 
+                [disabled]="currentPage() === totalPages"
+                [class.opacity-30]="currentPage() === totalPages"
+                [class.cursor-not-allowed]="currentPage() === totalPages"
+                class="brutalist-border bg-black px-8 py-4 hover:bg-primary hover:text-black transition-colors disabled:hover:bg-black disabled:hover:text-white">
+                <span class="mono font-bold text-xl">NEXT &gt;</span>
+              </button>
+            </div>
+            
+            <!-- Quick Jump -->
+            <div class="text-center">
+              <p class="mono text-xs text-zinc-500 uppercase mb-2">Quick Navigation</p>
+              <div class="flex gap-2 justify-center">
+                <button 
+                  (click)="goToPage(1)"
+                  class="mono text-xs px-3 py-1 border-2 border-zinc-700 hover:border-primary hover:text-primary transition-colors">
+                  FIRST
+                </button>
+                <button 
+                  (click)="goToPage(totalPages)"
+                  class="mono text-xs px-3 py-1 border-2 border-zinc-700 hover:border-primary hover:text-primary transition-colors">
+                  LAST
+                </button>
+              </div>
+            </div>
+          </div>
+        }
       }
     </div>
   </div>

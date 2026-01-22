@@ -84,3 +84,31 @@
   z-index: -1;
   pointer-events: none;
 }
+
+/* Pagination Styles */
+.pagination-container button {
+  transition: all 0.2s ease-in-out;
+  font-family: 'Space Mono', monospace;
+}
+
+.pagination-container button:hover:not(:disabled) {
+  transform: translate(-2px, -2px);
+  box-shadow: 4px 4px 0px #FF4D00;
+}
+
+.pagination-container button:active:not(:disabled) {
+  transform: translate(0, 0);
+  box-shadow: 0px 0px 0px #FF4D00;
+}
+
+.pagination-container button:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* Grid responsive adjustments */
+@media (min-width: 1536px) {
+  .events-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

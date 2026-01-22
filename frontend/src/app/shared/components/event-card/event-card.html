@@ -1,72 +1,65 @@
 <div class="relative group">
-  <!-- Halftone Background Shadow -->
-  <div class="absolute -top-10 -left-10 w-full h-full bg-primary/20 halftone -z-10 border-[6px] border-primary"></div>
+  <!-- Halftone Background Shadow (más pequeña) -->
+  <div class="absolute -top-4 -left-4 w-full h-full bg-primary/20 halftone -z-10 border-[4px] border-primary"></div>
   
   <!-- Main Card Container -->
-  <div class="brutalist-border bg-black flex flex-col md:flex-row overflow-hidden">
-    <!-- Image Section -->
-    <div class="w-full md:w-1/2 relative h-[500px] overflow-hidden bg-zinc-800 border-r-[8px] border-white">
+  <div class="brutalist-border bg-black flex flex-col overflow-hidden">
+    <!-- Image Section (más pequeña) -->
+    <div class="w-full relative h-[280px] overflow-hidden bg-zinc-800 border-b-[6px] border-white">
       <img 
         [src]="getEventImage()" 
         [alt]="event.name" 
         class="w-full h-full object-cover xerox-effect group-hover:scale-110 transition-transform duration-1000"
       />
       
-      <!-- Live Badge -->
-      <div class="absolute top-6 left-6 flex flex-col gap-2">
-        <span class="industrial-tape text-xl">LIVE_FEED</span>
-        <span class="bg-black text-white px-2 py-1 mono text-[10px]">
+      <!-- Live Badge (más pequeño) -->
+      <div class="absolute top-3 left-3 flex flex-col gap-1">
+        <span class="industrial-tape text-sm">LIVE_FEED</span>
+        <span class="bg-black text-white px-2 py-1 mono text-[9px]">
           {{ getTotalAvailableTickets() }} AVAILABLE
         </span>
       </div>
     </div>
     
-    <!-- Content Section -->
-    <div class="w-full md:w-1/2 p-10 flex flex-col justify-between relative torn-edge bg-black">
-      <div class="space-y-6">
+    <!-- Content Section (más compacto) -->
+    <div class="w-full p-6 flex flex-col justify-between relative bg-black">
+      <div class="space-y-3">
         <!-- Date and Barcode -->
         <div class="flex justify-between items-start">
-          <p class="mono text-primary font-bold tracking-tighter text-2xl italic">
+          <p class="mono text-primary font-bold tracking-tighter text-base">
             {{ event.date | date: 'dd_MMM / HH:mm' }}
           </p>
-          <div class="barcode text-zinc-500 scale-50 origin-top-right">
-            E-{{ event.id.toString().padStart(4, '0') }}
+          <div class="barcode text-zinc-500 text-xs opacity-60">
+            E-{{ event.id.toString().substring(0, 6) }}
           </div>
         </div>
         
-        <!-- Event Title -->
-        <h3 class="distorted-title text-8xl md:text-9xl text-white uppercase group-hover:text-primary transition-colors">
+        <!-- Event Title (más pequeño) -->
+        <h3 class="distorted-title text-4xl text-white uppercase group-hover:text-primary transition-colors line-clamp-2">
           {{ event.name }}
         </h3>
         
-        <!-- Location -->
-        <div class="flex items-center gap-4 border-y-2 border-white/20 py-4 mono">
-          <span class="material-symbols-outlined text-primary">location_on</span>
-          <span class="text-sm font-bold uppercase">{{ event.location }}</span>
+        <!-- Location (más compacto) -->
+        <div class="flex items-center gap-2 border-y border-white/20 py-2 mono">
+          <span class="material-symbols-outlined text-primary text-sm">location_on</span>
+          <span class="text-xs font-bold uppercase line-clamp-1">{{ event.location }}</span>
         </div>
-        
-        <!-- Description Preview -->
-        @if (event.description) {
-          <p class="mono text-zinc-400 text-xs line-clamp-3">
-            {{ event.description }}
-          </p>
-        }
       </div>
       
-      <!-- Price and Action -->
-      <div class="mt-12 flex flex-col sm:flex-row items-stretch sm:items-end gap-6">
-        <div class="mono flex-grow">
-          <p class="text-xs text-zinc-500 uppercase mb-1">admission_fee</p>
-          <p class="text-5xl font-black text-primary">
+      <!-- Price and Action (más compacto) -->
+      <div class="mt-6 flex items-center justify-between gap-4">
+        <div class="mono">
+          <p class="text-[9px] text-zinc-500 uppercase mb-1">from</p>
+          <p class="text-2xl font-black text-primary">
             {{ getMinPrice() | currencyFormat }}
-            <span class="text-lg">COP</span>
+            <span class="text-sm">COP</span>
           </p>
         </div>
         <a 
           [routerLink]="['/event', event.id]"
-          class="bg-white text-black px-12 py-6 font-black text-2xl hover:bg-primary transition-all flex items-center justify-center gap-4 group/btn">
+          class="bg-white text-black px-6 py-3 font-black text-base hover:bg-primary transition-all flex items-center justify-center gap-2 group/btn whitespace-nowrap">
           EXECUTE
-          <span class="material-symbols-outlined font-black group-hover/btn:translate-x-2 transition-transform">bolt</span>
+          <span class="material-symbols-outlined text-lg font-black group-hover/btn:translate-x-1 transition-transform">bolt</span>
         </a>
       </div>
     </div>
