@@ -19,7 +19,12 @@ async function createAdminUser() {
   try {
     const adminUser = await adminService.createAdminUser(adminUserDto);
     console.log("✅ Admin user created successfully:");
-    console.log(`Email: ${adminUser.email.value}`);
+    const emailValue = typeof adminUser.email === "string"
+      ? adminUser.email
+      : (adminUser.email && typeof adminUser.email === 'object' && 'value' in adminUser.email
+        ? (adminUser.email as any).value
+        : String(adminUser.email));
+    console.log(`Email: ${emailValue}`);
     console.log(`Name: ${adminUser.firstName} ${adminUser.lastName}`);
     console.log(`Role: ${adminUser.role}`);
     console.log(`ID: ${adminUser.id}`);
