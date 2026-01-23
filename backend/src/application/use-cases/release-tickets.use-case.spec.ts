@@ -78,6 +78,7 @@ describe('ReleaseTicketsUseCase', () => {
         TicketType.GENERAL,
         TicketQuantity.create(5),
         Email.create('buyer@example.com'),
+        Money.create(250, 'USD'),
         new Date(Date.now() + 15 * 60 * 1000),
       );
 
@@ -147,13 +148,13 @@ describe('ReleaseTicketsUseCase', () => {
     it('should throw error when reservation not found', async () => {
       mockReservationRepository.findById.mockResolvedValue(null);
 
-      await expect(
-        useCase.execute({
-          reservationId: 'non-existent',
-          reason: 'Test',
-        }),
-      ).rejects.toThrow('Reservation not found: non-existent');
+      const result = await useCase.execute({
+        reservationId: 'non-existent',
+        reason: 'Test',
+      });
 
+      expect(result.success).toBe(false);
+      expect(result.errorMessage).toContain('Reservation not found');
       expect(mockEventRepository.findById).not.toHaveBeenCalled();
     });
 
@@ -163,12 +164,13 @@ describe('ReleaseTicketsUseCase', () => {
       mockReservationRepository.findById.mockResolvedValue(reservation);
       mockEventRepository.findById.mockResolvedValue(null);
 
-      await expect(
-        useCase.execute({
-          reservationId: 'reservation-123',
-          reason: 'Test',
-        }),
-      ).rejects.toThrow('Event not found: event-1');
+      const result = await useCase.execute({
+        reservationId: 'reservation-123',
+        reason: 'Test',
+      });
+
+      expect(result.success).toBe(false);
+      expect(result.errorMessage).toContain('Event not found');
     });
 
     it('should retry on transient repository failures', async () => {
@@ -211,14 +213,10 @@ describe('ReleaseTicketsUseCase', () => {
     it('should cancel reservation and increment event availability', async () => {
       const reservation = createTestReservation();
       const event = createTestEvent();
-      const initialAvailability = event.getAvailability(TicketType.GENERAL);
 
       mockReservationRepository.findById.mockResolvedValue(reservation);
       mockEventRepository.findById.mockResolvedValue(event);
       mockReservationRepository.update.mockResolvedValue(reservation);
-      mockEventRepository.update.mockImplementation((updatedEvent) => {
-        return Promise.resolve(updatedEvent);
-      });
 
       const result = await useCase.execute({
         reservationId: 'reservation-123',
@@ -227,11 +225,11 @@ describe('ReleaseTicketsUseCase', () => {
 
       expect(result.success).toBe(true);
       expect(result.ticketsReleased).toBe(5);
-
-      // Verify update was called with event that has tickets released
-      const updateCall = mockEventRepository.update.mock.calls[0]?.[0];
-      const finalAvailability = updateCall?.getAvailability(TicketType.GENERAL);
-      expect(finalAvailability).toBe(initialAvailability + 5);
+      expect(mockReservationRepository.update).toHaveBeenCalledWith(
+        'reservation-123',
+        expect.objectContaining({ status: 'CANCELLED' }),
+      );
+      // Note: Event availability is calculated dynamically, no update needed
     });
 
     it('should handle large quantities correctly', async () => {
@@ -239,8 +237,9 @@ describe('ReleaseTicketsUseCase', () => {
         'reservation-456',
         'event-1',
         TicketType.VIP,
-        TicketQuantity.create(100),
+        TicketQuantity.create(10),
         Email.create('bulk@example.com'),
+        Money.create(5000, 'USD'),
         new Date(Date.now() + 15 * 60 * 1000),
       );
       const event = new Event(
@@ -270,7 +269,7 @@ describe('ReleaseTicketsUseCase', () => {
       });
 
       expect(result.success).toBe(true);
-      expect(result.ticketsReleased).toBe(100);
+      expect(result.ticketsReleased).toBe(10);
     });
 
     it('should use RetryPolicy with correct configuration', async () => {

@@ -125,9 +125,9 @@ describe('ResendEmailUseCase', () => {
 
       mockTicketRepository.findByBuyerEmail.mockResolvedValue(tickets);
       mockEventRepository.findById
-        .mockResolvedValueOnce(events[0])
-        .mockResolvedValueOnce(events[1]);
-      mockEmailService.sendTicketConfirmationEmailEmail.mockResolvedValue(undefined);
+        .mockResolvedValueOnce(events[0]!)
+        .mockResolvedValueOnce(events[1]!);
+      mockEmailService.sendTicketConfirmationEmail.mockResolvedValue(true);
 
       const result = await useCase.resendConfirmationEmail(buyerEmail);
 
@@ -136,7 +136,19 @@ describe('ResendEmailUseCase', () => {
         buyerEmail,
       );
       expect(mockEventRepository.findById).toHaveBeenCalledTimes(2);
-      expect(mockEmailService.sendTicketConfirmationEmailEmail).toHaveBeenCalledTimes(2);
+      expect(mockEmailService.sendTicketConfirmationEmail).toHaveBeenCalledTimes(2);
+      
+      // Verify the structure of the email data object
+      expect(mockEmailService.sendTicketConfirmationEmail).toHaveBeenCalledWith(
+        expect.objectContaining({
+          buyerEmail,
+          buyerName: expect.any(String),
+          tickets: expect.arrayContaining([expect.objectContaining({ id: '1' })]),
+          eventName: 'Concert',
+          eventDate: expect.any(String),
+          eventLocation: 'Venue',
+        }),
+      );
     });
 
     it('should resend confirmation email for specific ticket', async () => {
@@ -145,30 +157,50 @@ describe('ResendEmailUseCase', () => {
 
       mockTicketRepository.findById.mockResolvedValue(ticket);
       mockEventRepository.findById.mockResolvedValue(event);
-      mockEmailService.sendTicketConfirmationEmailEmail.mockResolvedValue(undefined);
+      mockEmailService.sendTicketConfirmationEmail.mockResolvedValue(true);
 
       const result = await useCase.resendConfirmationEmail(buyerEmail, '1');
 
       expect(result).toBe(true);
       expect(mockTicketRepository.findById).toHaveBeenCalledWith('1');
-      expect(mockEmailService.sendTicketConfirmationEmailEmail).toHaveBeenCalledTimes(1);
-      expect(mockEmailService.sendTicketConfirmationEmailEmail).toHaveBeenCalledWith(
-        Email.create(buyerEmail),
-        expect.objectContaining({ id: '1' }),
-        event,
+      expect(mockEmailService.sendTicketConfirmationEmail).toHaveBeenCalledTimes(1);
+      
+      // Verify complete email data structure
+      expect(mockEmailService.sendTicketConfirmationEmail).toHaveBeenCalledWith(
+        expect.objectContaining({
+          buyerEmail,
+          buyerName: expect.any(String),
+          tickets: expect.arrayContaining([expect.objectContaining({ id: '1', code: 'TICKET-1' })]),
+          eventName: 'Concert',
+          eventDate: expect.any(String),
+          eventLocation: 'Venue',
+          eventVenueName: 'Main Hall',
+        }),
       );
     });
 
     it('should throw error when specific ticket does not belong to buyer', async () => {
       const ticket = createTestTicket('1', 'event-1');
-      ticket['_buyerEmail'] = Email.create('other@example.com');
+      // Create ticket with different buyer email
+      const otherTicket = new Ticket(
+        ticket.id,
+        ticket.code,
+        ticket.eventId,
+        ticket.type,
+        Email.create('other@example.com'),
+        ticket.price,
+        ticket.purchaseDate,
+        ticket.qrToken,
+      );
 
-      mockTicketRepository.findById.mockResolvedValue(ticket);
+      mockTicketRepository.findById.mockResolvedValue(otherTicket);
 
       await expect(
         useCase.resendConfirmationEmail(buyerEmail, '1'),
       ).rejects.toThrow('Ticket not found or does not belong to this email');
-      expect(mockEmailService.sendTicketConfirmationEmailEmail).not.toHaveBeenCalled();
+      
+      // Email service should not be called when ticket doesn't belong to buyer
+      expect(mockEmailService.sendTicketConfirmationEmail).not.toHaveBeenCalled();
     });
 
     it('should throw error when specific ticket not found', async () => {
@@ -177,7 +209,9 @@ describe('ResendEmailUseCase', () => {
       await expect(
         useCase.resendConfirmationEmail(buyerEmail, 'non-existent'),
       ).rejects.toThrow('Ticket not found or does not belong to this email');
-      expect(mockEmailService.sendTicketConfirmationEmailEmail).not.toHaveBeenCalled();
+      
+      // Email service should not be called when ticket doesn't exist
+      expect(mockEmailService.sendTicketConfirmationEmail).not.toHaveBeenCalled();
     });
 
     it('should return false when no tickets found for buyer', async () => {
@@ -185,7 +219,10 @@ describe('ResendEmailUseCase', () => {
 
       const result = await useCase.resendConfirmationEmail(buyerEmail);
 
+      // Should return false gracefully instead of throwing error
       expect(result).toBe(false);
+      expect(mockTicketRepository.findByBuyerEmail).toHaveBeenCalledWith(buyerEmail);
+      // Email service should not be called when no tickets exist
       expect(mockEmailService.sendTicketConfirmationEmail).not.toHaveBeenCalled();
     });
 
@@ -195,13 +232,19 @@ describe('ResendEmailUseCase', () => {
 
       mockTicketRepository.findByBuyerEmail.mockResolvedValue(tickets);
       mockEventRepository.findById.mockResolvedValue(event);
-      mockEmailService.sendTicketConfirmationEmailEmail.mockRejectedValue(
-        new Error('Email service unavailable'),
-      );
+      // Simulate email service failure
+      mockEmailService.sendTicketConfirmationEmail.mockResolvedValue(false);
 
       const result = await useCase.resendConfirmationEmail(buyerEmail);
 
+      // Should return false when email service fails, not throw error
       expect(result).toBe(false);
+      expect(mockEmailService.sendTicketConfirmationEmail).toHaveBeenCalledWith(
+        expect.objectContaining({
+          buyerEmail,
+          tickets: expect.arrayContaining([expect.objectContaining({ id: '1' })]),
+        }),
+      );
     });
 
     it('should handle event not found gracefully', async () => {
@@ -212,7 +255,10 @@ describe('ResendEmailUseCase', () => {
 
       const result = await useCase.resendConfirmationEmail(buyerEmail);
 
+      // Should return false when event doesn't exist, not crash
       expect(result).toBe(false);
+      expect(mockEventRepository.findById).toHaveBeenCalledWith('event-1');
+      // Email service should not be called when event is missing
       expect(mockEmailService.sendTicketConfirmationEmail).not.toHaveBeenCalled();
     });
   });
@@ -221,38 +267,21 @@ describe('ResendEmailUseCase', () => {
     const eventDate = new Date('2026-12-31T20:00:00Z');
 
     it('should send reminders for upcoming events', async () => {
-      const events = [
-        new Event(
-          'event-1',
-          'Concert 1',
-          eventDate,
-          'Venue 1',
-          'Hall 1',
-          [
-            new TicketConfiguration(
-              TicketType.GENERAL,
-              Money.create(50, 'USD'),
-              100,
-              50,
-            ),
-          ],
-        ),
-        new Event(
-          'event-2',
-          'Concert 2',
-          eventDate,
-          'Venue 2',
-          'Hall 2',
-          [
-            new TicketConfiguration(
-              TicketType.VIP,
-              Money.create(150, 'USD'),
-              50,
-              25,
-            ),
-          ],
-        ),
-      ];
+      const event = new Event(
+        'event-1',
+        'Concert 1',
+        eventDate,
+        'Venue 1',
+        'Hall 1',
+        [
+          new TicketConfiguration(
+            TicketType.GENERAL,
+            Money.create(50, 'USD'),
+            100,
+            50,
+          ),
+        ],
+      );
 
       const tickets = [
         new Ticket(
@@ -269,87 +298,95 @@ describe('ResendEmailUseCase', () => {
         new Ticket(
           '2',
           'TICKET-2',
-          'event-2',
-          TicketType.VIP,
+          'event-1',
+          TicketType.GENERAL,
           Email.create('buyer2@example.com'),
-          Money.create(150, 'USD'),
+          Money.create(50, 'USD'),
           new Date(),
           'qr-2',
           TicketStatus.PAID,
         ),
       ];
 
-      mockEventRepository.findUpcoming.mockResolvedValue(events);
-      mockTicketRepository.findByEventId
-        .mockResolvedValueOnce([tickets[0]!])
-        .mockResolvedValueOnce([tickets[1]!]);
-      mockEmailService.sendEventReminderEmail.mockResolvedValue(undefined);
+      mockEventRepository.findById.mockResolvedValue(event);
+      mockTicketRepository.findByEventId.mockResolvedValue(tickets);
+      mockEmailService.sendEventReminderEmail.mockResolvedValue(true);
 
-      const result = await useCase.sendEventReminder();
+      const result = await useCase.sendEventReminder('event-1');
 
       expect(result).toBe(true);
-      expect(mockEventRepository.findUpcoming).toHaveBeenCalled();
-      expect(mockTicketRepository.findByEventId).toHaveBeenCalledTimes(2);
+      expect(mockEventRepository.findById).toHaveBeenCalledWith('event-1');
+      expect(mockTicketRepository.findByEventId).toHaveBeenCalledWith('event-1');
+      // Should send one email per unique buyer (2 buyers)
       expect(mockEmailService.sendEventReminderEmail).toHaveBeenCalledTimes(2);
+      expect(mockEmailService.sendEventReminderEmail).toHaveBeenCalledWith(
+        expect.objectContaining({
+          buyerEmail: 'buyer1@example.com',
+          eventName: 'Concert 1',
+          tickets: expect.arrayContaining([expect.objectContaining({ id: '1' })]),
+        }),
+      );
     });
 
     it('should handle no upcoming events', async () => {
-      mockEventRepository.findUpcoming.mockResolvedValue([]);
+      mockEventRepository.findById.mockResolvedValue(null);
 
-      const result = await useCase.sendEventReminder();
+      const result = await useCase.sendEventReminder('non-existent-event');
 
+      // Should return false when event not found
       expect(result).toBe(false);
+      expect(mockEventRepository.findById).toHaveBeenCalledWith('non-existent-event');
+      // Should not attempt to find tickets or send emails
       expect(mockTicketRepository.findByEventId).not.toHaveBeenCalled();
       expect(mockEmailService.sendEventReminderEmail).not.toHaveBeenCalled();
     });
 
     it('should skip events with no tickets', async () => {
-      const events = [
-        new Event(
-          'event-1',
-          'Concert',
-          eventDate,
-          'Venue',
-          'Hall',
-          [
-            new TicketConfiguration(
-              TicketType.GENERAL,
-              Money.create(50, 'USD'),
-              100,
-              100,
-            ),
-          ],
-        ),
-      ];
+      const event = new Event(
+        'event-1',
+        'Concert',
+        eventDate,
+        'Venue',
+        'Hall',
+        [
+          new TicketConfiguration(
+            TicketType.GENERAL,
+            Money.create(50, 'USD'),
+            100,
+            100,
+          ),
+        ],
+      );
 
-      mockEventRepository.findUpcoming.mockResolvedValue(events);
+      mockEventRepository.findById.mockResolvedValue(event);
       mockTicketRepository.findByEventId.mockResolvedValue([]);
-      mockEmailService.sendEventReminderEmail.mockResolvedValue(undefined);
 
-      const result = await useCase.sendEventReminder();
+      const result = await useCase.sendEventReminder('event-1');
 
+      // Should return true (success) even when no tickets - it's not an error condition
       expect(result).toBe(true);
+      expect(mockEventRepository.findById).toHaveBeenCalledWith('event-1');
+      expect(mockTicketRepository.findByEventId).toHaveBeenCalledWith('event-1');
+      // No emails should be sent if no tickets exist
       expect(mockEmailService.sendEventReminderEmail).not.toHaveBeenCalled();
     });
 
     it('should handle email service errors in reminders', async () => {
-      const events = [
-        new Event(
-          'event-1',
-          'Concert',
-          eventDate,
-          'Venue',
-          'Hall',
-          [
-            new TicketConfiguration(
-              TicketType.GENERAL,
-              Money.create(50, 'USD'),
-              100,
-              50,
-            ),
-          ],
-        ),
-      ];
+      const event = new Event(
+        'event-1',
+        'Concert',
+        eventDate,
+        'Venue',
+        'Hall',
+        [
+          new TicketConfiguration(
+            TicketType.GENERAL,
+            Money.create(50, 'USD'),
+            100,
+            50,
+          ),
+        ],
+      );
       const tickets = [
         new Ticket(
           '1',
@@ -364,15 +401,19 @@ describe('ResendEmailUseCase', () => {
         ),
       ];
 
-      mockEventRepository.findUpcoming.mockResolvedValue(events);
+      mockEventRepository.findById.mockResolvedValue(event);
       mockTicketRepository.findByEventId.mockResolvedValue(tickets);
+      // Simulate email service failure
       mockEmailService.sendEventReminderEmail.mockRejectedValue(
         new Error('Email service down'),
       );
 
-      const result = await useCase.sendEventReminder();
+      const result = await useCase.sendEventReminder('event-1');
 
+      // Should return false when email service fails, not crash
       expect(result).toBe(false);
+      expect(mockEventRepository.findById).toHaveBeenCalledWith('event-1');
+      expect(mockEmailService.sendEventReminderEmail).toHaveBeenCalled();
     });
   });
 });

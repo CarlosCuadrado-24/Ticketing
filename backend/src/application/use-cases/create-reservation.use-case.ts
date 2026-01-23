@@ -122,17 +122,19 @@ export class CreateReservationUseCase {
       input.ticketType,
     );
 
-    // Broadcast availability update via WebSocket
+    // Broadcast availability update via WebSocket (only if service is available)
     console.log(
       `📡 [CreateReservation] Broadcasting availability update: ${newAvailability} remaining for ${input.ticketType}`,
     );
-    this.ticketAvailabilityService.broadcastAvailabilityUpdate({
-      eventId: input.eventId,
-      ticketType: input.ticketType,
-      availableQuantity: newAvailability,
-      totalQuantity: ticketConfig.totalQuantity,
-      timestamp: new Date().toISOString(),
-    });
+    if (this.ticketAvailabilityService?.broadcastAvailabilityUpdate) {
+      this.ticketAvailabilityService.broadcastAvailabilityUpdate({
+        eventId: input.eventId,
+        ticketType: input.ticketType,
+        availableQuantity: newAvailability,
+        totalQuantity: ticketConfig.totalQuantity,
+        timestamp: new Date().toISOString(),
+      });
+    }
 
     return savedReservation;
   }

@@ -156,7 +156,7 @@ export class ReleaseTicketsUseCase {
       throw new Error("Reservation ID is required and cannot be empty");
     }
 
-    if (input.reason === undefined || input.reason === null) {
+    if (!input.reason || input.reason.trim().length === 0) {
       throw new Error("Reason is required");
     }
   }

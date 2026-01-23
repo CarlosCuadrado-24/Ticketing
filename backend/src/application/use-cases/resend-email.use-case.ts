@@ -62,7 +62,7 @@ export class ResendEmailUseCase {
           console.log(
             `❌ [ResendEmailUseCase] No se encontraron tickets para: ${email}`,
           );
-          throw new Error("No tickets found for this email");
+          return false; // No tickets found, return false instead of throwing
         }
       }
 
@@ -126,7 +126,8 @@ export class ResendEmailUseCase {
       // Get event information
       const event = await this.eventRepository.findById(eventId);
       if (!event) {
-        throw new Error("Event not found");
+        console.error(`Event ${eventId} not found`);
+        return false;
       }
 
       // Get tickets for the event
@@ -137,12 +138,16 @@ export class ResendEmailUseCase {
           await this.ticketRepository.findByBuyerEmail(specificEmail);
         tickets = allTickets.filter((ticket) => ticket.eventId === eventId);
         if (tickets.length === 0) {
-          throw new Error("No tickets found for this email and event");
+          console.warn(
+            `No tickets found for email ${specificEmail} and event ${eventId}`,
+          );
+          return false;
         }
       } else {
-        tickets = await this.ticketRepository.findByEvent(eventId);
+        tickets = await this.ticketRepository.findByEventId(eventId);
         if (tickets.length === 0) {
-          throw new Error("No tickets found for this event");
+          console.warn(`No tickets found for event ${eventId}`);
+          return true; // Not an error, just no tickets to send reminders for
         }
       }
 
@@ -160,20 +165,30 @@ export class ResendEmailUseCase {
       let allSuccessful = true;
       for (const [buyerEmail, buyerTickets] of ticketsByBuyer) {
         const buyerName = this.extractNameFromEmail(buyerEmail);
-        const success = await this.emailService.sendEventReminderEmail({
-          buyerEmail,
-          buyerName,
-          tickets: buyerTickets,
-          eventName: event.name,
-          eventDate: event.date.toISOString(),
-          eventLocation: event.location,
-          eventVenueName: event.venueName || undefined,
-          eventStartTime: undefined, // Event entity doesn't have startTime
-          eventEndTime: undefined, // Event entity doesn't have endTime
-          eventImage: event.imageUrl || undefined,
-        });
+        try {
+          const success = await this.emailService.sendEventReminderEmail({
+            buyerEmail,
+            buyerName,
+            tickets: buyerTickets,
+            eventName: event.name,
+            eventDate: event.date.toISOString(),
+            eventLocation: event.location,
+            eventVenueName: event.venueName || undefined,
+            eventStartTime: undefined, // Event entity doesn't have startTime
+            eventEndTime: undefined, // Event entity doesn't have endTime
+            eventImage: event.imageUrl || undefined,
+          });
 
-        if (!success) {
+          if (!success) {
+            allSuccessful = false;
+          }
+        } catch (error) {
+          const errorMessage =
+            error instanceof Error ? error.message : String(error);
+          console.error(
+            `Failed to send reminder to ${buyerEmail}:`,
+            errorMessage,
+          );
           allSuccessful = false;
         }
       }
@@ -181,7 +196,7 @@ export class ResendEmailUseCase {
       return allSuccessful;
     } catch (error) {
       console.error("Error sending event reminders:", error);
-      throw error;
+      return false;
     }
   }
 

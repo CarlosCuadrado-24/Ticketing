@@ -160,8 +160,7 @@ describe('ProcessPaymentUseCase', () => {
       mockEventRepository.findById.mockResolvedValue(event);
       mockPaymentGateway.processPayment.mockResolvedValue({
         success: true,
-        transactionId: 'txn-456',
-      });
+        transactionId: 'txn-456',        processedAt: new Date(),      });
       mockTicketRepository.saveMany.mockResolvedValue([]);
       mockReservationRepository.update.mockResolvedValue(reservation);
       mockEmailService.sendTicketConfirmationEmail.mockResolvedValue(true);
@@ -288,8 +287,7 @@ describe('ProcessPaymentUseCase', () => {
       mockEventRepository.findById.mockResolvedValue(event);
       mockPaymentGateway.processPayment.mockResolvedValue({
         success: true,
-        transactionId: 'txn-456',
-      });
+        transactionId: 'txn-456',        processedAt: new Date(),      });
       mockTicketRepository.saveMany.mockImplementation((tickets) =>
         Promise.resolve(tickets),
       );
@@ -399,6 +397,7 @@ describe('ProcessPaymentUseCase', () => {
       mockPaymentGateway.processPayment.mockResolvedValue({
         success: true,
         transactionId: 'txn-456',
+        processedAt: new Date(),
       });
       mockTicketRepository.saveMany.mockResolvedValue([]);
       mockReservationRepository.update.mockResolvedValue(reservation);
@@ -480,6 +479,7 @@ describe('ProcessPaymentUseCase', () => {
       mockPaymentGateway.processPayment.mockResolvedValue({
         success: true,
         transactionId: 'txn-789',
+        processedAt: new Date(),
       });
       mockTicketRepository.saveMany.mockImplementation((tickets) =>
         Promise.resolve(tickets),
