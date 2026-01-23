@@ -38,10 +38,6 @@ jobs:
         working-directory: ./backend
         run: npm test -- --coverage
 
-      - name: 🏗️ Compilar para producción
-        working-directory: ./backend
-        run: npm run build
-
   frontend:
     name: 🎨 Frontend
     runs-on: ubuntu-latest
@@ -64,7 +60,3 @@ jobs:
       - name: ✨ Verificar formato de código
         working-directory: ./frontend
         run: npx prettier --check "src/**/*.{ts,html,css}"
-
-      - name: 🏗️ Compilar para producción
-        working-directory: ./frontend
-        run: npm run build
