@@ -151,8 +151,8 @@ describe("RegisterDto", () => {
 
       const errors = await validate(dto);
       expect(errors).toHaveLength(4);
-      
-      const properties = errors.map(error => error.property);
+
+      const properties = errors.map((error) => error.property);
       expect(properties).toContain("email");
       expect(properties).toContain("password");
       expect(properties).toContain("firstName");

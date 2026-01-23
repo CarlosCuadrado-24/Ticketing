@@ -3,7 +3,6 @@ import { Event } from "../../domain/entities/event.entity";
 import { TicketConfiguration } from "../../domain/entities/ticket-configuration.entity";
 import { IEventRepository } from "../../domain/interfaces/event-repository.interface";
 import { EVENT_REPOSITORY } from "../../domain/interfaces/repository-tokens";
-import { Money } from "../../domain/value-objects/money.vo";
 
 /**
  * GetAllEventsUseCase

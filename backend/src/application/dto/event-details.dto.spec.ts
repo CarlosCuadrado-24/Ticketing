@@ -280,8 +280,8 @@ describe("EventDetailsDto", () => {
 
       const errors = await validate(dto);
       expect(errors).toHaveLength(4);
-      
-      const properties = errors.map(error => error.property);
+
+      const properties = errors.map((error) => error.property);
       expect(properties).toContain("foodSale");
       expect(properties).toContain("liquorSale");
       expect(properties).toContain("reducedMobilityAccess");
@@ -302,8 +302,8 @@ describe("EventDetailsDto", () => {
 
       const errors = await validate(dto);
       expect(errors).toHaveLength(8);
-      
-      const properties = errors.map(error => error.property);
+
+      const properties = errors.map((error) => error.property);
       expect(properties).toContain("category");
       expect(properties).toContain("minAge");
       expect(properties).toContain("seating");

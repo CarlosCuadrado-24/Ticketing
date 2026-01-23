@@ -1,11 +1,11 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { GetUsersUseCase } from './get-users.use-case';
-import { IUserRepository } from '../../domain/interfaces/user-repository.interface';
-import { USER_REPOSITORY } from '../../domain/interfaces/repository-tokens';
-import { UserRole } from '../../domain/enums/user-role.enum';
-import { Email } from '../../domain/value-objects/email.vo';
+import { Test, TestingModule } from "@nestjs/testing";
+import { GetUsersUseCase } from "./get-users.use-case";
+import { IUserRepository } from "../../domain/interfaces/user-repository.interface";
+import { USER_REPOSITORY } from "../../domain/interfaces/repository-tokens";
+import { UserRole } from "../../domain/enums/user-role.enum";
+import { Email } from "../../domain/value-objects/email.vo";
 
-describe('GetUsersUseCase', () => {
+describe("GetUsersUseCase", () => {
   let useCase: GetUsersUseCase;
   let mockUserRepository: jest.Mocked<IUserRepository>;
 
@@ -39,25 +39,25 @@ describe('GetUsersUseCase', () => {
     jest.clearAllMocks();
   });
 
-  describe('execute', () => {
-    it('should return paginated users without passwords', async () => {
+  describe("execute", () => {
+    it("should return paginated users without passwords", async () => {
       const query = { page: 1, limit: 10 };
       const mockUsers = [
         {
-          id: '1',
-          email: Email.create('user1@test.com'),
-          firstName: 'User',
-          lastName: 'One',
-          passwordHash: 'hashed_password_1',
+          id: "1",
+          email: Email.create("user1@test.com"),
+          firstName: "User",
+          lastName: "One",
+          passwordHash: "hashed_password_1",
           role: UserRole.BUYER,
           createdAt: new Date(),
         },
         {
-          id: '2',
-          email: Email.create('user2@test.com'),
-          firstName: 'User',
-          lastName: 'Two',
-          passwordHash: 'hashed_password_2',
+          id: "2",
+          email: Email.create("user2@test.com"),
+          firstName: "User",
+          lastName: "Two",
+          passwordHash: "hashed_password_2",
           role: UserRole.BUYER,
           createdAt: new Date(),
         },
@@ -69,8 +69,8 @@ describe('GetUsersUseCase', () => {
       const result = await useCase.execute(query);
 
       expect(result.data).toHaveLength(2);
-      expect(result.data[0]).not.toHaveProperty('passwordHash');
-      expect(result.data[1]).not.toHaveProperty('passwordHash');
+      expect(result.data[0]).not.toHaveProperty("passwordHash");
+      expect(result.data[1]).not.toHaveProperty("passwordHash");
       expect(result.pagination).toEqual({
         page: 1,
         limit: 10,
@@ -86,13 +86,13 @@ describe('GetUsersUseCase', () => {
       });
     });
 
-    it('should apply filters correctly', async () => {
+    it("should apply filters correctly", async () => {
       const query = {
         page: 2,
         limit: 5,
-        email: 'test@test.com',
+        email: "test@test.com",
         role: UserRole.ADMIN,
-        search: 'admin',
+        search: "admin",
       };
 
       mockUserRepository.findWithFilters.mockResolvedValue([]);
@@ -101,21 +101,21 @@ describe('GetUsersUseCase', () => {
       const result = await useCase.execute(query);
 
       expect(mockUserRepository.findWithFilters).toHaveBeenCalledWith({
-        email: 'test@test.com',
+        email: "test@test.com",
         role: UserRole.ADMIN,
-        search: 'admin',
+        search: "admin",
         limit: 5,
         offset: 5,
       });
       expect(mockUserRepository.countWithFilters).toHaveBeenCalledWith({
-        email: 'test@test.com',
+        email: "test@test.com",
         role: UserRole.ADMIN,
-        search: 'admin',
+        search: "admin",
       });
       expect(result.data).toEqual([]);
     });
 
-    it('should calculate pagination correctly for multiple pages', async () => {
+    it("should calculate pagination correctly for multiple pages", async () => {
       const query = { page: 3, limit: 10 };
 
       mockUserRepository.findWithFilters.mockResolvedValue([]);
@@ -135,7 +135,7 @@ describe('GetUsersUseCase', () => {
       });
     });
 
-    it('should use default values when page and limit not provided', async () => {
+    it("should use default values when page and limit not provided", async () => {
       const query = {};
 
       mockUserRepository.findWithFilters.mockResolvedValue([]);

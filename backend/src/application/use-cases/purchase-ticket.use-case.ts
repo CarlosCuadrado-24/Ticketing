@@ -56,7 +56,7 @@ export class PurchaseTicketUseCase {
     });
 
     // Use database transaction to ensure atomicity
-    const result = await this.dataSource.transaction(async (manager) => {
+    const result = await this.dataSource.transaction(async (_manager) => {
       console.log("🔒 [PurchaseTicketUseCase] Iniciando transacción...");
 
       // 1. Validate event exists (without lock for now, we'll add proper locking later)
@@ -206,9 +206,9 @@ export class PurchaseTicketUseCase {
    * In production, this would integrate with Stripe, PayPal, etc.
    */
   private async processPayment(
-    amount: number,
-    currency: string,
-    paymentInfo: { cardNumber: string; expiryDate: string; cvv: string },
+    _amount: number,
+    _currency: string,
+    _paymentInfo: { cardNumber: string; expiryDate: string; cvv: string },
   ): Promise<boolean> {
     // Simulate payment processing
     // In real implementation: call payment gateway API

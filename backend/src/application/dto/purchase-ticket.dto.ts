@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   IsString,
   IsUUID,
@@ -7,6 +8,7 @@ import {
   Min,
   IsNotEmpty,
 } from "class-validator";
+/* eslint-enable @typescript-eslint/no-unused-vars */
 import { ApiProperty } from "@nestjs/swagger";
 import { TicketType } from "../../domain/value-objects/ticket-type.vo";
 

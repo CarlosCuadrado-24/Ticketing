@@ -1,72 +1,72 @@
-import { Event } from './event.entity';
-import { TicketConfiguration } from './ticket-configuration.entity';
-import { TicketType } from '../value-objects/ticket-type.vo';
-import { Money } from '../value-objects/money.vo';
-import { TicketTypeNotFoundException } from '../exceptions/ticket-type-not-found.exception';
-import { InsufficientTicketsException } from '../exceptions/insufficient-tickets.exception';
+import { Event } from "./event.entity";
+import { TicketConfiguration } from "./ticket-configuration.entity";
+import { TicketType } from "../value-objects/ticket-type.vo";
+import { Money } from "../value-objects/money.vo";
+import { TicketTypeNotFoundException } from "../exceptions/ticket-type-not-found.exception";
+import { InsufficientTicketsException } from "../exceptions/insufficient-tickets.exception";
 
-describe('Event Entity', () => {
-  const eventDate = new Date('2026-12-31T20:00:00Z');
+describe("Event Entity", () => {
+  const eventDate = new Date("2026-12-31T20:00:00Z");
 
   const createTestEvent = () =>
     new Event(
-      'event-1',
-      'Rock Concert',
+      "event-1",
+      "Rock Concert",
       eventDate,
-      'Madison Square Garden',
-      'Main Arena',
+      "Madison Square Garden",
+      "Main Arena",
       [
         new TicketConfiguration(
           TicketType.GENERAL,
-          Money.create(50, 'USD'),
+          Money.create(50, "USD"),
           100,
           70,
         ),
         new TicketConfiguration(
           TicketType.VIP,
-          Money.create(150, 'USD'),
+          Money.create(150, "USD"),
           50,
           25,
         ),
       ],
-      'https://example.com/image.jpg',
-      'Amazing concert',
+      "https://example.com/image.jpg",
+      "Amazing concert",
       [],
-      'organizer-123',
+      "organizer-123",
     );
 
-  describe('constructor', () => {
-    it('should create event with all required properties', () => {
+  describe("constructor", () => {
+    it("should create event with all required properties", () => {
       const event = createTestEvent();
 
-      expect(event.id).toBe('event-1');
-      expect(event.name).toBe('Rock Concert');
+      expect(event.id).toBe("event-1");
+      expect(event.name).toBe("Rock Concert");
       expect(event.date).toEqual(eventDate);
-      expect(event.location).toBe('Madison Square Garden');
-      expect(event.venueName).toBe('Main Arena');
+      expect(event.location).toBe("Madison Square Garden");
+      expect(event.venueName).toBe("Main Arena");
       expect(event.ticketConfigurations).toHaveLength(2);
     });
 
-    it('should create event with optional properties', () => {
+    it("should create event with optional properties", () => {
       const event = createTestEvent();
 
-      expect(event.imageUrl).toBe('https://example.com/image.jpg');
-      expect(event.description).toBe('Amazing concert');
+      expect(event.imageUrl).toBe("https://example.com/image.jpg");
+      expect(event.description).toBe("Amazing concert");
       expect(event.details).toEqual([]);
-      expect(event.createdBy).toBe('organizer-123');
+      expect(event.createdBy).toBe("organizer-123");
     });
 
-    it('should create event without optional properties', () => {
+    it("should create event without optional properties", () => {
       const event = new Event(
-        'event-2',
-        'Simple Event',
+        "event-2",
+        "Simple Event",
         eventDate,
-        'Location',
-        'Venue',
+        "Location",
+        "Venue",
         [
           new TicketConfiguration(
             TicketType.GENERAL,
-            Money.create(30, 'USD'),
+            Money.create(30, "USD"),
             50,
             50,
           ),
@@ -80,8 +80,8 @@ describe('Event Entity', () => {
     });
   });
 
-  describe('ticketConfigurations getter', () => {
-    it('should return readonly copy of configurations', () => {
+  describe("ticketConfigurations getter", () => {
+    it("should return readonly copy of configurations", () => {
       const event = createTestEvent();
       const configs = event.ticketConfigurations;
 
@@ -90,7 +90,7 @@ describe('Event Entity', () => {
       expect(configs[1]?.type).toBe(TicketType.VIP);
     });
 
-    it('should prevent external modification of array', () => {
+    it("should prevent external modification of array", () => {
       const event = createTestEvent();
       const configs = event.ticketConfigurations as any;
 
@@ -98,7 +98,7 @@ describe('Event Entity', () => {
         configs.push(
           new TicketConfiguration(
             TicketType.EARLY_BIRD,
-            Money.create(40, 'USD'),
+            Money.create(40, "USD"),
             20,
             20,
           ),
@@ -109,7 +109,7 @@ describe('Event Entity', () => {
       expect(event.ticketConfigurations).toHaveLength(2);
     });
 
-    it('should return new array instance each time', () => {
+    it("should return new array instance each time", () => {
       const event = createTestEvent();
 
       const configs1 = event.ticketConfigurations;
@@ -120,21 +120,21 @@ describe('Event Entity', () => {
     });
   });
 
-  describe('getAvailability', () => {
-    it('should return correct availability for existing ticket type', () => {
+  describe("getAvailability", () => {
+    it("should return correct availability for existing ticket type", () => {
       const event = createTestEvent();
 
       expect(event.getAvailability(TicketType.GENERAL)).toBe(70);
       expect(event.getAvailability(TicketType.VIP)).toBe(25);
     });
 
-    it('should return 0 for non-existent ticket type', () => {
+    it("should return 0 for non-existent ticket type", () => {
       const event = createTestEvent();
 
       expect(event.getAvailability(TicketType.EARLY_BIRD)).toBe(0);
     });
 
-    it('should reflect changes after reserving tickets', () => {
+    it("should reflect changes after reserving tickets", () => {
       const event = createTestEvent();
       const initialAvailability = event.getAvailability(TicketType.GENERAL);
 
@@ -145,7 +145,7 @@ describe('Event Entity', () => {
       );
     });
 
-    it('should reflect changes after releasing tickets', () => {
+    it("should reflect changes after releasing tickets", () => {
       const event = createTestEvent();
       const initialAvailability = event.getAvailability(TicketType.VIP);
 
@@ -157,8 +157,8 @@ describe('Event Entity', () => {
     });
   });
 
-  describe('reserveTickets', () => {
-    it('should decrease availability when reserving tickets', () => {
+  describe("reserveTickets", () => {
+    it("should decrease availability when reserving tickets", () => {
       const event = createTestEvent();
       const initialAvailability = event.getAvailability(TicketType.GENERAL);
 
@@ -169,7 +169,7 @@ describe('Event Entity', () => {
       );
     });
 
-    it('should throw error for non-existent ticket type', () => {
+    it("should throw error for non-existent ticket type", () => {
       const event = createTestEvent();
 
       expect(() => {
@@ -177,7 +177,7 @@ describe('Event Entity', () => {
       }).toThrow(TicketTypeNotFoundException);
     });
 
-    it('should throw error when insufficient tickets available', () => {
+    it("should throw error when insufficient tickets available", () => {
       const event = createTestEvent();
 
       expect(() => {
@@ -185,7 +185,7 @@ describe('Event Entity', () => {
       }).toThrow(InsufficientTicketsException);
     });
 
-    it('should handle multiple reservations', () => {
+    it("should handle multiple reservations", () => {
       const event = createTestEvent();
       const initialAvailability = event.getAvailability(TicketType.GENERAL);
 
@@ -197,7 +197,7 @@ describe('Event Entity', () => {
       );
     });
 
-    it('should reserve exact available quantity', () => {
+    it("should reserve exact available quantity", () => {
       const event = createTestEvent();
       const availability = event.getAvailability(TicketType.VIP);
 
@@ -207,8 +207,8 @@ describe('Event Entity', () => {
     });
   });
 
-  describe('releaseTickets', () => {
-    it('should increase availability when releasing tickets', () => {
+  describe("releaseTickets", () => {
+    it("should increase availability when releasing tickets", () => {
       const event = createTestEvent();
       const initialAvailability = event.getAvailability(TicketType.GENERAL);
 
@@ -219,7 +219,7 @@ describe('Event Entity', () => {
       );
     });
 
-    it('should not throw error for non-existent ticket type', () => {
+    it("should not throw error for non-existent ticket type", () => {
       const event = createTestEvent();
 
       expect(() => {
@@ -227,7 +227,7 @@ describe('Event Entity', () => {
       }).not.toThrow();
     });
 
-    it('should handle release after reserve', () => {
+    it("should handle release after reserve", () => {
       const event = createTestEvent();
       const initialAvailability = event.getAvailability(TicketType.VIP);
 
@@ -237,9 +237,9 @@ describe('Event Entity', () => {
       expect(event.getAvailability(TicketType.VIP)).toBe(initialAvailability);
     });
 
-    it('should allow releasing more than total capacity', () => {
+    it("should allow releasing more than total capacity", () => {
       const event = createTestEvent();
-      const initialAvailability = event.getAvailability(TicketType.GENERAL);
+      const _initialAvailability = event.getAvailability(TicketType.GENERAL);
 
       event.releaseTickets(TicketType.GENERAL, 200);
 
@@ -247,7 +247,7 @@ describe('Event Entity', () => {
       expect(event.getAvailability(TicketType.GENERAL)).toBe(100);
     });
 
-    it('should handle multiple releases', () => {
+    it("should handle multiple releases", () => {
       const event = createTestEvent();
       const initialAvailability = event.getAvailability(TicketType.VIP);
 
@@ -260,8 +260,8 @@ describe('Event Entity', () => {
     });
   });
 
-  describe('complex scenarios', () => {
-    it('should handle reserve and release cycles correctly', () => {
+  describe("complex scenarios", () => {
+    it("should handle reserve and release cycles correctly", () => {
       const event = createTestEvent();
       const initialAvailability = event.getAvailability(TicketType.GENERAL);
 
@@ -281,7 +281,7 @@ describe('Event Entity', () => {
       );
     });
 
-    it('should manage different ticket types independently', () => {
+    it("should manage different ticket types independently", () => {
       const event = createTestEvent();
 
       event.reserveTickets(TicketType.GENERAL, 20);
@@ -291,7 +291,7 @@ describe('Event Entity', () => {
       expect(event.getAvailability(TicketType.VIP)).toBe(15);
     });
 
-    it('should return a copy of configurations through getter', () => {
+    it("should return a copy of configurations through getter", () => {
       const event = createTestEvent();
       const configs1 = event.ticketConfigurations;
       const configs2 = event.ticketConfigurations;
@@ -301,17 +301,17 @@ describe('Event Entity', () => {
       expect(configs1[0]?.type).toBe(configs2[0]?.type);
     });
 
-    it('should handle events with single ticket configuration', () => {
+    it("should handle events with single ticket configuration", () => {
       const event = new Event(
-        'event-single',
-        'Simple Event',
+        "event-single",
+        "Simple Event",
         eventDate,
-        'Venue',
-        'Hall',
+        "Venue",
+        "Hall",
         [
           new TicketConfiguration(
             TicketType.GENERAL,
-            Money.create(25, 'USD'),
+            Money.create(25, "USD"),
             200,
             150,
           ),
@@ -323,29 +323,29 @@ describe('Event Entity', () => {
       expect(event.getAvailability(TicketType.VIP)).toBe(0);
     });
 
-    it('should handle events with all ticket types', () => {
+    it("should handle events with all ticket types", () => {
       const event = new Event(
-        'event-all-types',
-        'Mega Festival',
+        "event-all-types",
+        "Mega Festival",
         eventDate,
-        'Stadium',
-        'Main Field',
+        "Stadium",
+        "Main Field",
         [
           new TicketConfiguration(
             TicketType.GENERAL,
-            Money.create(50, 'USD'),
+            Money.create(50, "USD"),
             1000,
             800,
           ),
           new TicketConfiguration(
             TicketType.VIP,
-            Money.create(200, 'USD'),
+            Money.create(200, "USD"),
             200,
             150,
           ),
           new TicketConfiguration(
             TicketType.EARLY_BIRD,
-            Money.create(35, 'USD'),
+            Money.create(35, "USD"),
             300,
             100,
           ),

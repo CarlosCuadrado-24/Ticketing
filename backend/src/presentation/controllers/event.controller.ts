@@ -14,7 +14,6 @@ import {
   UseInterceptors,
   UploadedFile,
   Res,
-  StreamableFile,
   UseGuards,
   Request,
 } from "@nestjs/common";
@@ -35,7 +34,6 @@ import { TicketConfiguration } from "../../domain/entities/ticket-configuration.
 import { Event as EventEntity } from "../../domain/entities/event.entity";
 import { UpdateEventUseCase } from "../../application/use-cases/update-event.use-case";
 import { DeleteEventUseCase } from "../../application/use-cases/delete-event.use-case";
-import { CreateEventDto } from "../../application/dto/create-event.dto";
 import { UpdateEventDto } from "../../application/dto/update-event.dto";
 import { Event } from "../../domain/entities/event.entity";
 import { IEventRepository } from "../../domain/interfaces/event-repository.interface";
@@ -44,7 +42,6 @@ import {
   USER_REPOSITORY,
 } from "../../domain/interfaces/repository-tokens";
 import { IUserRepository } from "../../domain/interfaces/user-repository.interface";
-import { User } from "../../domain/entities/user.entity";
 import { MinioService } from "../../infrastructure/external/minio.service";
 import { OptionalJwtAuthGuard } from "../../application/services/optional-jwt-auth.guard";
 import { JwtAuthGuard } from "../../application/services/jwt-auth.guard";
@@ -572,7 +569,7 @@ export class EventController {
       let ticketConfigurations: any;
       try {
         ticketConfigurations = body.ticketConfigurations
-          ? typeof body.ticketConfigurations === 'string'
+          ? typeof body.ticketConfigurations === "string"
             ? JSON.parse(body.ticketConfigurations)
             : body.ticketConfigurations
           : existingEvent.ticketConfigurations.map((config) => ({
@@ -582,11 +579,19 @@ export class EventController {
               quantity: config.totalQuantity,
             }));
       } catch (err) {
-        throw new BadRequestException('Invalid ticketConfigurations JSON format');
+        throw new BadRequestException(
+          "Invalid ticketConfigurations JSON format",
+        );
       }
 
-      if (body.ticketConfigurations && (!Array.isArray(ticketConfigurations) || ticketConfigurations.length === 0)) {
-        throw new BadRequestException('At least one ticket configuration is required');
+      if (
+        body.ticketConfigurations &&
+        (!Array.isArray(ticketConfigurations) ||
+          ticketConfigurations.length === 0)
+      ) {
+        throw new BadRequestException(
+          "At least one ticket configuration is required",
+        );
       }
 
       // Execute use case

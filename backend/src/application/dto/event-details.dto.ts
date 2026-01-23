@@ -4,7 +4,6 @@ import {
   IsBoolean,
   IsOptional,
   Min,
-  Max,
 } from "class-validator";
 
 export class EventDetailsDto {

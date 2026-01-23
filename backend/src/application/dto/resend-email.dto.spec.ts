@@ -29,7 +29,7 @@ describe("ResendEmailDto", () => {
         "test@example.com",
         "user.name@domain.co.uk",
         "user+tag@example.org",
-        "123@numbers.com"
+        "123@numbers.com",
       ];
 
       for (const email of validEmails) {
@@ -57,10 +57,10 @@ describe("ResendEmailDto", () => {
 
       const errors = await validate(dto);
       expect(errors).toHaveLength(1);
-      
-      const emailErrors = errors.filter(error => error.property === "email");
+
+      const emailErrors = errors.filter((error) => error.property === "email");
       expect(emailErrors).toHaveLength(1);
-      
+
       const constraints = Object.keys(emailErrors[0]?.constraints || {});
       expect(constraints).toContain("isEmail");
       expect(constraints).toContain("isNotEmpty");
@@ -226,10 +226,10 @@ describe("SendReminderDto", () => {
 
       const errors = await validate(dto);
       expect(errors).toHaveLength(2);
-      
-      const eventIdError = errors.find(error => error.property === "eventId");
-      const emailError = errors.find(error => error.property === "email");
-      
+
+      const eventIdError = errors.find((error) => error.property === "eventId");
+      const emailError = errors.find((error) => error.property === "email");
+
       expect(eventIdError).toBeDefined();
       expect(emailError).toBeDefined();
     });

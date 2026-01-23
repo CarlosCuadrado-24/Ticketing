@@ -1,14 +1,14 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { CreateEventUseCase } from './create-event.use-case';
-import { IEventRepository } from '../../domain/interfaces/event-repository.interface';
-import { EVENT_REPOSITORY } from '../../domain/interfaces/repository-tokens';
-import { EventIdGeneratorService } from '../services/event-id-generator.service';
-import { Event } from '../../domain/entities/event.entity';
-import { TicketConfiguration } from '../../domain/entities/ticket-configuration.entity';
-import { TicketType } from '../../domain/value-objects/ticket-type.vo';
-import { Money } from '../../domain/value-objects/money.vo';
+import { Test, TestingModule } from "@nestjs/testing";
+import { CreateEventUseCase } from "./create-event.use-case";
+import { IEventRepository } from "../../domain/interfaces/event-repository.interface";
+import { EVENT_REPOSITORY } from "../../domain/interfaces/repository-tokens";
+import { EventIdGeneratorService } from "../services/event-id-generator.service";
+import { Event } from "../../domain/entities/event.entity";
+import { TicketConfiguration } from "../../domain/entities/ticket-configuration.entity";
+import { TicketType } from "../../domain/value-objects/ticket-type.vo";
+import { Money } from "../../domain/value-objects/money.vo";
 
-describe('CreateEventUseCase', () => {
+describe("CreateEventUseCase", () => {
   let useCase: CreateEventUseCase;
   let mockEventRepository: jest.Mocked<IEventRepository>;
   let mockEventIdGenerator: jest.Mocked<EventIdGeneratorService>;
@@ -53,36 +53,36 @@ describe('CreateEventUseCase', () => {
     jest.clearAllMocks();
   });
 
-  describe('execute', () => {
-    const futureDate = new Date('2026-12-31T20:00:00Z');
+  describe("execute", () => {
+    const futureDate = new Date("2026-12-31T20:00:00Z");
 
     const createValidInput = () => ({
-      name: 'Rock Concert',
+      name: "Rock Concert",
       date: futureDate,
-      location: 'Madison Square Garden',
-      venueName: 'Main Arena',
-      imageUrl: 'https://example.com/concert.jpg',
-      description: 'Amazing rock concert',
+      location: "Madison Square Garden",
+      venueName: "Main Arena",
+      imageUrl: "https://example.com/concert.jpg",
+      description: "Amazing rock concert",
       ticketConfigurations: [
         {
           type: TicketType.GENERAL,
           price: 50,
-          currency: 'USD',
+          currency: "USD",
           quantity: 100,
         },
         {
           type: TicketType.VIP,
           price: 150,
-          currency: 'USD',
+          currency: "USD",
           quantity: 50,
         },
       ],
-      createdBy: 'organizer-123',
+      createdBy: "organizer-123",
     });
 
-    it('should create a new event successfully', async () => {
+    it("should create a new event successfully", async () => {
       const input = createValidInput();
-      const generatedId = 'EVENT-001';
+      const generatedId = "EVENT-001";
 
       const savedEvent = new Event(
         generatedId,
@@ -93,13 +93,13 @@ describe('CreateEventUseCase', () => {
         [
           new TicketConfiguration(
             TicketType.GENERAL,
-            Money.create(50, 'USD'),
+            Money.create(50, "USD"),
             100,
             100,
           ),
           new TicketConfiguration(
             TicketType.VIP,
-            Money.create(150, 'USD'),
+            Money.create(150, "USD"),
             50,
             50,
           ),
@@ -130,9 +130,9 @@ describe('CreateEventUseCase', () => {
       );
     });
 
-    it('should initialize ticket availability equal to quantity', async () => {
+    it("should initialize ticket availability equal to quantity", async () => {
       const input = createValidInput();
-      mockEventIdGenerator.generateNextId.mockResolvedValue('EVENT-002');
+      mockEventIdGenerator.generateNextId.mockResolvedValue("EVENT-002");
       mockEventRepository.save.mockImplementation((event) =>
         Promise.resolve(event),
       );
@@ -145,104 +145,104 @@ describe('CreateEventUseCase', () => {
       expect(result.ticketConfigurations[1]?.availableQuantity).toBe(50);
     });
 
-    it('should throw error when name is empty', async () => {
+    it("should throw error when name is empty", async () => {
       const input = createValidInput();
-      input.name = '   ';
+      input.name = "   ";
 
       await expect(useCase.execute(input)).rejects.toThrow(
-        'Event name is required and cannot be empty',
+        "Event name is required and cannot be empty",
       );
       expect(mockEventIdGenerator.generateNextId).not.toHaveBeenCalled();
       expect(mockEventRepository.save).not.toHaveBeenCalled();
     });
 
-    it('should throw error when date is in the past', async () => {
+    it("should throw error when date is in the past", async () => {
       const input = createValidInput();
-      input.date = new Date('2020-01-01');
+      input.date = new Date("2020-01-01");
 
       await expect(useCase.execute(input)).rejects.toThrow(
-        'Event date cannot be in the past',
+        "Event date cannot be in the past",
       );
       expect(mockEventIdGenerator.generateNextId).not.toHaveBeenCalled();
     });
 
-    it('should throw error when location is empty', async () => {
+    it("should throw error when location is empty", async () => {
       const input = createValidInput();
-      input.location = '';
+      input.location = "";
 
       await expect(useCase.execute(input)).rejects.toThrow(
-        'Event location is required and cannot be empty',
+        "Event location is required and cannot be empty",
       );
       expect(mockEventIdGenerator.generateNextId).not.toHaveBeenCalled();
     });
 
-    it('should throw error when venue name is empty', async () => {
+    it("should throw error when venue name is empty", async () => {
       const input = createValidInput();
-      input.venueName = '   ';
+      input.venueName = "   ";
 
       await expect(useCase.execute(input)).rejects.toThrow(
-        'Venue name is required and cannot be empty',
+        "Venue name is required and cannot be empty",
       );
       expect(mockEventIdGenerator.generateNextId).not.toHaveBeenCalled();
     });
 
-    it('should throw error when no ticket configurations provided', async () => {
+    it("should throw error when no ticket configurations provided", async () => {
       const input = createValidInput();
       input.ticketConfigurations = [];
 
       await expect(useCase.execute(input)).rejects.toThrow(
-        'At least one ticket configuration is required',
+        "At least one ticket configuration is required",
       );
       expect(mockEventIdGenerator.generateNextId).not.toHaveBeenCalled();
     });
 
-    it('should throw error when ticket price is negative', async () => {
+    it("should throw error when ticket price is negative", async () => {
       const input = createValidInput();
       input.ticketConfigurations[0]!.price = -10;
 
       await expect(useCase.execute(input)).rejects.toThrow(
-        'Ticket configuration 0 has invalid price',
+        "Ticket configuration 0 has invalid price",
       );
       expect(mockEventIdGenerator.generateNextId).not.toHaveBeenCalled();
     });
 
-    it('should throw error when ticket currency is invalid', async () => {
+    it("should throw error when ticket currency is invalid", async () => {
       const input = createValidInput();
-      input.ticketConfigurations[0]!.currency = 'US';
+      input.ticketConfigurations[0]!.currency = "US";
 
       await expect(useCase.execute(input)).rejects.toThrow(
-        'Ticket configuration 0 has invalid currency',
+        "Ticket configuration 0 has invalid currency",
       );
       expect(mockEventIdGenerator.generateNextId).not.toHaveBeenCalled();
     });
 
-    it('should throw error when ticket quantity is zero or negative', async () => {
+    it("should throw error when ticket quantity is zero or negative", async () => {
       const input = createValidInput();
       input.ticketConfigurations[0]!.quantity = 0;
 
       await expect(useCase.execute(input)).rejects.toThrow(
-        'Ticket configuration 0 has invalid quantity',
+        "Ticket configuration 0 has invalid quantity",
       );
       expect(mockEventIdGenerator.generateNextId).not.toHaveBeenCalled();
     });
 
-    it('should create event without optional fields', async () => {
+    it("should create event without optional fields", async () => {
       const input = {
-        name: 'Simple Event',
+        name: "Simple Event",
         date: futureDate,
-        location: 'Simple Location',
-        venueName: 'Simple Venue',
+        location: "Simple Location",
+        venueName: "Simple Venue",
         ticketConfigurations: [
           {
             type: TicketType.GENERAL,
             price: 40,
-            currency: 'USD',
+            currency: "USD",
             quantity: 200,
           },
         ],
       };
 
-      mockEventIdGenerator.generateNextId.mockResolvedValue('EVENT-003');
+      mockEventIdGenerator.generateNextId.mockResolvedValue("EVENT-003");
       mockEventRepository.save.mockImplementation((event) =>
         Promise.resolve(event),
       );
@@ -254,16 +254,16 @@ describe('CreateEventUseCase', () => {
       expect(result.createdBy).toBeUndefined();
     });
 
-    it('should handle multiple ticket types correctly', async () => {
+    it("should handle multiple ticket types correctly", async () => {
       const input = createValidInput();
       input.ticketConfigurations.push({
         type: TicketType.EARLY_BIRD,
         price: 35,
-        currency: 'USD',
+        currency: "USD",
         quantity: 150,
       });
 
-      mockEventIdGenerator.generateNextId.mockResolvedValue('EVENT-004');
+      mockEventIdGenerator.generateNextId.mockResolvedValue("EVENT-004");
       mockEventRepository.save.mockImplementation((event) =>
         Promise.resolve(event),
       );
@@ -275,49 +275,49 @@ describe('CreateEventUseCase', () => {
       expect(result.ticketConfigurations[2]?.totalQuantity).toBe(150);
     });
 
-    it('should use Money.create for price conversion', async () => {
+    it("should use Money.create for price conversion", async () => {
       const input = createValidInput();
-      const moneySpy = jest.spyOn(Money, 'create');
+      const moneySpy = jest.spyOn(Money, "create");
 
-      mockEventIdGenerator.generateNextId.mockResolvedValue('EVENT-005');
+      mockEventIdGenerator.generateNextId.mockResolvedValue("EVENT-005");
       mockEventRepository.save.mockImplementation((event) =>
         Promise.resolve(event),
       );
 
       await useCase.execute(input);
 
-      expect(moneySpy).toHaveBeenCalledWith(50, 'USD');
-      expect(moneySpy).toHaveBeenCalledWith(150, 'USD');
+      expect(moneySpy).toHaveBeenCalledWith(50, "USD");
+      expect(moneySpy).toHaveBeenCalledWith(150, "USD");
       moneySpy.mockRestore();
     });
 
-    it('should handle repository errors gracefully', async () => {
+    it("should handle repository errors gracefully", async () => {
       const input = createValidInput();
-      mockEventIdGenerator.generateNextId.mockResolvedValue('EVENT-006');
+      mockEventIdGenerator.generateNextId.mockResolvedValue("EVENT-006");
       mockEventRepository.save.mockRejectedValue(
-        new Error('Database connection failed'),
+        new Error("Database connection failed"),
       );
 
       await expect(useCase.execute(input)).rejects.toThrow(
-        'Database connection failed',
+        "Database connection failed",
       );
     });
 
-    it('should handle ID generator errors gracefully', async () => {
+    it("should handle ID generator errors gracefully", async () => {
       const input = createValidInput();
       mockEventIdGenerator.generateNextId.mockRejectedValue(
-        new Error('ID generation failed'),
+        new Error("ID generation failed"),
       );
 
       await expect(useCase.execute(input)).rejects.toThrow(
-        'ID generation failed',
+        "ID generation failed",
       );
       expect(mockEventRepository.save).not.toHaveBeenCalled();
     });
 
-    it('should create event with empty eventDetails array by default', async () => {
+    it("should create event with empty eventDetails array by default", async () => {
       const input = createValidInput();
-      mockEventIdGenerator.generateNextId.mockResolvedValue('EVENT-007');
+      mockEventIdGenerator.generateNextId.mockResolvedValue("EVENT-007");
       mockEventRepository.save.mockImplementation((event) =>
         Promise.resolve(event),
       );

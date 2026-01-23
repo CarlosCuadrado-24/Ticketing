@@ -1,4 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { IsString, IsUUID, IsNotEmpty, Matches } from "class-validator";
+/* eslint-enable @typescript-eslint/no-unused-vars */
 import { ApiProperty } from "@nestjs/swagger";
 
 /**

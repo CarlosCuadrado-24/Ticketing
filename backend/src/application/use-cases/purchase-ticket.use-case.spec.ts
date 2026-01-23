@@ -1,22 +1,22 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { PurchaseTicketUseCase } from './purchase-ticket.use-case';
-import { ITicketRepository } from '../../domain/interfaces/ticket-repository.interface';
-import { IEventRepository } from '../../domain/interfaces/event-repository.interface';
+import { Test, TestingModule } from "@nestjs/testing";
+import { PurchaseTicketUseCase } from "./purchase-ticket.use-case";
+import { ITicketRepository } from "../../domain/interfaces/ticket-repository.interface";
+import { IEventRepository } from "../../domain/interfaces/event-repository.interface";
 import {
   TICKET_REPOSITORY,
   EVENT_REPOSITORY,
-} from '../../domain/interfaces/repository-tokens';
-import { TicketAvailabilityService } from '../../infrastructure/websocket/ticket-availability.service';
-import { EmailService } from '../../infrastructure/external/email.service';
-import { DataSource } from 'typeorm';
-import { Event } from '../../domain/entities/event.entity';
-import { Ticket, TicketStatus } from '../../domain/entities/ticket.entity';
-import { TicketConfiguration } from '../../domain/entities/ticket-configuration.entity';
-import { TicketType } from '../../domain/value-objects/ticket-type.vo';
-import { Money } from '../../domain/value-objects/money.vo';
-import { Email } from '../../domain/value-objects/email.vo';
+} from "../../domain/interfaces/repository-tokens";
+import { TicketAvailabilityService } from "../../infrastructure/websocket/ticket-availability.service";
+import { EmailService } from "../../infrastructure/external/email.service";
+import { DataSource } from "typeorm";
+import { Event } from "../../domain/entities/event.entity";
+import { Ticket, TicketStatus } from "../../domain/entities/ticket.entity";
+import { TicketConfiguration } from "../../domain/entities/ticket-configuration.entity";
+import { TicketType } from "../../domain/value-objects/ticket-type.vo";
+import { Money } from "../../domain/value-objects/money.vo";
+import { Email } from "../../domain/value-objects/email.vo";
 
-describe('PurchaseTicketUseCase', () => {
+describe("PurchaseTicketUseCase", () => {
   let useCase: PurchaseTicketUseCase;
   let mockTicketRepository: jest.Mocked<ITicketRepository>;
   let mockEventRepository: jest.Mocked<IEventRepository>;
@@ -107,45 +107,38 @@ describe('PurchaseTicketUseCase', () => {
     jest.clearAllMocks();
   });
 
-  describe('execute', () => {
-    const eventDate = new Date('2026-12-31T20:00:00Z');
+  describe("execute", () => {
+    const eventDate = new Date("2026-12-31T20:00:00Z");
 
     const createTestEvent = () =>
-      new Event(
-        'event-1',
-        'Rock Concert',
-        eventDate,
-        'Stadium',
-        'Main Arena',
-        [
-          new TicketConfiguration(
-            TicketType.GENERAL,
-            Money.create(50, 'USD'),
-            100,
-            70,
-          ),
-          new TicketConfiguration(
-            TicketType.VIP,
-            Money.create(150, 'USD'),
-            50,
-            25,
-          ),
-        ],
-      );
+      new Event("event-1", "Rock Concert", eventDate, "Stadium", "Main Arena", [
+        new TicketConfiguration(
+          TicketType.GENERAL,
+          Money.create(50, "USD"),
+          100,
+          70,
+        ),
+        new TicketConfiguration(
+          TicketType.VIP,
+          Money.create(150, "USD"),
+          50,
+          25,
+        ),
+      ]);
 
     const createValidParams = () => ({
-      eventId: 'event-1',
+      eventId: "event-1",
       ticketType: TicketType.GENERAL,
       quantity: 3,
-      buyerEmail: 'buyer@example.com',
+      buyerEmail: "buyer@example.com",
       paymentInfo: {
-        cardNumber: '4242424242424242',
-        expiryDate: '12/25',
-        cvv: '123',
+        cardNumber: "4242424242424242",
+        expiryDate: "12/25",
+        cvv: "123",
       },
     });
 
-    it('should purchase tickets successfully', async () => {
+    it("should purchase tickets successfully", async () => {
       const params = createValidParams();
       const event = createTestEvent();
 
@@ -158,33 +151,31 @@ describe('PurchaseTicketUseCase', () => {
       mockEmailService.sendTicketConfirmationEmail.mockResolvedValue(true);
 
       // Mock successful payment
-      jest
-        .spyOn(useCase as any, 'processPayment')
-        .mockResolvedValue(true);
+      jest.spyOn(useCase as any, "processPayment").mockResolvedValue(true);
 
       const result = await useCase.execute(params);
 
       expect(result).toHaveLength(3);
-      expect(result[0]?.eventId).toBe('event-1');
+      expect(result[0]?.eventId).toBe("event-1");
       expect(result[0]?.type).toBe(TicketType.GENERAL);
       expect(result[0]?.status).toBe(TicketStatus.PAID);
-      expect(mockEventRepository.findById).toHaveBeenCalledWith('event-1');
+      expect(mockEventRepository.findById).toHaveBeenCalledWith("event-1");
       expect(mockTicketRepository.saveMany).toHaveBeenCalled();
       expect(
         mockTicketAvailabilityService.broadcastAvailabilityUpdate,
       ).toHaveBeenCalled();
     });
 
-    it('should throw error when event not found', async () => {
+    it("should throw error when event not found", async () => {
       const params = createValidParams();
 
       mockEventRepository.findById.mockResolvedValue(null);
 
-      await expect(useCase.execute(params)).rejects.toThrow('Event not found');
+      await expect(useCase.execute(params)).rejects.toThrow("Event not found");
       expect(mockTicketRepository.saveMany).not.toHaveBeenCalled();
     });
 
-    it('should throw error when insufficient tickets available', async () => {
+    it("should throw error when insufficient tickets available", async () => {
       const params = createValidParams();
       params.quantity = 100;
       const event = createTestEvent();
@@ -192,30 +183,30 @@ describe('PurchaseTicketUseCase', () => {
       mockEventRepository.findById.mockResolvedValue(event);
 
       await expect(useCase.execute(params)).rejects.toThrow(
-        'Insufficient tickets available',
+        "Insufficient tickets available",
       );
       expect(mockTicketRepository.saveMany).not.toHaveBeenCalled();
     });
 
-    it('should throw error when ticket type not found', async () => {
+    it("should throw error when ticket type not found", async () => {
       const params = createValidParams();
       params.ticketType = TicketType.EARLY_BIRD;
       const event = new Event(
-        'event-1',
-        'Rock Concert',
+        "event-1",
+        "Rock Concert",
         eventDate,
-        'Stadium',
-        'Main Arena',
+        "Stadium",
+        "Main Arena",
         [
           new TicketConfiguration(
             TicketType.GENERAL,
-            Money.create(50, 'USD'),
+            Money.create(50, "USD"),
             100,
             70,
           ),
           new TicketConfiguration(
             TicketType.VIP,
-            Money.create(150, 'USD'),
+            Money.create(150, "USD"),
             50,
             25,
           ),
@@ -226,25 +217,23 @@ describe('PurchaseTicketUseCase', () => {
       mockEventRepository.findById.mockResolvedValue(event);
 
       await expect(useCase.execute(params)).rejects.toThrow(
-        'Insufficient tickets available',
+        "Insufficient tickets available",
       );
       expect(mockTicketRepository.saveMany).not.toHaveBeenCalled();
     });
 
-    it('should throw error when payment fails', async () => {
+    it("should throw error when payment fails", async () => {
       const params = createValidParams();
       const event = createTestEvent();
 
       mockEventRepository.findById.mockResolvedValue(event);
-      jest
-        .spyOn(useCase as any, 'processPayment')
-        .mockResolvedValue(false);
+      jest.spyOn(useCase as any, "processPayment").mockResolvedValue(false);
 
-      await expect(useCase.execute(params)).rejects.toThrow('Payment failed');
+      await expect(useCase.execute(params)).rejects.toThrow("Payment failed");
       expect(mockTicketRepository.saveMany).not.toHaveBeenCalled();
     });
 
-    it('should generate unique ticket codes', async () => {
+    it("should generate unique ticket codes", async () => {
       const params = createValidParams();
       const event = createTestEvent();
 
@@ -254,9 +243,7 @@ describe('PurchaseTicketUseCase', () => {
         Promise.resolve(tickets),
       );
       mockEventRepository.getRealTimeAvailability.mockResolvedValue(67);
-      jest
-        .spyOn(useCase as any, 'processPayment')
-        .mockResolvedValue(true);
+      jest.spyOn(useCase as any, "processPayment").mockResolvedValue(true);
 
       const result = await useCase.execute(params);
 
@@ -266,7 +253,7 @@ describe('PurchaseTicketUseCase', () => {
       expect(result[0]?.code).toMatch(/^TKT-[A-Z0-9]{6}$/);
     });
 
-    it('should generate unique QR tokens', async () => {
+    it("should generate unique QR tokens", async () => {
       const params = createValidParams();
       const event = createTestEvent();
 
@@ -276,9 +263,7 @@ describe('PurchaseTicketUseCase', () => {
         Promise.resolve(tickets),
       );
       mockEventRepository.getRealTimeAvailability.mockResolvedValue(67);
-      jest
-        .spyOn(useCase as any, 'processPayment')
-        .mockResolvedValue(true);
+      jest.spyOn(useCase as any, "processPayment").mockResolvedValue(true);
 
       const result = await useCase.execute(params);
 
@@ -287,7 +272,7 @@ describe('PurchaseTicketUseCase', () => {
       expect(uniqueTokens.size).toBe(qrTokens.length);
     });
 
-    it('should update event availability after purchase', async () => {
+    it("should update event availability after purchase", async () => {
       const params = createValidParams();
       const event = createTestEvent();
       const initialAvailability = event.getAvailability(TicketType.GENERAL);
@@ -298,20 +283,18 @@ describe('PurchaseTicketUseCase', () => {
         Promise.resolve(tickets),
       );
       mockEventRepository.getRealTimeAvailability.mockResolvedValue(67);
-      jest
-        .spyOn(useCase as any, 'processPayment')
-        .mockResolvedValue(true);
+      jest.spyOn(useCase as any, "processPayment").mockResolvedValue(true);
 
       await useCase.execute(params);
 
       expect(mockEventRepository.updateTicketAvailability).toHaveBeenCalledWith(
-        'event-1',
+        "event-1",
         TicketType.GENERAL,
         initialAvailability - 3,
       );
     });
 
-    it('should broadcast availability update after purchase', async () => {
+    it("should broadcast availability update after purchase", async () => {
       const params = createValidParams();
       const event = createTestEvent();
 
@@ -321,9 +304,7 @@ describe('PurchaseTicketUseCase', () => {
         Promise.resolve(tickets),
       );
       mockEventRepository.getRealTimeAvailability.mockResolvedValue(67);
-      jest
-        .spyOn(useCase as any, 'processPayment')
-        .mockResolvedValue(true);
+      jest.spyOn(useCase as any, "processPayment").mockResolvedValue(true);
 
       await useCase.execute(params);
 
@@ -331,14 +312,14 @@ describe('PurchaseTicketUseCase', () => {
         mockTicketAvailabilityService.broadcastAvailabilityUpdate,
       ).toHaveBeenCalledWith(
         expect.objectContaining({
-          eventId: 'event-1',
+          eventId: "event-1",
           ticketType: TicketType.GENERAL,
           availableQuantity: 67,
         }),
       );
     });
 
-    it('should send confirmation email after successful purchase', async () => {
+    it("should send confirmation email after successful purchase", async () => {
       const params = createValidParams();
       const event = createTestEvent();
 
@@ -349,9 +330,7 @@ describe('PurchaseTicketUseCase', () => {
       );
       mockEventRepository.getRealTimeAvailability.mockResolvedValue(67);
       mockEmailService.sendTicketConfirmationEmail.mockResolvedValue(true);
-      jest
-        .spyOn(useCase as any, 'processPayment')
-        .mockResolvedValue(true);
+      jest.spyOn(useCase as any, "processPayment").mockResolvedValue(true);
 
       await useCase.execute(params);
 
@@ -360,13 +339,13 @@ describe('PurchaseTicketUseCase', () => {
 
       expect(mockEmailService.sendTicketConfirmationEmail).toHaveBeenCalledWith(
         expect.objectContaining({
-          buyerEmail: 'buyer@example.com',
-          eventName: 'Rock Concert',
+          buyerEmail: "buyer@example.com",
+          eventName: "Rock Concert",
         }),
       );
     });
 
-    it('should not fail purchase if email sending fails', async () => {
+    it("should not fail purchase if email sending fails", async () => {
       const params = createValidParams();
       const event = createTestEvent();
 
@@ -377,18 +356,16 @@ describe('PurchaseTicketUseCase', () => {
       );
       mockEventRepository.getRealTimeAvailability.mockResolvedValue(67);
       mockEmailService.sendTicketConfirmationEmail.mockRejectedValue(
-        new Error('Email service down'),
+        new Error("Email service down"),
       );
-      jest
-        .spyOn(useCase as any, 'processPayment')
-        .mockResolvedValue(true);
+      jest.spyOn(useCase as any, "processPayment").mockResolvedValue(true);
 
       const result = await useCase.execute(params);
 
       expect(result).toHaveLength(3);
     });
 
-    it('should handle VIP ticket purchases', async () => {
+    it("should handle VIP ticket purchases", async () => {
       const params = createValidParams();
       params.ticketType = TicketType.VIP;
       params.quantity = 2;
@@ -400,9 +377,7 @@ describe('PurchaseTicketUseCase', () => {
         Promise.resolve(tickets),
       );
       mockEventRepository.getRealTimeAvailability.mockResolvedValue(23);
-      jest
-        .spyOn(useCase as any, 'processPayment')
-        .mockResolvedValue(true);
+      jest.spyOn(useCase as any, "processPayment").mockResolvedValue(true);
 
       const result = await useCase.execute(params);
 
@@ -411,7 +386,7 @@ describe('PurchaseTicketUseCase', () => {
       expect(result[0]?.price.amount).toBe(150);
     });
 
-    it('should use database transaction for atomicity', async () => {
+    it("should use database transaction for atomicity", async () => {
       const params = createValidParams();
       const event = createTestEvent();
 
@@ -421,26 +396,22 @@ describe('PurchaseTicketUseCase', () => {
         Promise.resolve(tickets),
       );
       mockEventRepository.getRealTimeAvailability.mockResolvedValue(67);
-      jest
-        .spyOn(useCase as any, 'processPayment')
-        .mockResolvedValue(true);
+      jest.spyOn(useCase as any, "processPayment").mockResolvedValue(true);
 
       await useCase.execute(params);
 
       expect(mockDataSource.transaction).toHaveBeenCalled();
     });
 
-    it('should rollback on transaction failure', async () => {
+    it("should rollback on transaction failure", async () => {
       const params = createValidParams();
       const event = createTestEvent();
 
       mockEventRepository.findById.mockResolvedValue(event);
       mockTicketRepository.saveMany.mockRejectedValue(
-        new Error('Database error'),
+        new Error("Database error"),
       );
-      jest
-        .spyOn(useCase as any, 'processPayment')
-        .mockResolvedValue(true);
+      jest.spyOn(useCase as any, "processPayment").mockResolvedValue(true);
 
       // Transaction should fail and throw error
       mockDataSource.transaction = jest.fn((callback) => {
@@ -449,10 +420,10 @@ describe('PurchaseTicketUseCase', () => {
         });
       }) as any;
 
-      await expect(useCase.execute(params)).rejects.toThrow('Database error');
+      await expect(useCase.execute(params)).rejects.toThrow("Database error");
     });
 
-    it('should calculate correct total amount', async () => {
+    it("should calculate correct total amount", async () => {
       const params = createValidParams();
       params.quantity = 5;
       const event = createTestEvent();
@@ -465,21 +436,21 @@ describe('PurchaseTicketUseCase', () => {
       mockEventRepository.getRealTimeAvailability.mockResolvedValue(65);
 
       const processPaymentSpy = jest
-        .spyOn(useCase as any, 'processPayment')
+        .spyOn(useCase as any, "processPayment")
         .mockResolvedValue(true);
 
       await useCase.execute(params);
 
       expect(processPaymentSpy).toHaveBeenCalledWith(
         250,
-        'USD',
+        "USD",
         expect.any(Object),
       );
     });
 
-    it('should extract display name from email', async () => {
+    it("should extract display name from email", async () => {
       const params = createValidParams();
-      params.buyerEmail = 'john.doe@example.com';
+      params.buyerEmail = "john.doe@example.com";
       const event = createTestEvent();
 
       mockEventRepository.findById.mockResolvedValue(event);
@@ -489,9 +460,7 @@ describe('PurchaseTicketUseCase', () => {
       );
       mockEventRepository.getRealTimeAvailability.mockResolvedValue(67);
       mockEmailService.sendTicketConfirmationEmail.mockResolvedValue(true);
-      jest
-        .spyOn(useCase as any, 'processPayment')
-        .mockResolvedValue(true);
+      jest.spyOn(useCase as any, "processPayment").mockResolvedValue(true);
 
       await useCase.execute(params);
 
@@ -499,24 +468,24 @@ describe('PurchaseTicketUseCase', () => {
 
       expect(mockEmailService.sendTicketConfirmationEmail).toHaveBeenCalledWith(
         expect.objectContaining({
-          buyerName: 'John Doe',
+          buyerName: "John Doe",
         }),
       );
     });
 
-    it('should handle large quantity purchases', async () => {
+    it("should handle large quantity purchases", async () => {
       const params = createValidParams();
       params.quantity = 50;
       const event = new Event(
-        'event-1',
-        'Festival',
+        "event-1",
+        "Festival",
         eventDate,
-        'Park',
-        'Main Stage',
+        "Park",
+        "Main Stage",
         [
           new TicketConfiguration(
             TicketType.GENERAL,
-            Money.create(30, 'USD'),
+            Money.create(30, "USD"),
             500,
             400,
           ),
@@ -529,9 +498,7 @@ describe('PurchaseTicketUseCase', () => {
         Promise.resolve(tickets),
       );
       mockEventRepository.getRealTimeAvailability.mockResolvedValue(350);
-      jest
-        .spyOn(useCase as any, 'processPayment')
-        .mockResolvedValue(true);
+      jest.spyOn(useCase as any, "processPayment").mockResolvedValue(true);
 
       const result = await useCase.execute(params);
 
@@ -541,7 +508,7 @@ describe('PurchaseTicketUseCase', () => {
       );
     });
 
-    it('should use Email value object for buyer email', async () => {
+    it("should use Email value object for buyer email", async () => {
       const params = createValidParams();
       const event = createTestEvent();
 
@@ -554,14 +521,12 @@ describe('PurchaseTicketUseCase', () => {
         return Promise.resolve(tickets);
       });
       mockEventRepository.getRealTimeAvailability.mockResolvedValue(67);
-      jest
-        .spyOn(useCase as any, 'processPayment')
-        .mockResolvedValue(true);
+      jest.spyOn(useCase as any, "processPayment").mockResolvedValue(true);
 
       await useCase.execute(params);
     });
 
-    it('should use Money value object for ticket price', async () => {
+    it("should use Money value object for ticket price", async () => {
       const params = createValidParams();
       const event = createTestEvent();
 
@@ -570,13 +535,11 @@ describe('PurchaseTicketUseCase', () => {
       mockTicketRepository.saveMany.mockImplementation((tickets) => {
         expect(tickets[0]?.price).toBeInstanceOf(Money);
         expect(tickets[0]?.price.amount).toBe(50);
-        expect(tickets[0]?.price.currency).toBe('USD');
+        expect(tickets[0]?.price.currency).toBe("USD");
         return Promise.resolve(tickets);
       });
       mockEventRepository.getRealTimeAvailability.mockResolvedValue(67);
-      jest
-        .spyOn(useCase as any, 'processPayment')
-        .mockResolvedValue(true);
+      jest.spyOn(useCase as any, "processPayment").mockResolvedValue(true);
 
       await useCase.execute(params);
     });

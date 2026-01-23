@@ -19,7 +19,7 @@ async function createAdminUser() {
   try {
     const adminUser = await adminService.createAdminUser(adminUserDto);
     console.log("✅ Admin user created successfully:");
-    console.log(`Email: ${adminUser.email}`);
+    console.log(`Email: ${adminUser.email.value}`);
     console.log(`Name: ${adminUser.firstName} ${adminUser.lastName}`);
     console.log(`Role: ${adminUser.role}`);
     console.log(`ID: ${adminUser.id}`);

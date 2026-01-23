@@ -3,7 +3,7 @@ import { MigrationInterface, QueryRunner } from "typeorm";
 /**
  * Migration: AddDescriptionToEvents
  * Adds a description column to the events table to store event descriptions.
- * 
+ *
  * @implements {MigrationInterface}
  */
 export class AddDescriptionToEvents1737519600000 implements MigrationInterface {

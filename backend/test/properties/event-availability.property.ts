@@ -7,8 +7,8 @@ import { TicketTypeNotFoundException } from "../../src/domain/exceptions/ticket-
 import { InsufficientTicketsException } from "../../src/domain/exceptions/insufficient-tickets.exception";
 import {
   eventDataArbitrary,
-  reservationSequenceArbitrary,
-  ticketTypeArbitrary,
+  reservationSequenceArbitrary as _reservationSequenceArbitrary,
+  ticketTypeArbitrary as _ticketTypeArbitrary,
   validTicketQuantityArbitrary,
 } from "./generators/event.generator";
 

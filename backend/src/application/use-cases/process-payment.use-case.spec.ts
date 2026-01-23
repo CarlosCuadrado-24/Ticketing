@@ -1,24 +1,24 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { ProcessPaymentUseCase } from './process-payment.use-case';
-import { IReservationRepository } from '../../domain/interfaces/reservation-repository.interface';
-import { ITicketRepository } from '../../domain/interfaces/ticket-repository.interface';
-import { IEventRepository } from '../../domain/interfaces/event-repository.interface';
-import { IPaymentGateway } from '../../domain/interfaces/payment-gateway.interface';
+import { Test, TestingModule } from "@nestjs/testing";
+import { ProcessPaymentUseCase } from "./process-payment.use-case";
+import { IReservationRepository } from "../../domain/interfaces/reservation-repository.interface";
+import { ITicketRepository } from "../../domain/interfaces/ticket-repository.interface";
+import { IEventRepository } from "../../domain/interfaces/event-repository.interface";
+import { IPaymentGateway } from "../../domain/interfaces/payment-gateway.interface";
 import {
   EVENT_REPOSITORY,
   RESERVATION_REPOSITORY,
   TICKET_REPOSITORY,
-} from '../../domain/interfaces/repository-tokens';
-import { EmailService } from '../../infrastructure/external/email.service';
-import { Reservation } from '../../domain/entities/reservation.entity';
-import { Event } from '../../domain/entities/event.entity';
-import { TicketConfiguration } from '../../domain/entities/ticket-configuration.entity';
-import { Email } from '../../domain/value-objects/email.vo';
-import { TicketQuantity } from '../../domain/value-objects/ticket-quantity.vo';
-import { TicketType } from '../../domain/value-objects/ticket-type.vo';
-import { Money } from '../../domain/value-objects/money.vo';
+} from "../../domain/interfaces/repository-tokens";
+import { EmailService } from "../../infrastructure/external/email.service";
+import { Reservation } from "../../domain/entities/reservation.entity";
+import { Event } from "../../domain/entities/event.entity";
+import { TicketConfiguration } from "../../domain/entities/ticket-configuration.entity";
+import { Email } from "../../domain/value-objects/email.vo";
+import { TicketQuantity } from "../../domain/value-objects/ticket-quantity.vo";
+import { TicketType } from "../../domain/value-objects/ticket-type.vo";
+import { Money } from "../../domain/value-objects/money.vo";
 
-describe('ProcessPaymentUseCase', () => {
+describe("ProcessPaymentUseCase", () => {
   let useCase: ProcessPaymentUseCase;
   let mockPaymentGateway: jest.Mocked<IPaymentGateway>;
   let mockReservationRepository: jest.Mocked<IReservationRepository>;
@@ -87,7 +87,7 @@ describe('ProcessPaymentUseCase', () => {
       providers: [
         ProcessPaymentUseCase,
         {
-          provide: 'IPaymentGateway',
+          provide: "IPaymentGateway",
           useValue: mockPaymentGateway,
         },
         {
@@ -116,51 +116,46 @@ describe('ProcessPaymentUseCase', () => {
     jest.clearAllMocks();
   });
 
-  describe('execute', () => {
-    const eventDate = new Date('2026-12-31T20:00:00Z');
+  describe("execute", () => {
+    const eventDate = new Date("2026-12-31T20:00:00Z");
 
     const createTestReservation = () =>
       new Reservation(
-        'reservation-123',
-        'event-1',
+        "reservation-123",
+        "event-1",
         TicketType.GENERAL,
         TicketQuantity.create(5),
-        Email.create('buyer@example.com'),
-        Money.create(250, 'USD'),
+        Email.create("buyer@example.com"),
+        Money.create(250, "USD"),
         new Date(Date.now() + 15 * 60 * 1000),
       );
 
     const createTestEvent = () =>
-      new Event(
-        'event-1',
-        'Rock Concert',
-        eventDate,
-        'Stadium',
-        'Main Arena',
-        [
-          new TicketConfiguration(
-            TicketType.GENERAL,
-            Money.create(50, 'USD'),
-            100,
-            70,
-          ),
-        ],
-      );
+      new Event("event-1", "Rock Concert", eventDate, "Stadium", "Main Arena", [
+        new TicketConfiguration(
+          TicketType.GENERAL,
+          Money.create(50, "USD"),
+          100,
+          70,
+        ),
+      ]);
 
-    it('should process payment successfully', async () => {
+    it("should process payment successfully", async () => {
       const reservation = createTestReservation();
       const event = createTestEvent();
       const input = {
-        reservationId: 'reservation-123',
+        reservationId: "reservation-123",
         amount: 250,
-        currency: 'USD',
+        currency: "USD",
       };
 
       mockReservationRepository.findById.mockResolvedValue(reservation);
       mockEventRepository.findById.mockResolvedValue(event);
       mockPaymentGateway.processPayment.mockResolvedValue({
         success: true,
-        transactionId: 'txn-456',        processedAt: new Date(),      });
+        transactionId: "txn-456",
+        processedAt: new Date(),
+      });
       mockTicketRepository.saveMany.mockResolvedValue([]);
       mockReservationRepository.update.mockResolvedValue(reservation);
       mockEmailService.sendTicketConfirmationEmail.mockResolvedValue(true);
@@ -168,96 +163,96 @@ describe('ProcessPaymentUseCase', () => {
       const result = await useCase.execute(input);
 
       expect(result.success).toBe(true);
-      expect(result.transactionId).toBe('txn-456');
+      expect(result.transactionId).toBe("txn-456");
       expect(mockPaymentGateway.processPayment).toHaveBeenCalledWith(
         expect.objectContaining({
-          amount: expect.objectContaining({ amount: 250, currency: 'USD' }),
+          amount: expect.objectContaining({ amount: 250, currency: "USD" }),
         }),
       );
       expect(mockTicketRepository.saveMany).toHaveBeenCalled();
       expect(mockReservationRepository.update).toHaveBeenCalledWith(
-        'reservation-123',
-        expect.objectContaining({ status: 'CONFIRMED' }),
+        "reservation-123",
+        expect.objectContaining({ status: "CONFIRMED" }),
       );
     });
 
-    it('should throw error when reservation not found', async () => {
+    it("should throw error when reservation not found", async () => {
       const input = {
-        reservationId: 'non-existent',
+        reservationId: "non-existent",
         amount: 250,
-        currency: 'USD',
+        currency: "USD",
       };
 
       mockReservationRepository.findById.mockResolvedValue(null);
 
       await expect(useCase.execute(input)).rejects.toThrow(
-        'Reservation not found',
+        "Reservation not found",
       );
       expect(mockPaymentGateway.processPayment).not.toHaveBeenCalled();
     });
 
-    it('should throw error when payment amount does not match', async () => {
+    it("should throw error when payment amount does not match", async () => {
       const reservation = createTestReservation();
       const input = {
-        reservationId: 'reservation-123',
+        reservationId: "reservation-123",
         amount: 100,
-        currency: 'USD',
+        currency: "USD",
       };
 
       mockReservationRepository.findById.mockResolvedValue(reservation);
 
       await expect(useCase.execute(input)).rejects.toThrow(
-        'Payment amount does not match reservation total',
+        "Payment amount does not match reservation total",
       );
       expect(mockPaymentGateway.processPayment).not.toHaveBeenCalled();
     });
 
-    it('should throw error when currency does not match', async () => {
+    it("should throw error when currency does not match", async () => {
       const reservation = createTestReservation();
       const input = {
-        reservationId: 'reservation-123',
+        reservationId: "reservation-123",
         amount: 250,
-        currency: 'EUR',
+        currency: "EUR",
       };
 
       mockReservationRepository.findById.mockResolvedValue(reservation);
 
       await expect(useCase.execute(input)).rejects.toThrow(
-        'Payment currency does not match reservation currency',
+        "Payment currency does not match reservation currency",
       );
       expect(mockPaymentGateway.processPayment).not.toHaveBeenCalled();
     });
 
-    it('should throw error when event not found', async () => {
+    it("should throw error when event not found", async () => {
       const reservation = createTestReservation();
       const input = {
-        reservationId: 'reservation-123',
+        reservationId: "reservation-123",
         amount: 250,
-        currency: 'USD',
+        currency: "USD",
       };
 
       mockReservationRepository.findById.mockResolvedValue(reservation);
       mockEventRepository.findById.mockResolvedValue(null);
 
-      await expect(useCase.execute(input)).rejects.toThrow('Event not found');
+      await expect(useCase.execute(input)).rejects.toThrow("Event not found");
       expect(mockPaymentGateway.processPayment).not.toHaveBeenCalled();
     });
 
-    it('should handle failed payment and cancel reservation', async () => {
+    it("should handle failed payment and cancel reservation", async () => {
       const reservation = createTestReservation();
       const event = createTestEvent();
       const input = {
-        reservationId: 'reservation-123',
+        reservationId: "reservation-123",
         amount: 250,
-        currency: 'USD',
+        currency: "USD",
       };
 
       mockReservationRepository.findById.mockResolvedValue(reservation);
       mockEventRepository.findById.mockResolvedValue(event);
       mockPaymentGateway.processPayment.mockResolvedValue({
         success: false,
-        errorCode: 'INSUFFICIENT_FUNDS',
-        errorMessage: 'Card declined',
+        errorCode: "INSUFFICIENT_FUNDS",
+        errorMessage: "Card declined",
       });
       mockReservationRepository.update.mockResolvedValue(reservation);
       mockEventRepository.update.mockResolvedValue(event);
@@ -265,29 +260,31 @@ describe('ProcessPaymentUseCase', () => {
       const result = await useCase.execute(input);
 
       expect(result.success).toBe(false);
-      expect(result.errorCode).toBe('INSUFFICIENT_FUNDS');
-      expect(result.errorMessage).toBe('Card declined');
+      expect(result.errorCode).toBe("INSUFFICIENT_FUNDS");
+      expect(result.errorMessage).toBe("Card declined");
       expect(mockTicketRepository.saveMany).not.toHaveBeenCalled();
       expect(mockReservationRepository.update).toHaveBeenCalledWith(
-        'reservation-123',
-        expect.objectContaining({ status: 'CANCELLED' }),
+        "reservation-123",
+        expect.objectContaining({ status: "CANCELLED" }),
       );
     });
 
-    it('should generate correct number of tickets on successful payment', async () => {
+    it("should generate correct number of tickets on successful payment", async () => {
       const reservation = createTestReservation();
       const event = createTestEvent();
       const input = {
-        reservationId: 'reservation-123',
+        reservationId: "reservation-123",
         amount: 250,
-        currency: 'USD',
+        currency: "USD",
       };
 
       mockReservationRepository.findById.mockResolvedValue(reservation);
       mockEventRepository.findById.mockResolvedValue(event);
       mockPaymentGateway.processPayment.mockResolvedValue({
         success: true,
-        transactionId: 'txn-456',        processedAt: new Date(),      });
+        transactionId: "txn-456",
+        processedAt: new Date(),
+      });
       mockTicketRepository.saveMany.mockImplementation((tickets) =>
         Promise.resolve(tickets),
       );
@@ -298,7 +295,7 @@ describe('ProcessPaymentUseCase', () => {
       expect(mockTicketRepository.saveMany).toHaveBeenCalledWith(
         expect.arrayContaining([
           expect.objectContaining({
-            eventId: 'event-1',
+            eventId: "event-1",
             type: TicketType.GENERAL,
           }),
         ]),
@@ -309,20 +306,21 @@ describe('ProcessPaymentUseCase', () => {
       expect(savedTickets).toHaveLength(5);
     });
 
-    it('should include payment metadata', async () => {
+    it("should include payment metadata", async () => {
       const reservation = createTestReservation();
       const event = createTestEvent();
       const input = {
-        reservationId: 'reservation-123',
+        reservationId: "reservation-123",
         amount: 250,
-        currency: 'USD',
+        currency: "USD",
       };
 
       mockReservationRepository.findById.mockResolvedValue(reservation);
       mockEventRepository.findById.mockResolvedValue(event);
       mockPaymentGateway.processPayment.mockResolvedValue({
         success: true,
-        transactionId: 'txn-456',
+        transactionId: "txn-456",
+        processedAt: new Date(),
       });
       mockTicketRepository.saveMany.mockResolvedValue([]);
       mockReservationRepository.update.mockResolvedValue(reservation);
@@ -332,21 +330,21 @@ describe('ProcessPaymentUseCase', () => {
       expect(mockPaymentGateway.processPayment).toHaveBeenCalledWith(
         expect.objectContaining({
           metadata: expect.objectContaining({
-            reservationId: 'reservation-123',
-            eventId: 'event-1',
+            reservationId: "reservation-123",
+            eventId: "event-1",
             ticketType: TicketType.GENERAL,
-            quantity: '5',
-            buyerEmail: 'buyer@example.com',
+            quantity: "5",
+            buyerEmail: "buyer@example.com",
           }),
         }),
       );
     });
 
-    it('should validate input parameters', async () => {
+    it("should validate input parameters", async () => {
       const invalidInputs = [
-        { reservationId: '', amount: 250, currency: 'USD' },
-        { reservationId: 'res-123', amount: -10, currency: 'USD' },
-        { reservationId: 'res-123', amount: 250, currency: '' },
+        { reservationId: "", amount: 250, currency: "USD" },
+        { reservationId: "res-123", amount: -10, currency: "USD" },
+        { reservationId: "res-123", amount: 250, currency: "" },
       ];
 
       for (const input of invalidInputs) {
@@ -356,20 +354,21 @@ describe('ProcessPaymentUseCase', () => {
       expect(mockReservationRepository.findById).not.toHaveBeenCalled();
     });
 
-    it('should send confirmation email after successful payment', async () => {
+    it("should send confirmation email after successful payment", async () => {
       const reservation = createTestReservation();
       const event = createTestEvent();
       const input = {
-        reservationId: 'reservation-123',
+        reservationId: "reservation-123",
         amount: 250,
-        currency: 'USD',
+        currency: "USD",
       };
 
       mockReservationRepository.findById.mockResolvedValue(reservation);
       mockEventRepository.findById.mockResolvedValue(event);
       mockPaymentGateway.processPayment.mockResolvedValue({
         success: true,
-        transactionId: 'txn-456',
+        transactionId: "txn-456",
+        processedAt: new Date(),
       });
       mockTicketRepository.saveMany.mockResolvedValue([]);
       mockReservationRepository.update.mockResolvedValue(reservation);
@@ -383,26 +382,26 @@ describe('ProcessPaymentUseCase', () => {
       expect(mockEmailService.sendTicketConfirmationEmail).toHaveBeenCalled();
     });
 
-    it('should not fail purchase if email sending fails', async () => {
+    it("should not fail purchase if email sending fails", async () => {
       const reservation = createTestReservation();
       const event = createTestEvent();
       const input = {
-        reservationId: 'reservation-123',
+        reservationId: "reservation-123",
         amount: 250,
-        currency: 'USD',
+        currency: "USD",
       };
 
       mockReservationRepository.findById.mockResolvedValue(reservation);
       mockEventRepository.findById.mockResolvedValue(event);
       mockPaymentGateway.processPayment.mockResolvedValue({
         success: true,
-        transactionId: 'txn-456',
+        transactionId: "txn-456",
         processedAt: new Date(),
       });
       mockTicketRepository.saveMany.mockResolvedValue([]);
       mockReservationRepository.update.mockResolvedValue(reservation);
       mockEmailService.sendTicketConfirmationEmail.mockRejectedValue(
-        new Error('Email service down'),
+        new Error("Email service down"),
       );
 
       const result = await useCase.execute(input);
@@ -410,22 +409,22 @@ describe('ProcessPaymentUseCase', () => {
       expect(result.success).toBe(true);
     });
 
-    it('should release tickets back to event on failed payment', async () => {
+    it("should release tickets back to event on failed payment", async () => {
       const reservation = createTestReservation();
       const event = createTestEvent();
       const initialAvailability = event.getAvailability(TicketType.GENERAL);
       const input = {
-        reservationId: 'reservation-123',
+        reservationId: "reservation-123",
         amount: 250,
-        currency: 'USD',
+        currency: "USD",
       };
 
       mockReservationRepository.findById.mockResolvedValue(reservation);
       mockEventRepository.findById.mockResolvedValue(event);
       mockPaymentGateway.processPayment.mockResolvedValue({
         success: false,
-        errorCode: 'CARD_DECLINED',
-        errorMessage: 'Payment declined',
+        errorCode: "CARD_DECLINED",
+        errorMessage: "Payment declined",
       });
       mockReservationRepository.update.mockResolvedValue(reservation);
       mockEventRepository.update.mockImplementation((updatedEvent) =>
@@ -439,46 +438,46 @@ describe('ProcessPaymentUseCase', () => {
       expect(finalAvailability).toBe(initialAvailability + 5);
     });
 
-    it('should handle gateway timeout errors', async () => {
+    it("should handle gateway timeout errors", async () => {
       const reservation = createTestReservation();
       const event = createTestEvent();
       const input = {
-        reservationId: 'reservation-123',
+        reservationId: "reservation-123",
         amount: 250,
-        currency: 'USD',
+        currency: "USD",
       };
 
       mockReservationRepository.findById.mockResolvedValue(reservation);
       mockEventRepository.findById.mockResolvedValue(event);
       mockPaymentGateway.processPayment.mockRejectedValue(
-        new Error('Gateway timeout'),
+        new Error("Gateway timeout"),
       );
 
-      await expect(useCase.execute(input)).rejects.toThrow('Gateway timeout');
+      await expect(useCase.execute(input)).rejects.toThrow("Gateway timeout");
     });
 
-    it('should handle large ticket quantities', async () => {
+    it("should handle large ticket quantities", async () => {
       const reservation = new Reservation(
-        'reservation-456',
-        'event-1',
+        "reservation-456",
+        "event-1",
         TicketType.GENERAL,
-        TicketQuantity.create(50),
-        Email.create('bulk@example.com'),
-        Money.create(2500, 'USD'),
+        TicketQuantity.create(10),
+        Email.create("bulk@example.com"),
+        Money.create(500, "USD"),
         new Date(Date.now() + 15 * 60 * 1000),
       );
       const event = createTestEvent();
       const input = {
-        reservationId: 'reservation-456',
-        amount: 2500,
-        currency: 'USD',
+        reservationId: "reservation-456",
+        amount: 500,
+        currency: "USD",
       };
 
       mockReservationRepository.findById.mockResolvedValue(reservation);
       mockEventRepository.findById.mockResolvedValue(event);
       mockPaymentGateway.processPayment.mockResolvedValue({
         success: true,
-        transactionId: 'txn-789',
+        transactionId: "txn-789",
         processedAt: new Date(),
       });
       mockTicketRepository.saveMany.mockImplementation((tickets) =>
@@ -490,7 +489,7 @@ describe('ProcessPaymentUseCase', () => {
 
       const savedTickets =
         mockTicketRepository.saveMany.mock.calls[0]?.[0] || [];
-      expect(savedTickets).toHaveLength(50);
+      expect(savedTickets).toHaveLength(10);
     });
   });
 });

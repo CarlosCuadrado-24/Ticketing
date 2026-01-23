@@ -82,9 +82,9 @@ describe("Property 11: Price Calculation by Ticket Type", () => {
           validAmountArbitrary,
           validCurrencyArbitrary,
           validQuantityArbitrary,
-          (baseAmount, currency, quantity) => {
+          (baseAmount, _currency, quantity) => {
             // Arrange
-            const basePrice = Money.create(baseAmount, currency);
+            const basePrice = Money.create(baseAmount, _currency);
             const expectedAmount =
               baseAmount * quantity * PRICING_MULTIPLIERS.EARLY_BIRD;
 
@@ -95,7 +95,7 @@ describe("Property 11: Price Calculation by Ticket Type", () => {
 
             // Assert
             expect(totalPrice.amount).toBeCloseTo(expectedAmount, 2);
-            expect(totalPrice.currency).toBe(currency);
+            expect(totalPrice.currency).toBe(_currency);
           },
         ),
         PROPERTY_CONFIG,

@@ -4,7 +4,6 @@ import {
   ArgumentsHost,
   HttpStatus,
   Logger,
-  UnauthorizedException,
   HttpException,
 } from "@nestjs/common";
 import { Response } from "express";

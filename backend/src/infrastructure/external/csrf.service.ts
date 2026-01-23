@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { createHash, randomBytes } from "crypto";
+import { randomBytes } from "crypto";
 
 /**
  * CSRF Service

@@ -72,6 +72,7 @@ export class ReservationMapper {
    */
   private static restoreState(reservation: Reservation, status: string): void {
     // Import state classes dynamically to avoid circular dependencies
+    /* eslint-disable @typescript-eslint/no-var-requires */
     const {
       ActiveReservationState,
     } = require("../../../domain/states/active-reservation.state");
@@ -84,6 +85,7 @@ export class ReservationMapper {
     const {
       CancelledReservationState,
     } = require("../../../domain/states/cancelled-reservation.state");
+    /* eslint-enable @typescript-eslint/no-var-requires */
 
     let state;
     switch (status) {

@@ -11,10 +11,7 @@ import {
 import { Response } from "express";
 import { Throttle } from "@nestjs/throttler";
 import { ApiTags, ApiOperation, ApiResponse, ApiBody } from "@nestjs/swagger";
-import {
-  AuthService,
-  AuthResponse,
-} from "../../application/services/auth.service";
+import { AuthService } from "../../application/services/auth.service";
 import { CsrfService } from "../../infrastructure/external/csrf.service";
 import { LoginDto } from "../../application/dto/login.dto";
 import { RegisterDto } from "../../application/dto/register.dto";

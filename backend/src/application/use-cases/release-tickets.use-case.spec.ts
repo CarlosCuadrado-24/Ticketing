@@ -1,20 +1,20 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { ReleaseTicketsUseCase } from './release-tickets.use-case';
-import { IEventRepository } from '../../domain/interfaces/event-repository.interface';
-import { IReservationRepository } from '../../domain/interfaces/reservation-repository.interface';
+import { Test, TestingModule } from "@nestjs/testing";
+import { ReleaseTicketsUseCase } from "./release-tickets.use-case";
+import { IEventRepository } from "../../domain/interfaces/event-repository.interface";
+import { IReservationRepository } from "../../domain/interfaces/reservation-repository.interface";
 import {
   EVENT_REPOSITORY,
   RESERVATION_REPOSITORY,
-} from '../../domain/interfaces/repository-tokens';
-import { Reservation } from '../../domain/entities/reservation.entity';
-import { Event } from '../../domain/entities/event.entity';
-import { Email } from '../../domain/value-objects/email.vo';
-import { TicketQuantity } from '../../domain/value-objects/ticket-quantity.vo';
-import { TicketType } from '../../domain/value-objects/ticket-type.vo';
-import { Money } from '../../domain/value-objects/money.vo';
-import { TicketConfiguration } from '../../domain/entities/ticket-configuration.entity';
+} from "../../domain/interfaces/repository-tokens";
+import { Reservation } from "../../domain/entities/reservation.entity";
+import { Event } from "../../domain/entities/event.entity";
+import { Email } from "../../domain/value-objects/email.vo";
+import { TicketQuantity } from "../../domain/value-objects/ticket-quantity.vo";
+import { TicketType } from "../../domain/value-objects/ticket-type.vo";
+import { Money } from "../../domain/value-objects/money.vo";
+import { TicketConfiguration } from "../../domain/entities/ticket-configuration.entity";
 
-describe('ReleaseTicketsUseCase', () => {
+describe("ReleaseTicketsUseCase", () => {
   let useCase: ReleaseTicketsUseCase;
   let mockEventRepository: jest.Mocked<IEventRepository>;
   let mockReservationRepository: jest.Mocked<IReservationRepository>;
@@ -68,38 +68,31 @@ describe('ReleaseTicketsUseCase', () => {
     jest.clearAllMocks();
   });
 
-  describe('execute', () => {
-    const eventDate = new Date('2026-12-31T20:00:00Z');
+  describe("execute", () => {
+    const eventDate = new Date("2026-12-31T20:00:00Z");
 
     const createTestReservation = () =>
       new Reservation(
-        'reservation-123',
-        'event-1',
+        "reservation-123",
+        "event-1",
         TicketType.GENERAL,
         TicketQuantity.create(5),
-        Email.create('buyer@example.com'),
-        Money.create(250, 'USD'),
+        Email.create("buyer@example.com"),
+        Money.create(250, "USD"),
         new Date(Date.now() + 15 * 60 * 1000),
       );
 
     const createTestEvent = () =>
-      new Event(
-        'event-1',
-        'Rock Concert',
-        eventDate,
-        'Stadium',
-        'Main Arena',
-        [
-          new TicketConfiguration(
-            TicketType.GENERAL,
-            Money.create(50, 'USD'),
-            100,
-            70,
-          ),
-        ],
-      );
+      new Event("event-1", "Rock Concert", eventDate, "Stadium", "Main Arena", [
+        new TicketConfiguration(
+          TicketType.GENERAL,
+          Money.create(50, "USD"),
+          100,
+          70,
+        ),
+      ]);
 
-    it('should successfully release tickets from expired reservation', async () => {
+    it("should successfully release tickets from expired reservation", async () => {
       const reservation = createTestReservation();
       const event = createTestEvent();
 
@@ -109,85 +102,85 @@ describe('ReleaseTicketsUseCase', () => {
       mockEventRepository.update.mockResolvedValue(event);
 
       const result = await useCase.execute({
-        reservationId: 'reservation-123',
-        reason: 'Expired - 15 minutes timeout',
+        reservationId: "reservation-123",
+        reason: "Expired - 15 minutes timeout",
       });
 
       expect(result.success).toBe(true);
       expect(result.ticketsReleased).toBe(5);
-      expect(result.reason).toBe('Expired - 15 minutes timeout');
+      expect(result.reason).toBe("Expired - 15 minutes timeout");
       expect(result.releasedAt).toBeInstanceOf(Date);
       expect(mockReservationRepository.findById).toHaveBeenCalledWith(
-        'reservation-123',
+        "reservation-123",
       );
-      expect(mockEventRepository.findById).toHaveBeenCalledWith('event-1');
+      expect(mockEventRepository.findById).toHaveBeenCalledWith("event-1");
     });
 
-    it('should throw error when reservationId is empty', async () => {
+    it("should throw error when reservationId is empty", async () => {
       await expect(
         useCase.execute({
-          reservationId: '',
-          reason: 'Test',
+          reservationId: "",
+          reason: "Test",
         }),
-      ).rejects.toThrow('Reservation ID is required');
+      ).rejects.toThrow("Reservation ID is required");
 
       expect(mockReservationRepository.findById).not.toHaveBeenCalled();
     });
 
-    it('should throw error when reason is empty', async () => {
+    it("should throw error when reason is empty", async () => {
       await expect(
         useCase.execute({
-          reservationId: 'reservation-123',
-          reason: '   ',
+          reservationId: "reservation-123",
+          reason: "   ",
         }),
-      ).rejects.toThrow('Reason is required');
+      ).rejects.toThrow("Reason is required");
 
       expect(mockReservationRepository.findById).not.toHaveBeenCalled();
     });
 
-    it('should throw error when reservation not found', async () => {
+    it("should throw error when reservation not found", async () => {
       mockReservationRepository.findById.mockResolvedValue(null);
 
       const result = await useCase.execute({
-        reservationId: 'non-existent',
-        reason: 'Test',
+        reservationId: "non-existent",
+        reason: "Test",
       });
 
       expect(result.success).toBe(false);
-      expect(result.errorMessage).toContain('Reservation not found');
+      expect(result.errorMessage).toContain("Reservation not found");
       expect(mockEventRepository.findById).not.toHaveBeenCalled();
     });
 
-    it('should throw error when event not found', async () => {
+    it("should throw error when event not found", async () => {
       const reservation = createTestReservation();
 
       mockReservationRepository.findById.mockResolvedValue(reservation);
       mockEventRepository.findById.mockResolvedValue(null);
 
       const result = await useCase.execute({
-        reservationId: 'reservation-123',
-        reason: 'Test',
+        reservationId: "reservation-123",
+        reason: "Test",
       });
 
       expect(result.success).toBe(false);
-      expect(result.errorMessage).toContain('Event not found');
+      expect(result.errorMessage).toContain("Event not found");
     });
 
-    it('should retry on transient repository failures', async () => {
+    it("should retry on transient repository failures", async () => {
       const reservation = createTestReservation();
       const event = createTestEvent();
 
       // First call fails, second succeeds
       mockReservationRepository.findById
-        .mockRejectedValueOnce(new Error('Connection timeout'))
+        .mockRejectedValueOnce(new Error("Connection timeout"))
         .mockResolvedValueOnce(reservation);
       mockEventRepository.findById.mockResolvedValue(event);
       mockReservationRepository.update.mockResolvedValue(reservation);
       mockEventRepository.update.mockResolvedValue(event);
 
       const result = await useCase.execute({
-        reservationId: 'reservation-123',
-        reason: 'Expired',
+        reservationId: "reservation-123",
+        reason: "Expired",
       });
 
       expect(result.success).toBe(true);
@@ -195,22 +188,22 @@ describe('ReleaseTicketsUseCase', () => {
       expect(mockReservationRepository.findById).toHaveBeenCalledTimes(2);
     });
 
-    it('should fail after max retry attempts', async () => {
+    it("should fail after max retry attempts", async () => {
       mockReservationRepository.findById.mockRejectedValue(
-        new Error('Database is down'),
+        new Error("Database is down"),
       );
 
       const result = await useCase.execute({
-        reservationId: 'reservation-123',
-        reason: 'Expired',
+        reservationId: "reservation-123",
+        reason: "Expired",
       });
 
       expect(result.success).toBe(false);
-      expect(result.errorMessage).toContain('Database is down');
+      expect(result.errorMessage).toContain("Database is down");
       expect(mockReservationRepository.findById).toHaveBeenCalledTimes(3);
     });
 
-    it('should cancel reservation and increment event availability', async () => {
+    it("should cancel reservation and increment event availability", async () => {
       const reservation = createTestReservation();
       const event = createTestEvent();
 
@@ -219,39 +212,39 @@ describe('ReleaseTicketsUseCase', () => {
       mockReservationRepository.update.mockResolvedValue(reservation);
 
       const result = await useCase.execute({
-        reservationId: 'reservation-123',
-        reason: 'User cancelled',
+        reservationId: "reservation-123",
+        reason: "User cancelled",
       });
 
       expect(result.success).toBe(true);
       expect(result.ticketsReleased).toBe(5);
       expect(mockReservationRepository.update).toHaveBeenCalledWith(
-        'reservation-123',
-        expect.objectContaining({ status: 'CANCELLED' }),
+        "reservation-123",
+        expect.objectContaining({ status: "CANCELLED" }),
       );
       // Note: Event availability is calculated dynamically, no update needed
     });
 
-    it('should handle large quantities correctly', async () => {
+    it("should handle large quantities correctly", async () => {
       const reservation = new Reservation(
-        'reservation-456',
-        'event-1',
+        "reservation-456",
+        "event-1",
         TicketType.VIP,
         TicketQuantity.create(10),
-        Email.create('bulk@example.com'),
-        Money.create(5000, 'USD'),
+        Email.create("bulk@example.com"),
+        Money.create(5000, "USD"),
         new Date(Date.now() + 15 * 60 * 1000),
       );
       const event = new Event(
-        'event-1',
-        'Festival',
+        "event-1",
+        "Festival",
         eventDate,
-        'Park',
-        'Outdoor Stage',
+        "Park",
+        "Outdoor Stage",
         [
           new TicketConfiguration(
             TicketType.VIP,
-            Money.create(200, 'USD'),
+            Money.create(200, "USD"),
             500,
             200,
           ),
@@ -264,15 +257,15 @@ describe('ReleaseTicketsUseCase', () => {
       mockEventRepository.update.mockResolvedValue(event);
 
       const result = await useCase.execute({
-        reservationId: 'reservation-456',
-        reason: 'Bulk release',
+        reservationId: "reservation-456",
+        reason: "Bulk release",
       });
 
       expect(result.success).toBe(true);
       expect(result.ticketsReleased).toBe(10);
     });
 
-    it('should use RetryPolicy with correct configuration', async () => {
+    it("should use RetryPolicy with correct configuration", async () => {
       const reservation = createTestReservation();
       const event = createTestEvent();
 
@@ -280,7 +273,7 @@ describe('ReleaseTicketsUseCase', () => {
       mockReservationRepository.findById.mockImplementation(() => {
         attemptCount++;
         if (attemptCount < 2) {
-          return Promise.reject(new Error('Temporary failure'));
+          return Promise.reject(new Error("Temporary failure"));
         }
         return Promise.resolve(reservation);
       });
@@ -290,8 +283,8 @@ describe('ReleaseTicketsUseCase', () => {
 
       const startTime = Date.now();
       const result = await useCase.execute({
-        reservationId: 'reservation-123',
-        reason: 'Test retry',
+        reservationId: "reservation-123",
+        reason: "Test retry",
       });
       const duration = Date.now() - startTime;
 
@@ -301,7 +294,7 @@ describe('ReleaseTicketsUseCase', () => {
       expect(attemptCount).toBe(2);
     });
 
-    it('should complete within 5 seconds requirement', async () => {
+    it("should complete within 5 seconds requirement", async () => {
       const reservation = createTestReservation();
       const event = createTestEvent();
 
@@ -312,8 +305,8 @@ describe('ReleaseTicketsUseCase', () => {
 
       const startTime = Date.now();
       await useCase.execute({
-        reservationId: 'reservation-123',
-        reason: 'Performance test',
+        reservationId: "reservation-123",
+        reason: "Performance test",
       });
       const duration = Date.now() - startTime;
 

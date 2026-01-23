@@ -12,7 +12,7 @@ export interface RetryPolicyConfig {
   backoffMultiplier: number;
 }
 
-export class RetryPolicy<T> {
+export class RetryPolicy {
   private readonly maxAttempts: number;
   private readonly initialDelayMs: number;
   private readonly backoffMultiplier: number;

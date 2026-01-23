@@ -3,7 +3,6 @@ import { Reservation } from "../../domain/entities/reservation.entity";
 import { Ticket } from "../../domain/entities/ticket.entity";
 import {
   IPaymentGateway,
-  PaymentResult,
   PaymentData,
 } from "../../domain/interfaces/payment-gateway.interface";
 import { IReservationRepository } from "../../domain/interfaces/reservation-repository.interface";
@@ -327,7 +326,7 @@ export class ProcessPaymentUseCase {
       console.log("✅ Email de confirmación enviado exitosamente");
     } catch (error) {
       console.error("❌ Error al enviar email de confirmación:", error);
-      throw error;
+      // Don't re-throw - error is already caught in execute()
     }
   }
 

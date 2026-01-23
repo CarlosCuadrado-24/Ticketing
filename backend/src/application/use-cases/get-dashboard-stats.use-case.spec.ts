@@ -1,17 +1,17 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { GetDashboardStatsUseCase } from './get-dashboard-stats.use-case';
-import { IUserRepository } from '../../domain/interfaces/user-repository.interface';
-import { IEventRepository } from '../../domain/interfaces/event-repository.interface';
-import { ITicketRepository } from '../../domain/interfaces/ticket-repository.interface';
-import { IReservationRepository } from '../../domain/interfaces/reservation-repository.interface';
+import { Test, TestingModule } from "@nestjs/testing";
+import { GetDashboardStatsUseCase } from "./get-dashboard-stats.use-case";
+import { IUserRepository } from "../../domain/interfaces/user-repository.interface";
+import { IEventRepository } from "../../domain/interfaces/event-repository.interface";
+import { ITicketRepository } from "../../domain/interfaces/ticket-repository.interface";
+import { IReservationRepository } from "../../domain/interfaces/reservation-repository.interface";
 import {
   USER_REPOSITORY,
   EVENT_REPOSITORY,
   TICKET_REPOSITORY,
   RESERVATION_REPOSITORY,
-} from '../../domain/interfaces/repository-tokens';
+} from "../../domain/interfaces/repository-tokens";
 
-describe('GetDashboardStatsUseCase', () => {
+describe("GetDashboardStatsUseCase", () => {
   let useCase: GetDashboardStatsUseCase;
   let mockUserRepository: jest.Mocked<IUserRepository>;
   let mockEventRepository: jest.Mocked<IEventRepository>;
@@ -108,18 +108,18 @@ describe('GetDashboardStatsUseCase', () => {
     jest.clearAllMocks();
   });
 
-  describe('execute', () => {
-    it('should return complete dashboard statistics', async () => {
+  describe("execute", () => {
+    it("should return complete dashboard statistics", async () => {
       const mockRecentEvents = [
-        { id: '1', name: 'Event 1' },
-        { id: '2', name: 'Event 2' },
+        { id: "1", name: "Event 1" },
+        { id: "2", name: "Event 2" },
       ];
       const mockTopEvents = [
-        { eventId: '1', name: 'Popular Event', ticketsSold: 500 },
+        { eventId: "1", name: "Popular Event", ticketsSold: 500 },
       ];
       const mockEventsByMonth = [
-        { month: '2026-01', count: 10 },
-        { month: '2026-02', count: 15 },
+        { month: "2026-01", count: 10 },
+        { month: "2026-02", count: 15 },
       ];
 
       mockUserRepository.count.mockResolvedValue(1500);
@@ -151,7 +151,7 @@ describe('GetDashboardStatsUseCase', () => {
       expect(mockTicketRepository.getTopSellingEvents).toHaveBeenCalledWith(5);
     });
 
-    it('should handle zero values gracefully', async () => {
+    it("should handle zero values gracefully", async () => {
       mockUserRepository.count.mockResolvedValue(0);
       mockEventRepository.count.mockResolvedValue(0);
       mockTicketRepository.countSold.mockResolvedValue(0);
@@ -172,7 +172,7 @@ describe('GetDashboardStatsUseCase', () => {
       expect(result.topEvents).toEqual([]);
     });
 
-    it('should execute all queries in parallel', async () => {
+    it("should execute all queries in parallel", async () => {
       mockUserRepository.count.mockResolvedValue(100);
       mockEventRepository.count.mockResolvedValue(10);
       mockTicketRepository.countSold.mockResolvedValue(500);

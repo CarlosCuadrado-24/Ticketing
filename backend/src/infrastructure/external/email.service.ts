@@ -1202,9 +1202,9 @@ export class EmailService {
   /**
    * Carga y compila una plantilla de email
    */
-  private async loadTemplate(
+  private loadTemplate(
     templateName: string,
-  ): Promise<handlebars.TemplateDelegate> {
+  ): handlebars.TemplateDelegate {
     try {
       const templatePath = path.join(this.templatesPath, `${templateName}.hbs`);
       const templateContent = fs.readFileSync(templatePath, "utf8");
@@ -1229,7 +1229,7 @@ export class EmailService {
       );
 
       // Cargar plantilla
-      const template = await this.loadTemplate("ticket-confirmation");
+      const template = this.loadTemplate("ticket-confirmation");
 
       // Preparar datos para la plantilla
       const ticketsWithQR = params.tickets.map((ticket) => ({
@@ -1429,7 +1429,7 @@ export class EmailService {
         `📧 Enviando recordatorio de evento a: ${params.buyerEmail}`,
       );
 
-      const template = await this.loadTemplate("event-reminder");
+      const template = this.loadTemplate("event-reminder");
 
       const templateData = {
         buyerName: params.buyerName || "Estimado/a cliente",
@@ -1500,7 +1500,7 @@ export class EmailService {
     attachments?: EmailAttachment[],
   ): Promise<boolean> {
     try {
-      const template = await this.loadTemplate(templateName);
+      const template = this.loadTemplate(templateName);
       const htmlContent = template(templateData);
 
       const mailOptions: nodemailer.SendMailOptions = {

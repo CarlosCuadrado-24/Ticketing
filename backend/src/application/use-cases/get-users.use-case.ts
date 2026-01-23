@@ -30,7 +30,7 @@ export class GetUsersUseCase {
 
     // Remove passwords from response
     const usersWithoutPasswords = users.map((user) => {
-      const { passwordHash, ...userWithoutPassword } = user;
+      const { passwordHash: _passwordHash, ...userWithoutPassword } = user;
       return userWithoutPassword;
     });
 

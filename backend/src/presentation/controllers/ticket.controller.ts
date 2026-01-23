@@ -13,7 +13,7 @@ import {
   NotFoundException,
   UseGuards,
 } from "@nestjs/common";
-import { Response } from 'express';
+import { Response } from "express";
 import {
   ApiTags,
   ApiOperation,
@@ -113,16 +113,19 @@ export class TicketController {
 
       // Get event to retrieve event name
       const event = await this.eventRepository.findById(ticket.eventId);
-      const eventName = event ? event.name : 'Event';
+      const eventName = event ? event.name : "Event";
 
       // Generate PNG using the same method as email attachments
-      const pngBuffer = await this.emailService['generateSimpleTicketPNG'](ticket, eventName);
+      const pngBuffer = await this.emailService["generateSimpleTicketPNG"](
+        ticket,
+        eventName,
+      );
 
       // Set headers and send file
       res.set({
-        'Content-Type': 'image/png',
-        'Content-Disposition': `attachment; filename="ticket-${ticket.code}.png"`,
-        'Content-Length': pngBuffer.length,
+        "Content-Type": "image/png",
+        "Content-Disposition": `attachment; filename="ticket-${ticket.code}.png"`,
+        "Content-Length": pngBuffer.length,
       });
 
       res.send(pngBuffer);

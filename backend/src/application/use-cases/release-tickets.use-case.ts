@@ -37,7 +37,7 @@ export interface ReleaseTicketsOutput {
 
 @Injectable()
 export class ReleaseTicketsUseCase {
-  private readonly retryPolicy: RetryPolicy<void>;
+  private readonly retryPolicy: RetryPolicy;
 
   constructor(
     @Inject(EVENT_REPOSITORY)

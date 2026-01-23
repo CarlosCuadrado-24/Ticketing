@@ -1,5 +1,8 @@
 import { validate } from "class-validator";
-import { CreateReservationDto, ProcessPaymentDto } from "./create-reservation.dto";
+import {
+  CreateReservationDto,
+  ProcessPaymentDto,
+} from "./create-reservation.dto";
 import { TicketType } from "../../domain/value-objects/ticket-type.vo";
 
 describe("CreateReservationDto", () => {
@@ -79,8 +82,12 @@ describe("CreateReservationDto", () => {
 
   describe("ticketType validation", () => {
     it("should pass validation with all valid ticket types", async () => {
-      const ticketTypes = [TicketType.VIP, TicketType.GENERAL, TicketType.EARLY_BIRD];
-      
+      const ticketTypes = [
+        TicketType.VIP,
+        TicketType.GENERAL,
+        TicketType.EARLY_BIRD,
+      ];
+
       for (const ticketType of ticketTypes) {
         const testDto = new CreateReservationDto();
         testDto.eventId = "EVENT-123";
@@ -197,10 +204,12 @@ describe("CreateReservationDto", () => {
 
       const errors = await validate(dto);
       expect(errors).toHaveLength(1);
-      
-      const emailErrors = errors.filter(error => error.property === "buyerEmail");
+
+      const emailErrors = errors.filter(
+        (error) => error.property === "buyerEmail",
+      );
       expect(emailErrors).toHaveLength(1);
-      
+
       const constraints = Object.keys(emailErrors[0]?.constraints || {});
       expect(constraints).toContain("isEmail");
       expect(constraints).toContain("isNotEmpty");
@@ -227,7 +236,7 @@ describe("ProcessPaymentDto", () => {
 
   describe("valid data", () => {
     it("should pass validation with valid amount and currency", async () => {
-      dto.amount = 100.50;
+      dto.amount = 100.5;
       dto.currency = "COP";
 
       const errors = await validate(dto);

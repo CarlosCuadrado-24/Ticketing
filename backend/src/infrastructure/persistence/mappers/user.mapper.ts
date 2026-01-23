@@ -1,7 +1,6 @@
 import { User } from "../../../domain/entities/user.entity";
 import { Email } from "../../../domain/value-objects/email.vo";
 import { UserOrmEntity } from "../entities/user.orm-entity";
-import { UserRole } from "../../../domain/enums/user-role.enum";
 
 /**
  * UserMapper

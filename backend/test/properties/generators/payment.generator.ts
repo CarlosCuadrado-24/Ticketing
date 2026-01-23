@@ -75,7 +75,7 @@ export const validReservationArbitrary = fc.record({
  */
 export const matchingPaymentArbitrary = fc
   .tuple(moneyArbitrary, currencyArbitrary)
-  .map(([money, currency]) => ({
+  .map(([money, _currency]) => ({
     amount: money.amount,
     currency: money.currency,
     expectedMatch: true,

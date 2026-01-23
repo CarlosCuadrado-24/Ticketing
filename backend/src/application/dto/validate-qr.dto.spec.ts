@@ -43,10 +43,12 @@ describe("ValidateQRDto", () => {
 
       const errors = await validate(dto);
       expect(errors).toHaveLength(1);
-      
-      const qrTokenErrors = errors.filter(error => error.property === "qrToken");
+
+      const qrTokenErrors = errors.filter(
+        (error) => error.property === "qrToken",
+      );
       expect(qrTokenErrors).toHaveLength(1);
-      
+
       const constraints = Object.keys(qrTokenErrors[0]?.constraints || {});
       expect(constraints).toContain("isUuid");
       expect(constraints).toContain("isNotEmpty");
@@ -119,10 +121,12 @@ describe("ValidateQRDto", () => {
 
       const errors = await validate(dto);
       expect(errors).toHaveLength(1);
-      
-      const eventIdErrors = errors.filter(error => error.property === "eventId");
+
+      const eventIdErrors = errors.filter(
+        (error) => error.property === "eventId",
+      );
       expect(eventIdErrors).toHaveLength(1);
-      
+
       const constraints = Object.keys(eventIdErrors[0]?.constraints || {});
       expect(constraints).toContain("matches");
       expect(constraints).toContain("isNotEmpty");
@@ -144,10 +148,10 @@ describe("ValidateQRDto", () => {
 
       const errors = await validate(dto);
       expect(errors).toHaveLength(2);
-      
-      const qrTokenError = errors.find(error => error.property === "qrToken");
-      const eventIdError = errors.find(error => error.property === "eventId");
-      
+
+      const qrTokenError = errors.find((error) => error.property === "qrToken");
+      const eventIdError = errors.find((error) => error.property === "eventId");
+
       expect(qrTokenError).toBeDefined();
       expect(eventIdError).toBeDefined();
     });

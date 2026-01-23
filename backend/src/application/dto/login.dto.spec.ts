@@ -75,10 +75,12 @@ describe("LoginDto", () => {
 
       const errors = await validate(dto);
       expect(errors).toHaveLength(2);
-      
-      const emailError = errors.find(error => error.property === "email");
-      const passwordError = errors.find(error => error.property === "password");
-      
+
+      const emailError = errors.find((error) => error.property === "email");
+      const passwordError = errors.find(
+        (error) => error.property === "password",
+      );
+
       expect(emailError).toBeDefined();
       expect(passwordError).toBeDefined();
     });

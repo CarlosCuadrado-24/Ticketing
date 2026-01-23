@@ -28,15 +28,15 @@ export class ExpiredReservationState implements IReservationState {
     return false;
   }
 
-  confirm(_reservation: Reservation): void {
+  confirm(__reservation: Reservation): void {
     throw new InvalidStateTransitionException("EXPIRED", "confirm");
   }
 
-  cancel(_reservation: Reservation): void {
+  cancel(__reservation: Reservation): void {
     throw new InvalidStateTransitionException("EXPIRED", "cancel");
   }
 
-  expire(_reservation: Reservation): void {
+  expire(__reservation: Reservation): void {
     throw new InvalidStateTransitionException("EXPIRED", "expire");
   }
 }

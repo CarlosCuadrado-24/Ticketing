@@ -6,7 +6,6 @@ import {
   EVENT_REPOSITORY,
 } from "../../domain/interfaces/repository-tokens";
 import { EmailService } from "../../infrastructure/external/email.service";
-import { Email } from "../../domain/value-objects/email.vo";
 
 /**
  * ResendEmailUseCase

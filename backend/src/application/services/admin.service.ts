@@ -65,7 +65,7 @@ export class AdminService {
     }
 
     // Remove password from response
-    const { passwordHash, ...userWithoutPassword } = user;
+    const { passwordHash: _passwordHash, ...userWithoutPassword } = user;
     return userWithoutPassword;
   }
 
@@ -87,7 +87,7 @@ export class AdminService {
     }
 
     const updatedUser = await this.userRepository.update(id, updateUserDto);
-    const { passwordHash, ...userWithoutPassword } = updatedUser;
+    const { passwordHash: _passwordHash, ...userWithoutPassword } = updatedUser;
     return userWithoutPassword;
   }
 
