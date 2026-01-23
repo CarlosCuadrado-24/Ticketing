@@ -1,191 +1,198 @@
 ## AI Agent Guide: Ticketing System (Full Stack)
-
-Monorepo with NestJS backend (DDD + Clean Architecture) + Angular 21 frontend. Goal: enable productive, safe changes consistent with existing patterns. IMPORTANT: PRINCIPLES SOLID, CLEAN CODE.
-
 ---
 
 ## Architecture Overview
 
 ### Backend (`/backend`) - NestJS + TypeScript (Strict)
 **Layer Structure** (Clean Architecture + DDD):
-```
-domain/          → Pure business logic (entities, value objects, interfaces)
-application/     → Use cases, DTOs, services (orchestration)
-infrastructure/  → Repositories (TypeORM), external services (MinIO)
-presentation/    → Controllers (HTTP endpoints)
-modules/         → NestJS dependency injection modules
-```
+## Guía del Agente IA: Sistema de Ticketing (Full Stack)
 
-**Key Patterns**:
-- **Aggregate Roots**: `Event` (domain/entities/event.entity.ts) manages ticket availability via encapsulated `_ticketConfigurations`
-- **Use Cases**: Single-responsibility classes injected into controllers (e.g., `CreateEventUseCase`)
-- **Repository Pattern**: Interfaces in `domain/interfaces/*`, implementations in `infrastructure/persistence/*`
-- **Value Objects**: Immutable types like `TicketType`, `Money` validate business rules in constructors
-- **State Machine**: Reservation state transitions via Strategy pattern (`domain/states/*`)
-- **File Uploads**: Use `@UseInterceptors(FileInterceptor('image'))` + `MinioService` for S3-compatible storage
-
-**Critical Files**:
-- `app.module.ts`: TypeORM config, global modules (EventEmitter, Schedule, ConfigModule)
-- `main.ts`: Global pipes (ValidationPipe with `transform: true`), CORS, Swagger at `/api`
-- `typeorm.config.ts`: Migration path, entities path, **synchronize: false** (migrations only)
-
-### Frontend (`/frontend`) - Angular 21 + Standalone Components
-**Key Patterns**:
-- **Standalone Components**: All components use `standalone: true`, import dependencies directly (no NgModules)
-- **Template Control Flow**: Use `@if`, `@for` (not `*ngIf`, `*ngFor`)
-- **Signal Injection**: Use `inject()` for DI (not constructor injection): `private readonly router = inject(Router);`
-- **Reactive Forms**: FormBuilder + FormGroup with validators (see `event-form.ts`)
-- **Guards**: `authGuard`, `checkoutGuard` protect routes via `canActivate`
-- **Tailwind CSS**: Utility classes in templates (configured in `tailwind.config.js`)
-
-**Routes** (`app.routes.ts`):
-- `/` → EventList, `/event/:id` → EventDetail, `/checkout` → Checkout (guarded)
-- `/create-event`, `/event/:id/edit` → EventForm (image upload with preview)
-
-**Services**:
-- `Events` (events.ts): CRUD for events, uses `HttpClient` with typed `Observable<T>`
-- File uploads: FormData assembly, **no manual Content-Type header** (Angular adds automatically)
+Monorepo con backend en NestJS (DDD + Clean Architecture) y frontend en Angular 21. Objetivo: permitir cambios productivos y seguros coherentes con los patrones existentes. IMPORTANTE: PRINCIPIOS SOLID, CÓDIGO LIMPIO.
 
 ---
 
-## Developer Workflows
+## Resumen de la Arquitectura
 
-### Docker-First Development (Recommended)
-**Start entire stack**:
+### Backend (`/backend`) - NestJS + TypeScript (estricto)
+**Estructura por capas** (Clean Architecture + DDD):
+```
+domain/          → Lógica de negocio pura (entidades, value objects, interfaces)
+application/     → Casos de uso, DTOs, servicios (orquestación)
+infrastructure/  → Repositorios (TypeORM), servicios externos (MinIO)
+presentation/    → Controladores (endpoints HTTP)
+modules/         → Módulos de inyección de dependencias de NestJS
+```
+
+**Patrones clave**:
+- **Aggregate Roots**: `Event` (`domain/entities/event.entity.ts`) gestiona la disponibilidad de entradas mediante `_ticketConfigurations` encapsulado
+- **Use Cases**: Clases con responsabilidad única inyectadas en controladores (ej.: `CreateEventUseCase`)
+- **Repository Pattern**: Interfaces en `domain/interfaces/*`, implementaciones en `infrastructure/persistence/*`
+- **Value Objects**: Tipos inmutables como `TicketType`, `Money` validan reglas de negocio en sus constructores
+- **Máquina de estados**: Transiciones de reserva mediante Strategy pattern (`domain/states/*`)
+- **Subida de archivos**: Usar `@UseInterceptors(FileInterceptor('image'))` + `MinioService` para almacenamiento compatible S3
+
+**Archivos críticos**:
+- `app.module.ts`: Configuración de TypeORM, módulos globales (EventEmitter, Schedule, ConfigModule)
+- `main.ts`: Pipes globales (`ValidationPipe` con `transform: true`), CORS, Swagger en `/api`
+- `typeorm.config.ts`: Ruta de migraciones, path de entidades, **synchronize: false** (usar migraciones)
+
+### Frontend (`/frontend`) - Angular 21 + Componentes standalone
+**Patrones clave**:
+- **Componentes standalone**: Todos los componentes usan `standalone: true`, importan dependencias directamente (sin NgModules)
+- **Control de flujo en plantillas**: Uso de `@if`, `@for` (en lugar de `*ngIf`, `*ngFor`)
+- **Inyección por Signal**: Usar `inject()` para DI (no constructor): `private readonly router = inject(Router);`
+- **Reactive Forms**: `FormBuilder` + `FormGroup` con validadores (ver `event-form.ts`)
+- **Guards**: `authGuard`, `checkoutGuard` protegen rutas via `canActivate`
+- **Tailwind CSS**: Clases utilitarias en plantillas (configurado en `tailwind.config.js`)
+
+**Rutas** (`app.routes.ts`):
+- `/` → `EventList`, `/event/:id` → `EventDetail`, `/checkout` → `Checkout` (protegida)
+- `/create-event`, `/event/:id/edit` → `EventForm` (subida de imagen con vista previa)
+
+**Servicios**:
+- `Events` (`events.ts`): CRUD de eventos, usa `HttpClient` con `Observable<T>` tipado
+- Subidas de archivo: ensamblar `FormData`, **no** establecer manualmente el `Content-Type` (Angular lo gestiona)
+
+---
+
+## Flujo de trabajo para desarrolladores
+
+### Desarrollo recomendado: Docker-first
+**Levantar todo el stack**:
 ```bash
 docker-compose up -d --build  # Backend (3000), Frontend (4200), Postgres (5432), MinIO (9000/9001)
-docker-compose logs -f backend  # Watch backend logs
+docker-compose logs -f backend  # Ver logs del backend
 ```
 
-**Backend inside container**:
+**Backend dentro del contenedor**:
 ```bash
-docker-compose exec backend npm run migration:run     # Run pending migrations
-docker-compose exec backend npm run test:property     # Run fast-check property tests
-docker-compose exec backend npm test                  # Unit tests
+docker-compose exec backend npm run migration:run     # Ejecutar migraciones pendientes
+docker-compose exec backend npm run test:property     # Ejecutar property tests (fast-check)
+docker-compose exec backend npm test                  # Tests unitarios
 ```
 
-**Local development** (if not using Docker):
-- Backend: `cd backend && npm run start:dev` (requires local Postgres + MinIO)
+**Desarrollo local** (sin Docker):
+- Backend: `cd backend && npm run start:dev` (requiere Postgres + MinIO locales)
 - Frontend: `cd frontend && npm start` (→ https://localhost)
 
-### Testing Strategy (3 Layers)
-1. **Unit Tests**: `npm test` (Jest, colocated with source: `*.spec.ts`)
-2. **Property Tests**: `npm run test:property` (fast-check, `test/properties/*.property.spec.ts`)
-   - Example: `reservation-state-machine.property.spec.ts` validates all state transitions with 100 random runs
-3. **Integration Tests**: `npm run test:integration` (test DB via docker profile: `docker-compose --profile test up -d`)
+### Estrategia de testing (3 capas)
+1. **Unit tests**: `npm test` (Jest, tests junto al código: `*.spec.ts`)
+2. **Property tests**: `npm run test:property` (fast-check, `test/properties/*.property.spec.ts`)
+   - Ejemplo: `reservation-state-machine.property.spec.ts` valida transiciones de estado con 100 ejecuciones aleatorias
+3. **Integration tests**: `npm run test:integration` (usa test DB con perfil de Docker: `docker-compose --profile test up -d`)
 
-### Migrations (Critical)
-**Always use migrations** (synchronize disabled in prod):
+### Migraciones (crítico)
+**Siempre usar migraciones** (synchronize está deshabilitado en producción):
 ```bash
-# Generate migration after entity changes
+# Generar migración tras cambiar entidades
 npm run migration:generate -- -n AddImageUrlToEvents
 
-# Run migrations
+# Ejecutar migraciones
 npm run migration:run
 
-# Rollback last migration
+# Revertir la última migración
 npm run migration:revert
 ```
-Migrations live in `backend/src/infrastructure/persistence/migrations/`
+Las migraciones se encuentran en `backend/src/infrastructure/persistence/migrations/`.
 
 ---
 
-## Project-Specific Conventions
+## Convenciones específicas del proyecto
 
-### Backend Naming & Structure
-- App bootstrap: `src/main.ts` bootstraps `App` with `appConfig` (router, HttpClient, global error listeners).
-- Routing: `src/app/app.routes.ts` defines three routes: `'' → EventList`, `'event/:id' → EventDetail`, `'checkout' → Checkout`.
-- Services (API integration):
+### Nombres y estructura del backend
+- Arranque de la app: `src/main.ts` inicializa `App` con `appConfig` (router, HttpClient, manejadores globales de errores).
+- Rutas: `src/app/app.routes.ts` define tres rutas: `'' → EventList`, `'event/:id' → EventDetail`, `'checkout' → Checkout`.
+- Servicios (integración con API):
   - `Events` (`src/app/services/events.ts`): GET `/events`, `/events/:id`.
   - `Orders` (`src/app/services/orders.ts`): POST `/orders`, GET `/orders/:id`, POST `/orders/:id/confirm`.
-  - Base URL is hardcoded to `http://localhost:3000`; update here if backend host/port changes.
-- Models: Typed interfaces live in `src/app/models/*.ts` and should be used across components/services.
-- Core flow:
-  - Event list → fetch events → render cards → link to detail.
-  - Event detail → fetch event by route `id` → manage ticket quantities → create order → navigate to checkout with `orderId` query param.
-  - Checkout → read `orderId` from query → fetch order → group tickets by `ticketType` → confirm payment → redirect home.
+  - La base URL está fijada a `http://localhost:3000`; actualízala si cambian host/puerto del backend.
+- Modelos: Interfaces tipadas en `src/app/models/*.ts` y deben usarse en componentes y servicios.
+- Flujo core:
+  - Lista de eventos → obtener eventos → renderizar tarjetas → navegar a detalle.
+  - Detalle de evento → obtener evento por `id` → gestionar cantidades de tickets → crear orden → navegar a checkout con `orderId` como query param.
+  - Checkout → leer `orderId` de query → obtener orden → agrupar tickets por `ticketType` → confirmar pago → redirigir al inicio.
 
-### Conventions & Patterns
-- Standalone components: Components declare `standalone: true` and list required modules in `imports` (e.g. `CommonModule`, `RouterLink`, `FormsModule`).
-- Template control flow: Uses Angular’s `@for` in templates instead of `*ngFor`.
-- Observables: HttpClient methods return typed `Observable<T>`; components subscribe in `ngOnInit()` and handle results inline.
-- Type safety: Use interfaces from `models` in service signatures and component state. Prices are sometimes coerced via `Number(...)` before math.
-- Error handling: Global browser error listeners are provided via `provideBrowserGlobalErrorListeners()` in `app.config.ts`. Components handle API errors via the `error` callback in `subscribe`.
-- Styling: Templates use utility-like class names; there is no Tailwind dependency declared. Keep styles in the component `.css` files.
+### Convenciones y patrones
+- Componentes standalone: Declarar `standalone: true` y listar módulos requeridos en `imports` (ej.: `CommonModule`, `RouterLink`, `FormsModule`).
+- Control de flujo en plantillas: Uso de `@for` en plantillas en lugar de `*ngFor`.
+- Observables: `HttpClient` devuelve `Observable<T>` tipados; los componentes se suscriben en `ngOnInit()` y manejan resultados inline.
+- Seguridad de tipos: Usar interfaces desde `models` en las firmas de servicios y estado de componentes. En operaciones con precios, convertir explícitamente con `Number(...)` cuando sea necesario.
+- Manejo de errores: Hay listeners globales en `app.config.ts` mediante `provideBrowserGlobalErrorListeners()`. Los componentes manejan errores de API en el callback `error` de `subscribe`.
+- Estilos: Las plantillas usan clases con estilo utilitario; no hay dependencia declarada de Tailwind por defecto. Mantener estilos en `.css` de componente.
 
-### Build, Run, Test
-- Dev server:
-  - `npm start` (alias for `ng serve`) → https://localhost
-  - VS Code task: “npm: start” is available in this workspace.
+### Compilar, ejecutar, testear
+- Servidor de desarrollo:
+  - `npm start` (alias para `ng serve`) → https://localhost
+  - Tarea de VS Code disponible: “npm: start”.
 - Build:
-  - `npm run build` (alias for `ng build`)
-  - `npm run watch` builds with `--watch --configuration development`.
-- Unit tests:
-  - `npm test` (alias for `ng test`) runs with Vitest + jsdom. Spec files live alongside code (e.g., `src/app/services/*.spec.ts`, `src/app/components/**/**.spec.ts`).
+  - `npm run build` (alias para `ng build`)
+  - `npm run watch` para build en modo watch (`--configuration development`).
+- Tests unitarios:
+  - `npm test` (alias de `ng test`) se ejecuta con Vitest + jsdom. Los specs están junto al código (ej.: `src/app/services/*.spec.ts`).
 
-### Integration Notes
-- Backend API must be running at `http://localhost:3000` or services will fail. Endpoints used:
+### Notas de integración
+- La API del backend debe estar disponible en `http://localhost:3000` o los servicios fallarán. Endpoints usados:
   - `GET /events`, `GET /events/:id`
-  - `POST /orders` with `{ ticketIds: number[], userId: string }`
+  - `POST /orders` con `{ ticketIds: number[], userId: string }`
   - `GET /orders/:id`, `POST /orders/:id/confirm`
-- CORS/auth: Not handled in this frontend; assume backend enables required CORS and auth (if any).
+- CORS/auth: El frontend asume que el backend permite CORS y que la autenticación (si aplica) está habilitada en backend.
 
-### Common Tasks (Examples)
-- Add a new route + page:
-  1) Create a standalone component under `src/app/components/<feature>/`.
-  2) Import it and add a `{ path, component }` entry to `src/app/app.routes.ts`.
-- Extend a service method:
-  - In `orders.ts`:
+### Tareas comunes (ejemplos)
+- Añadir una nueva ruta + página:
+  1) Crear un componente standalone en `src/app/components/<feature>/`.
+  2) Importarlo y agregar `{ path, component }` en `src/app/app.routes.ts`.
+- Extender un método de servicio:
+  - En `orders.ts`:
     ```ts
     cancelOrder(id: number): Observable<Order> {
       return this.http.post<Order>(`${this.apiUrl}/${id}/cancel`, {});
     }
     ```
-  - Use typed interfaces from `src/app/models/order.model.ts` in signatures and consumers.
-- Use route params and query params:
-  - Route param: `const id = this.route.snapshot.paramMap.get('id')` (see `EventDetail`).
-  - Query param: subscribe to `this.route.queryParams` (see `Checkout`).
+  - Usar las interfaces tipadas desde `src/app/models/order.model.ts` en las firmas y consumidores.
+- Uso de params y query params:
+  - Param de ruta: `const id = this.route.snapshot.paramMap.get('id')` (ver `EventDetail`).
+  - Query param: subscribirse a `this.route.queryParams` (ver `Checkout`).
 
-### Guardrails for Changes
-- Keep components standalone and declare required Angular modules in `imports`.
-- Preserve typed `Observable<T>` returns in services; do not return Promises.
-- Update API base URLs only in service files; do not inline endpoint strings elsewhere.
-- When doing math on prices, ensure numeric conversion as existing code does (`Number(...)`).
+### Reglas para cambios
+- Mantener los componentes standalone y declarar los módulos angular necesarios en `imports`.
+- Mantener `Observable<T>` en los servicios; evitar convertir a `Promise` en las firmas públicas.
+- Actualizar la base URL de la API únicamente en los archivos de servicio; no poner endpoints hardcodeados en componentes.
+- Al operar con precios, asegurar la conversión numérica cuando corresponda (`Number(...)`).
 
-If anything here seems incomplete or unclear (e.g., additional backend endpoints, auth, or environment configs), please comment and I’ll refine this guide.
+Si algo no está claro (endpoints adicionales, auth, configuraciones de entorno), comenta y ajusto la guía.
 
-### Implementation Plan (Resumen en Español)
-Este plan resume un roadmap TDD para ampliar el frontend a una solución completa de Ticketing. Ajusta según el estado actual del repo.
+### Plan de implementación (Resumen en Español)
+Este plan resume un roadmap TDD para ampliar el frontend hacia una solución completa de Ticketing. Ajustar según el estado actual del repo.
 
-- Stack objetivo: Angular 17+ (standalone), Tailwind CSS, Signals, Jest + fast-check + Playwright.
-- Fase 1: Setup
-  - Inicializar proyecto Angular estricto; configurar Tailwind (`tailwindcss`, `postcss`, `autoprefixer`), estructura `core/`, `features/`, `shared/`.
-- Fase 2: Núcleo (Modelos y Servicios)
-  - Modelos: `Event`, `Ticket`, `Reservation`, `User`, `Checkout`.
-  - `ApiService` genérico (baseUrl en `environment`), `StorageService` (localStorage).
-- Fase 3: Auth con TDD
-  - Tests de `AuthService`; implementar signals (`currentUser`, `isAuthenticated`, `isLoading`), `login/register/logout/refreshToken`, persistencia de tokens; property test de persistencia.
-- Fase 4: HTTP & Guards
-  - Interceptors: `AuthInterceptor` (Bearer), `ErrorInterceptor` (401/403/500). Guards: `AuthGuard`, `CheckoutGuard`.
-- Fase 5: Shared UI
-  - `Header`, `Footer`, `MobileMenu`, `LoadingSpinner`, `FormError`; Pipes de fecha y moneda.
-- Fase 6: Events
-  - `EventService` (signals: `events`, `selectedEvent`, `filters`, `isLoading`), `EventCard`, `EventList`, `EventFilters`; rutas lazy `/events` y `/events/:id`.
-- Fase 7: Checkout
-  - `CheckoutService` (signals: `cart`, `reservation`, `timeRemaining`; computed: totales), `OrderSummary`, `ReservationTimer`, `ContactForm`, `PaymentForm`, `Checkout`, `Confirmation`, `QRCodeComponent`; rutas lazy `/checkout`.
-- Fase 8: Tickets (My Tickets)
-  - `TicketService`, `TicketCard`, `MyTickets`, `TicketDetail`; ruta `/my-tickets`.
-- Fase 9: Auth UI
-  - `Login`, `Register`, `ForgotPassword`; rutas `/login`, `/register`, `/forgot-password`.
-- Fase 10: Profile
-  - `ProfileService`, `Profile`, `ChangePassword`, `PurchaseHistory`; rutas `/profile`.
-- Fase 11: Organizer
-  - `OrganizerService`, `CreateEvent`, `TicketConfiguration`, `OrganizerDashboard`; rutas `/organizer`.
-- Fase 12: Errores y Accesibilidad
-  - `ErrorHandlerService`, `NotificationService`, `Toast`, `NotFound`; auditoría A11y y property tests.
-- Fase 13: E2E con Playwright
-  - Configurar `e2e/` y `playwright.config.ts`; tests: explorar eventos, detalle + selección, checkout, auth, mis tickets, responsive.
-- Fase Final: Cobertura > 80%, auditoría A11y, build prod, documentación.
+ - Stack objetivo: Angular 17+ (standalone), Tailwind CSS, Signals, Jest + fast-check + Playwright.
+ - Fase 1: Setup
+   - Inicializar proyecto Angular estricto; configurar Tailwind (`tailwindcss`, `postcss`, `autoprefixer`) y estructura `core/`, `features/`, `shared/`.
+ - Fase 2: Núcleo (Modelos y Servicios)
+   - Modelos: `Event`, `Ticket`, `Reservation`, `User`, `Checkout`.
+   - `ApiService` genérico (baseUrl en `environment`), `StorageService` (localStorage).
+ - Fase 3: Auth con TDD
+   - Tests de `AuthService`; implementar signals (`currentUser`, `isAuthenticated`, `isLoading`), `login/register/logout/refreshToken`, persistencia de tokens; property test de persistencia.
+ - Fase 4: HTTP & Guards
+   - Interceptors: `AuthInterceptor` (Bearer), `ErrorInterceptor` (401/403/500). Guards: `AuthGuard`, `CheckoutGuard`.
+ - Fase 5: Shared UI
+   - `Header`, `Footer`, `MobileMenu`, `LoadingSpinner`, `FormError`; Pipes para fecha y moneda.
+ - Fase 6: Events
+   - `EventService` (signals: `events`, `selectedEvent`, `filters`, `isLoading`), `EventCard`, `EventList`, `EventFilters`; rutas lazy `/events` y `/events/:id`.
+ - Fase 7: Checkout
+   - `CheckoutService` (signals: `cart`, `reservation`, `timeRemaining`; computed: totales), `OrderSummary`, `ReservationTimer`, `ContactForm`, `PaymentForm`, `Checkout`, `Confirmation`, `QRCodeComponent`; rutas lazy `/checkout`.
+ - Fase 8: Tickets (My Tickets)
+   - `TicketService`, `TicketCard`, `MyTickets`, `TicketDetail`; ruta `/my-tickets`.
+ - Fase 9: Auth UI
+   - `Login`, `Register`, `ForgotPassword`; rutas `/login`, `/register`, `/forgot-password`.
+ - Fase 10: Profile
+   - `ProfileService`, `Profile`, `ChangePassword`, `PurchaseHistory`; rutas `/profile`.
+ - Fase 11: Organizer
+   - `OrganizerService`, `CreateEvent`, `TicketConfiguration`, `OrganizerDashboard`; rutas `/organizer`.
+ - Fase 12: Errores y Accesibilidad
+   - `ErrorHandlerService`, `NotificationService`, `Toast`, `NotFound`; auditoría A11y y property tests.
+ - Fase 13: E2E con Playwright
+   - Configurar `e2e/` y `playwright.config.ts`; tests: explorar eventos, detalle + selección, checkout, auth, mis tickets, responsive.
+ - Fase Final: Cobertura > 80%, auditoría A11y, build prod, documentación.
 
 Comandos útiles (ajusta scripts si migras a Jest/Playwright):
 ```bash
