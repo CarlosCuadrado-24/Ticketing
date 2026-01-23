@@ -7,14 +7,16 @@ import { environment } from '../../../environments/environment';
  * Used by EventCard, EventDetail, MyTickets, and other components
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ImageService {
-  
   // Default fallback images
-  private readonly DEFAULT_EVENT_IMAGE = 'https://lh3.googleusercontent.com/d/1BqOKNhwjsLitFxWKUBG8wPHoLlGJKqJH';
-  private readonly DEFAULT_AVATAR_IMAGE = 'https://via.placeholder.com/150x150/cccccc/666666?text=User';
-  private readonly DEFAULT_PLACEHOLDER = 'https://via.placeholder.com/400x300/f0f0f0/999999?text=No+Image';
+  private readonly DEFAULT_EVENT_IMAGE =
+    'https://lh3.googleusercontent.com/d/1BqOKNhwjsLitFxWKUBG8wPHoLlGJKqJH';
+  private readonly DEFAULT_AVATAR_IMAGE =
+    'https://via.placeholder.com/150x150/cccccc/666666?text=User';
+  private readonly DEFAULT_PLACEHOLDER =
+    'https://via.placeholder.com/400x300/f0f0f0/999999?text=No+Image';
 
   /**
    * Get event image URL with fallback handling
@@ -32,7 +34,7 @@ export class ImageService {
 
     // Handle MinIO/local file URLs
     let filename = imageUrl;
-    
+
     // Extract filename if it's a path
     if (filename.includes('/')) {
       const parts = filename.split('/');
@@ -69,7 +71,7 @@ export class ImageService {
     const initials = this.getInitials(userName);
     const backgroundColor = this.generateColorFromString(userName);
     const textColor = this.getContrastColor(backgroundColor);
-    
+
     return `https://ui-avatars.com/api/?name=${encodeURIComponent(initials)}&background=${backgroundColor}&color=${textColor}&size=150&bold=true`;
   }
 
@@ -79,7 +81,7 @@ export class ImageService {
   private getInitials(name: string): string {
     return name
       .split(' ')
-      .map(word => word.charAt(0).toUpperCase())
+      .map((word) => word.charAt(0).toUpperCase())
       .slice(0, 2)
       .join('');
   }
@@ -92,7 +94,7 @@ export class ImageService {
     for (let i = 0; i < str.length; i++) {
       hash = str.charCodeAt(i) + ((hash << 5) - hash);
     }
-    
+
     const hue = Math.abs(hash) % 360;
     return this.hslToHex(hue, 50, 60);
   }
@@ -102,11 +104,13 @@ export class ImageService {
    */
   private hslToHex(h: number, s: number, l: number): string {
     l /= 100;
-    const a = s * Math.min(l, 1 - l) / 100;
+    const a = (s * Math.min(l, 1 - l)) / 100;
     const f = (n: number) => {
       const k = (n + h / 30) % 12;
       const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
-      return Math.round(255 * color).toString(16).padStart(2, '0');
+      return Math.round(255 * color)
+        .toString(16)
+        .padStart(2, '0');
     };
     return `${f(0)}${f(8)}${f(4)}`;
   }
@@ -118,10 +122,10 @@ export class ImageService {
     const r = parseInt(hexColor.substr(0, 2), 16);
     const g = parseInt(hexColor.substr(2, 2), 16);
     const b = parseInt(hexColor.substr(4, 2), 16);
-    
+
     // Calculate luminance
     const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-    
+
     return luminance > 0.5 ? '000000' : 'ffffff';
   }
 
@@ -140,22 +144,29 @@ export class ImageService {
   /**
    * Get placeholder image with custom text
    */
-  getPlaceholderImage(width: number = 400, height: number = 300, text: string = 'No Image'): string {
+  getPlaceholderImage(
+    width: number = 400,
+    height: number = 300,
+    text: string = 'No Image',
+  ): string {
     return `https://via.placeholder.com/${width}x${height}/f0f0f0/999999?text=${encodeURIComponent(text)}`;
   }
 
   /**
    * Optimize image URL for different sizes
    */
-  getOptimizedImageUrl(imageUrl: string, size: 'thumbnail' | 'medium' | 'large' = 'medium'): string {
+  getOptimizedImageUrl(
+    imageUrl: string,
+    size: 'thumbnail' | 'medium' | 'large' = 'medium',
+  ): string {
     // If it's our API URL, we can add size parameters
     if (imageUrl.includes(environment.apiUrl)) {
       const sizeParams = {
         thumbnail: '?w=150&h=150&fit=crop',
         medium: '?w=400&h=300&fit=crop',
-        large: '?w=800&h=600&fit=crop'
+        large: '?w=800&h=600&fit=crop',
       };
-      
+
       return `${imageUrl}${sizeParams[size]}`;
     }
 
@@ -178,15 +189,21 @@ export class ImageService {
   /**
    * Get image with fallback chain
    */
-  async getImageWithFallback(primaryUrl?: string | null, fallbackUrl?: string, defaultUrl?: string): Promise<string> {
-    const urls = [primaryUrl, fallbackUrl, defaultUrl, this.DEFAULT_PLACEHOLDER].filter(Boolean) as string[];
-    
+  async getImageWithFallback(
+    primaryUrl?: string | null,
+    fallbackUrl?: string,
+    defaultUrl?: string,
+  ): Promise<string> {
+    const urls = [primaryUrl, fallbackUrl, defaultUrl, this.DEFAULT_PLACEHOLDER].filter(
+      Boolean,
+    ) as string[];
+
     for (const url of urls) {
       if (await this.preloadImage(url)) {
         return url;
       }
     }
-    
+
     return this.DEFAULT_PLACEHOLDER;
   }
 

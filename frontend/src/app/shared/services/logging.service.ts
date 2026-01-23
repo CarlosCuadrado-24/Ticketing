@@ -5,7 +5,7 @@ export enum LogLevel {
   DEBUG = 0,
   INFO = 1,
   WARN = 2,
-  ERROR = 3
+  ERROR = 3,
 }
 
 export interface LogEntry {
@@ -22,7 +22,7 @@ export interface LogEntry {
  * Replaces console.log statements throughout the application
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class LoggingService {
   private readonly maxLocalLogs = 1000;
@@ -77,7 +77,7 @@ export class LoggingService {
   logApiCall(method: string, url: string, status?: number, duration?: number): void {
     const message = `API: ${method} ${url}`;
     const data = { status, duration };
-    
+
     if (status && status >= 400) {
       this.error(message, data, 'HttpClient');
     } else {
@@ -96,7 +96,7 @@ export class LoggingService {
    * Get logs by level
    */
   getLogsByLevel(level: LogLevel): LogEntry[] {
-    return this.logs.filter(log => log.level >= level);
+    return this.logs.filter((log) => log.level >= level);
   }
 
   /**
@@ -126,12 +126,12 @@ export class LoggingService {
       level,
       message,
       data,
-      source
+      source,
     };
 
     // Add to local storage
     this.logs.push(logEntry);
-    
+
     // Maintain max logs limit
     if (this.logs.length > this.maxLocalLogs) {
       this.logs.shift();
@@ -151,7 +151,7 @@ export class LoggingService {
    */
   private outputToConsole(entry: LogEntry): void {
     const prefix = `[${entry.timestamp.toISOString()}] ${entry.source || 'App'}:`;
-    
+
     switch (entry.level) {
       case LogLevel.DEBUG:
         console.debug(prefix, entry.message, entry.data);
@@ -179,18 +179,18 @@ export class LoggingService {
         ...entry,
         userAgent: navigator.userAgent,
         url: window.location.href,
-        userId: this.getCurrentUserId()
+        userId: this.getCurrentUserId(),
       };
-      
+
       // Store in localStorage for now (in production, send to remote service)
       const remoteLogs = JSON.parse(localStorage.getItem('remote_logs') || '[]');
       remoteLogs.push(remoteLog);
-      
+
       // Keep only last 50 remote logs
       if (remoteLogs.length > 50) {
         remoteLogs.shift();
       }
-      
+
       localStorage.setItem('remote_logs', JSON.stringify(remoteLogs));
     } catch (error) {
       console.error('Failed to send log to remote service:', error);

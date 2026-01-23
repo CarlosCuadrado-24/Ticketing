@@ -1,11 +1,13 @@
 <form class="space-y-10">
   <div class="space-y-10">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-0 border-2 border-white">
-      <label class="p-6 cursor-pointer flex items-center gap-4 bg-white text-black font-bold uppercase font-mono">
-        <input 
-          checked="" 
-          class="w-6 h-6 border-4 border-black text-black focus:ring-0" 
-          name="paymentMethod" 
+      <label
+        class="p-6 cursor-pointer flex items-center gap-4 bg-white text-black font-bold uppercase font-mono"
+      >
+        <input
+          checked=""
+          class="w-6 h-6 border-4 border-black text-black focus:ring-0"
+          name="paymentMethod"
           type="radio"
           value="card"
         />
@@ -16,7 +18,9 @@
 
     <div class="space-y-8">
       <div class="space-y-4">
-        <label class="block text-xs font-mono font-bold uppercase tracking-widest">Cardholder Name</label>
+        <label class="block text-xs font-mono font-bold uppercase tracking-widest"
+          >Cardholder Name</label
+        >
         <input
           id="cardholderName"
           type="text"
@@ -32,7 +36,9 @@
       </div>
 
       <div class="space-y-4">
-        <label class="block text-xs font-mono font-bold uppercase tracking-widest">Card Number</label>
+        <label class="block text-xs font-mono font-bold uppercase tracking-widest"
+          >Card Number</label
+        >
         <input
           id="cardNumber"
           type="text"
@@ -51,7 +57,9 @@
 
       <div class="grid grid-cols-3 gap-6">
         <div class="space-y-4">
-          <label class="block text-xs font-mono font-bold uppercase tracking-widest">Expiry Month</label>
+          <label class="block text-xs font-mono font-bold uppercase tracking-widest"
+            >Expiry Month</label
+          >
           <select
             id="expiryMonth"
             [(ngModel)]="formData.expiryMonth"
@@ -77,7 +85,9 @@
           }
         </div>
         <div class="space-y-4">
-          <label class="block text-xs font-mono font-bold uppercase tracking-widest">Expiry Year</label>
+          <label class="block text-xs font-mono font-bold uppercase tracking-widest"
+            >Expiry Year</label
+          >
           <select
             id="expiryYear"
             [(ngModel)]="formData.expiryYear"
@@ -122,4 +132,3 @@
     </div>
   </div>
 </form>
-

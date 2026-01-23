@@ -1,8 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=UnifrakturMaguntia&family=Archivo+Black&display=swap');
 
 :host {
-  --primary: #FF4D00;
-  --neon: #39FF14;
+  --primary: #ff4d00;
+  --neon: #39ff14;
   display: block;
   background-color: #000;
   background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBB6wSSiSZOYfSFeG_AnOR5ykoXWdo5iW2FC28l6PaJya-tYKLYVBb43tmpvhIQA1e6SELs8JbTnJhRPWWY8vGB_CWOrVKmGW81gw9UXh96ApiwDWRycasJ4eJ9pmPKN92yNB7tOPFXXhN2zh_C5DDTXNwjt-wErJ9qD1Mc8cxkI0LNXfbZL9zwBrBoVQjDAH7ax1QVo5ZmQjpUI3eNXxPiiX4dui4FvawiVE8Fn2_Fi-YOXdPCzAPO3N8IyvJ5WH-8YUZhCf3JyS6a');
@@ -43,9 +43,15 @@
 }
 
 @keyframes strobe {
-  0% { opacity: 1; }
-  50% { opacity: 0.8; }
-  100% { opacity: 1; }
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 .strobe-text {
@@ -55,10 +61,10 @@
 /* Material Icons */
 .material-symbols-outlined {
   font-variation-settings:
-  'FILL' 0,
-  'wght' 400,
-  'GRAD' 0,
-  'opsz' 24;
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 24;
 }
 
 /* Neon color utility */

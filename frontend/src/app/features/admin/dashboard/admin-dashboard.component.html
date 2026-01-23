@@ -171,9 +171,17 @@
               </div>
               <div class="event-progress">
                 <div class="progress-bar">
-                  <div class="progress-fill" [style.width.%]="(event.ticketsSold / stats()!.overview.totalTicketsSold * 100)"></div>
+                  <div
+                    class="progress-fill"
+                    [style.width.%]="(event.ticketsSold / stats()!.overview.totalTicketsSold) * 100"
+                  ></div>
                 </div>
-                <span class="progress-label">{{ (event.ticketsSold / stats()!.overview.totalTicketsSold * 100) | number: '1.0-0' }}%</span>
+                <span class="progress-label"
+                  >{{
+                    (event.ticketsSold / stats()!.overview.totalTicketsSold) * 100
+                      | number: '1.0-0'
+                  }}%</span
+                >
               </div>
             </div>
           }

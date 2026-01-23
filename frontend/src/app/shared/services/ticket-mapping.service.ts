@@ -7,10 +7,9 @@ import { Event, TicketType, TicketConfiguration } from '../../models/event.model
  * Used by EventDetail, CheckoutService, MyTickets, and Confirmation components
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class TicketMappingService {
-
   /**
    * Map ticket configurations to a standardized format
    */
@@ -19,12 +18,12 @@ export class TicketMappingService {
       return [];
     }
 
-    return event.ticketConfigurations.map(config => ({
+    return event.ticketConfigurations.map((config) => ({
       type: config.type,
       price: Number(config.price),
       currency: config.currency || 'USD',
       totalQuantity: config.totalQuantity,
-      availableQuantity: config.availableQuantity
+      availableQuantity: config.availableQuantity,
     }));
   }
 
@@ -36,13 +35,13 @@ export class TicketMappingService {
       return [];
     }
 
-    return event.ticketTypes.map(type => ({
+    return event.ticketTypes.map((type) => ({
       id: type.id,
       name: type.name,
       price: Number(type.price),
       totalQuantity: type.totalQuantity,
       availableQuantity: type.availableQuantity || type.totalQuantity,
-      tickets: type.tickets || []
+      tickets: type.tickets || [],
     }));
   }
 
@@ -51,13 +50,13 @@ export class TicketMappingService {
    */
   getAvailableQuantity(event: Event, ticketTypeId: number): number {
     // Check ticket types first
-    const ticketType = event.ticketTypes?.find(t => t.id === ticketTypeId);
+    const ticketType = event.ticketTypes?.find((t) => t.id === ticketTypeId);
     if (ticketType) {
       return ticketType.availableQuantity ?? ticketType.totalQuantity;
     }
 
     // Fallback to ticket configurations
-    const config = event.ticketConfigurations?.find(c => c.type === String(ticketTypeId));
+    const config = event.ticketConfigurations?.find((c) => c.type === String(ticketTypeId));
     if (config) {
       return config.availableQuantity;
     }
@@ -69,14 +68,14 @@ export class TicketMappingService {
    * Get ticket type by ID
    */
   getTicketTypeById(event: Event, ticketTypeId: number): TicketType | undefined {
-    return event.ticketTypes?.find(t => t.id === ticketTypeId);
+    return event.ticketTypes?.find((t) => t.id === ticketTypeId);
   }
 
   /**
    * Get ticket configuration by type
    */
   getTicketConfigurationByType(event: Event, type: string): TicketConfiguration | undefined {
-    return event.ticketConfigurations?.find(c => c.type === type);
+    return event.ticketConfigurations?.find((c) => c.type === type);
   }
 
   /**
@@ -85,11 +84,11 @@ export class TicketMappingService {
   getMinPrice(event: Event): number {
     const ticketTypes = this.mapTicketTypes(event);
     const configurations = this.mapTicketConfigurations(event);
-    
+
     const allPrices = [
-      ...ticketTypes.map(t => t.price),
-      ...configurations.map(c => c.price)
-    ].filter(price => price > 0);
+      ...ticketTypes.map((t) => t.price),
+      ...configurations.map((c) => c.price),
+    ].filter((price) => price > 0);
 
     return allPrices.length > 0 ? Math.min(...allPrices) : 0;
   }
@@ -100,11 +99,11 @@ export class TicketMappingService {
   getMaxPrice(event: Event): number {
     const ticketTypes = this.mapTicketTypes(event);
     const configurations = this.mapTicketConfigurations(event);
-    
+
     const allPrices = [
-      ...ticketTypes.map(t => t.price),
-      ...configurations.map(c => c.price)
-    ].filter(price => price > 0);
+      ...ticketTypes.map((t) => t.price),
+      ...configurations.map((c) => c.price),
+    ].filter((price) => price > 0);
 
     return allPrices.length > 0 ? Math.max(...allPrices) : 0;
   }
@@ -115,9 +114,11 @@ export class TicketMappingService {
   hasAvailableTickets(event: Event): boolean {
     const ticketTypes = this.mapTicketTypes(event);
     const configurations = this.mapTicketConfigurations(event);
-    
-    return ticketTypes.some(t => (t.availableQuantity ?? t.totalQuantity) > 0) ||
-           configurations.some(c => c.availableQuantity > 0);
+
+    return (
+      ticketTypes.some((t) => (t.availableQuantity ?? t.totalQuantity) > 0) ||
+      configurations.some((c) => c.availableQuantity > 0)
+    );
   }
 
   /**
@@ -126,13 +127,14 @@ export class TicketMappingService {
   getTotalAvailableTickets(event: Event): number {
     const ticketTypes = this.mapTicketTypes(event);
     const configurations = this.mapTicketConfigurations(event);
-    
-    const typeTotal = ticketTypes.reduce((sum, t) => 
-      sum + (t.availableQuantity ?? t.totalQuantity), 0);
-    
-    const configTotal = configurations.reduce((sum, c) => 
-      sum + c.availableQuantity, 0);
-    
+
+    const typeTotal = ticketTypes.reduce(
+      (sum, t) => sum + (t.availableQuantity ?? t.totalQuantity),
+      0,
+    );
+
+    const configTotal = configurations.reduce((sum, c) => sum + c.availableQuantity, 0);
+
     // Return the higher of the two (in case both are present)
     return Math.max(typeTotal, configTotal);
   }
@@ -142,16 +144,16 @@ export class TicketMappingService {
    */
   mapTicketTypeNameForBackend(ticketTypeName: string): string {
     const mapping: Record<string, string> = {
-      'General': 'GENERAL',
-      'VIP': 'VIP',
-      'Premium': 'PREMIUM',
-      'Student': 'STUDENT',
-      'Senior': 'SENIOR',
+      General: 'GENERAL',
+      VIP: 'VIP',
+      Premium: 'PREMIUM',
+      Student: 'STUDENT',
+      Senior: 'SENIOR',
       'Early Bird': 'EARLY_BIRD',
-      'Regular': 'REGULAR',
-      'Last Minute': 'LAST_MINUTE'
+      Regular: 'REGULAR',
+      'Last Minute': 'LAST_MINUTE',
     };
-    
+
     return mapping[ticketTypeName] || ticketTypeName.toUpperCase().replace(/\s+/g, '_');
   }
 
@@ -160,26 +162,34 @@ export class TicketMappingService {
    */
   mapTicketTypeNameForDisplay(backendName: string): string {
     const mapping: Record<string, string> = {
-      'GENERAL': 'General',
-      'VIP': 'VIP',
-      'PREMIUM': 'Premium',
-      'STUDENT': 'Student',
-      'SENIOR': 'Senior',
-      'EARLY_BIRD': 'Early Bird',
-      'REGULAR': 'Regular',
-      'LAST_MINUTE': 'Last Minute'
+      GENERAL: 'General',
+      VIP: 'VIP',
+      PREMIUM: 'Premium',
+      STUDENT: 'Student',
+      SENIOR: 'Senior',
+      EARLY_BIRD: 'Early Bird',
+      REGULAR: 'Regular',
+      LAST_MINUTE: 'Last Minute',
     };
-    
-    return mapping[backendName] || backendName.toLowerCase()
-      .split('_')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ');
+
+    return (
+      mapping[backendName] ||
+      backendName
+        .toLowerCase()
+        .split('_')
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ')
+    );
   }
 
   /**
    * Validate ticket selection
    */
-  validateTicketSelection(event: Event, ticketTypeId: number, quantity: number): {
+  validateTicketSelection(
+    event: Event,
+    ticketTypeId: number,
+    quantity: number,
+  ): {
     isValid: boolean;
     error?: string;
   } {
@@ -188,11 +198,11 @@ export class TicketMappingService {
     }
 
     const availableQuantity = this.getAvailableQuantity(event, ticketTypeId);
-    
+
     if (quantity > availableQuantity) {
-      return { 
-        isValid: false, 
-        error: `Only ${availableQuantity} tickets available for this type` 
+      return {
+        isValid: false,
+        error: `Only ${availableQuantity} tickets available for this type`,
       };
     }
 
@@ -205,18 +215,21 @@ export class TicketMappingService {
   formatPrice(price: number, currency: string = 'USD'): string {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: currency
+      currency: currency,
     }).format(price);
   }
 
   /**
    * Calculate total price for ticket selection
    */
-  calculateTotalPrice(selections: Array<{ ticketTypeId: number; quantity: number }>, event: Event): number {
+  calculateTotalPrice(
+    selections: Array<{ ticketTypeId: number; quantity: number }>,
+    event: Event,
+  ): number {
     return selections.reduce((total, selection) => {
       const ticketType = this.getTicketTypeById(event, selection.ticketTypeId);
       if (ticketType) {
-        return total + (ticketType.price * selection.quantity);
+        return total + ticketType.price * selection.quantity;
       }
       return total;
     }, 0);

@@ -32,19 +32,12 @@ export interface TicketWithQR extends BaseTicket {
 }
 
 // Admin ticket interface - combines multiple concerns
-export interface AdminTicket extends 
-  TicketWithBuyer, 
-  TicketWithPrice, 
-  TicketWithDates {
+export interface AdminTicket extends TicketWithBuyer, TicketWithPrice, TicketWithDates {
   eventName?: string;
 }
 
 // User ticket interface - for end users
-export interface UserTicket extends 
-  BaseTicket,
-  TicketWithPrice,
-  TicketWithDates,
-  TicketWithQR {
+export interface UserTicket extends BaseTicket, TicketWithPrice, TicketWithDates, TicketWithQR {
   eventName?: string;
   eventDate?: string;
   eventLocation?: string;

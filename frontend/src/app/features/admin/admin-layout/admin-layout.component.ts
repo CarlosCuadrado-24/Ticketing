@@ -56,7 +56,7 @@ export class AdminLayoutComponent {
         console.error('[AdminLayout] Logout error:', error);
         // Navigate anyway since auth data is cleared
         this.router.navigate(['/']);
-      }
+      },
     });
   }
 }

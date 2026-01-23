@@ -88,9 +88,9 @@ export class EventFormComponent implements OnInit {
           this.populateForm(event);
         },
         error: (err: any) => {
-            console.error('Error loading event:', err);
-            this.toastService.error('Error al cargar el evento');
-          },
+          console.error('Error loading event:', err);
+          this.toastService.error('Error al cargar el evento');
+        },
       });
     }
   }
@@ -162,7 +162,7 @@ export class EventFormComponent implements OnInit {
     formData.append('date', this.form.get('date')?.value);
     formData.append('location', this.form.get('location')?.value);
     formData.append('venueName', this.form.get('venueName')?.value);
-    
+
     const description = this.form.get('description')?.value;
     if (description) {
       formData.append('description', description);
@@ -230,7 +230,10 @@ export class EventFormComponent implements OnInit {
         payload.description = description;
       }
 
-      const request$ = this.adminService.updateEvent(this.route.snapshot.paramMap.get('id')!, payload);
+      const request$ = this.adminService.updateEvent(
+        this.route.snapshot.paramMap.get('id')!,
+        payload,
+      );
       this.executeRequest(request$);
       return;
     }
@@ -287,7 +290,7 @@ export class EventFormComponent implements OnInit {
 
   getProgressPercentage(): number {
     if (!this.form) return 0;
-    
+
     const fieldsCompleted = [
       this.form.get('name')?.valid,
       this.form.get('description')?.valid,
@@ -298,7 +301,7 @@ export class EventFormComponent implements OnInit {
       this.form.get('ticketTypes.general.price')?.valid,
       this.form.get('ticketTypes.general.quantity')?.valid,
     ].filter(Boolean).length;
-    
+
     return (fieldsCompleted / 8) * 100;
   }
 
@@ -327,4 +330,3 @@ export class EventFormComponent implements OnInit {
     });
   }
 }
-

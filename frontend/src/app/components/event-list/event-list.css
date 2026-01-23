@@ -4,7 +4,7 @@
 :host {
   display: block;
   background-color: #000000;
-  background-image: url("https://www.transparenttextures.com/patterns/carbon-fibre.png");
+  background-image: url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
 }
 
 .distorted-title {
@@ -30,11 +30,11 @@
 
 .brutalist-border {
   border: 8px solid white;
-  box-shadow: 12px 12px 0px #FF4D00;
+  box-shadow: 12px 12px 0px #ff4d00;
 }
 
 .brutalist-border-orange {
-  border: 8px solid #FF4D00;
+  border: 8px solid #ff4d00;
   box-shadow: 12px 12px 0px white;
 }
 
@@ -56,11 +56,54 @@
 }
 
 .torn-edge {
-  clip-path: polygon(0% 0%, 5% 2%, 10% 0%, 15% 3%, 20% 0%, 25% 2%, 30% 0%, 35% 1%, 40% 0%, 45% 2%, 50% 0%, 55% 3%, 60% 0%, 65% 2%, 70% 0%, 75% 1%, 80% 0%, 85% 2%, 90% 0%, 95% 3%, 100% 0%, 100% 100%, 95% 98%, 90% 100%, 85% 97%, 80% 100%, 75% 98%, 70% 100%, 65% 97%, 60% 100%, 55% 98%, 50% 100%, 45% 97%, 40% 100%, 35% 98%, 30% 100%, 25% 97%, 20% 100%, 15% 98%, 10% 100%, 5% 97%, 0% 100%);
+  clip-path: polygon(
+    0% 0%,
+    5% 2%,
+    10% 0%,
+    15% 3%,
+    20% 0%,
+    25% 2%,
+    30% 0%,
+    35% 1%,
+    40% 0%,
+    45% 2%,
+    50% 0%,
+    55% 3%,
+    60% 0%,
+    65% 2%,
+    70% 0%,
+    75% 1%,
+    80% 0%,
+    85% 2%,
+    90% 0%,
+    95% 3%,
+    100% 0%,
+    100% 100%,
+    95% 98%,
+    90% 100%,
+    85% 97%,
+    80% 100%,
+    75% 98%,
+    70% 100%,
+    65% 97%,
+    60% 100%,
+    55% 98%,
+    50% 100%,
+    45% 97%,
+    40% 100%,
+    35% 98%,
+    30% 100%,
+    25% 97%,
+    20% 100%,
+    15% 98%,
+    10% 100%,
+    5% 97%,
+    0% 100%
+  );
 }
 
 .industrial-tape {
-  background-color: #FF4D00;
+  background-color: #ff4d00;
   color: black;
   padding: 4px 12px;
   font-weight: 900;
@@ -78,7 +121,7 @@
 .x-mark {
   position: absolute;
   font-size: 20rem;
-  color: rgba(255,255,255,0.05);
+  color: rgba(255, 255, 255, 0.05);
   font-weight: 900;
   line-height: 1;
   z-index: -1;
@@ -93,12 +136,12 @@
 
 .pagination-container button:hover:not(:disabled) {
   transform: translate(-2px, -2px);
-  box-shadow: 4px 4px 0px #FF4D00;
+  box-shadow: 4px 4px 0px #ff4d00;
 }
 
 .pagination-container button:active:not(:disabled) {
   transform: translate(0, 0);
-  box-shadow: 0px 0px 0px #FF4D00;
+  box-shadow: 0px 0px 0px #ff4d00;
 }
 
 .pagination-container button:disabled {

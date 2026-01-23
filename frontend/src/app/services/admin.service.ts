@@ -102,20 +102,24 @@ export class AdminService {
     console.log('[AdminService] Final HTTP params:', params.toString());
     console.log('[AdminService] Making request to:', `${this.apiUrl}/tickets`);
 
-    return this.http.get<PaginatedResponse<AdminTicketData>>(`${this.apiUrl}/tickets`, { params }).pipe(
-      tap((response) => console.log('[AdminService] Success response:', response)),
-      catchError((error) => {
-        console.error('[AdminService] HTTP Error:', error);
-        console.error('[AdminService] Error status:', error.status);
-        console.error('[AdminService] Error message:', error.message);
-        console.error('[AdminService] Error body:', error.error);
-        return throwError(() => error);
-      }),
-    );
+    return this.http
+      .get<PaginatedResponse<AdminTicketData>>(`${this.apiUrl}/tickets`, { params })
+      .pipe(
+        tap((response) => console.log('[AdminService] Success response:', response)),
+        catchError((error) => {
+          console.error('[AdminService] HTTP Error:', error);
+          console.error('[AdminService] Error status:', error.status);
+          console.error('[AdminService] Error message:', error.message);
+          console.error('[AdminService] Error body:', error.error);
+          return throwError(() => error);
+        }),
+      );
   }
 
   // Reservation Management
-  getReservations(query: ReservationsQuery = {}): Observable<PaginatedResponse<AdminReservationData>> {
+  getReservations(
+    query: ReservationsQuery = {},
+  ): Observable<PaginatedResponse<AdminReservationData>> {
     let params = new HttpParams();
 
     if (query.status) params = params.set('status', query.status);

@@ -5,7 +5,7 @@
 @if (scanState() === 'scanning') {
   <div class="scanner-view">
     <video #videoElement class="camera-video" autoplay playsinline></video>
-    
+
     <!-- Event Selector -->
     <div class="event-selector">
       <select
@@ -16,7 +16,9 @@
       >
         <option value="">-- Selecciona un evento --</option>
         @for (event of events(); track event.id) {
-          <option [value]="event.id">{{ event.name }} - {{ event.date | date: 'dd/MM/yyyy' }}</option>
+          <option [value]="event.id">
+            {{ event.name }} - {{ event.date | date: 'dd/MM/yyyy' }}
+          </option>
         }
       </select>
     </div>
@@ -140,14 +142,18 @@
           <span class="material-symbols-outlined warning-icon">warning</span>
           <div class="error-text">
             <span class="error-label">Usado el:</span>
-            <span class="error-value">{{ lastValidation()?.ticket?.usedAt | date: 'dd/MM/yyyy' }}</span>
+            <span class="error-value">{{
+              lastValidation()?.ticket?.usedAt | date: 'dd/MM/yyyy'
+            }}</span>
           </div>
         </div>
         <div class="error-detail">
           <span class="material-symbols-outlined">schedule</span>
           <div class="error-text">
             <span class="error-label">Hora:</span>
-            <span class="error-value">{{ lastValidation()?.ticket?.usedAt | date: 'HH:mm:ss' }}</span>
+            <span class="error-value">{{
+              lastValidation()?.ticket?.usedAt | date: 'HH:mm:ss'
+            }}</span>
           </div>
         </div>
         <div class="error-detail">
@@ -184,4 +190,3 @@
     </div>
   </div>
 }
-

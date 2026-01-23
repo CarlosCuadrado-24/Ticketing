@@ -8,23 +8,29 @@
         <h1 class="edgy-title text-6xl md:text-7xl font-black text-white">Mis Tickets</h1>
         <p class="text-white/50 text-lg">Gestiona tus accesos y eventos exclusivos</p>
       </div>
-      
+
       <!-- Filter Chips -->
       <div class="flex gap-3 flex-wrap">
-        <button 
+        <button
           (click)="setActiveTab('upcoming')"
-          [class]="activeTab() === 'upcoming' 
-            ? 'border-2 border-primary bg-primary/10 text-primary' 
-            : 'border border-white/20 bg-transparent text-white/60'"
-          class="flex h-10 items-center justify-center rounded-full px-6 text-sm font-bold transition-all hover:border-primary hover:text-primary">
+          [class]="
+            activeTab() === 'upcoming'
+              ? 'border-2 border-primary bg-primary/10 text-primary'
+              : 'border border-white/20 bg-transparent text-white/60'
+          "
+          class="flex h-10 items-center justify-center rounded-full px-6 text-sm font-bold transition-all hover:border-primary hover:text-primary"
+        >
           Próximos
         </button>
-        <button 
+        <button
           (click)="setActiveTab('history')"
-          [class]="activeTab() === 'history' 
-            ? 'border-2 border-primary bg-primary/10 text-primary' 
-            : 'border border-white/20 bg-transparent text-white/60'"
-          class="flex h-10 items-center justify-center rounded-full px-6 text-sm font-medium transition-all hover:border-white hover:text-white">
+          [class]="
+            activeTab() === 'history'
+              ? 'border-2 border-primary bg-primary/10 text-primary'
+              : 'border border-white/20 bg-transparent text-white/60'
+          "
+          class="flex h-10 items-center justify-center rounded-full px-6 text-sm font-medium transition-all hover:border-white hover:text-white"
+        >
           Pasados
         </button>
       </div>
@@ -34,7 +40,9 @@
     @if (showAuthWarning() && !isLoading()) {
       <div class="glass-card p-6 mb-8">
         <div class="flex items-start gap-3">
-          <span class="material-symbols-outlined text-yellow-600 text-2xl flex-shrink-0">warning</span>
+          <span class="material-symbols-outlined text-yellow-600 text-2xl flex-shrink-0"
+            >warning</span
+          >
           <div class="flex-1">
             <h3 class="font-bold text-white mb-2">Sesión expirada o sin iniciar sesión</h3>
             <p class="text-white/60 mb-4">
@@ -42,7 +50,8 @@
             </p>
             <button
               (click)="router.navigate(['/auth'])"
-              class="flex items-center gap-2 rounded-full bg-white text-black px-6 py-2.5 text-sm font-bold transition-transform active:scale-95 hover:bg-primary hover:text-white">
+              class="flex items-center gap-2 rounded-full bg-white text-black px-6 py-2.5 text-sm font-bold transition-transform active:scale-95 hover:bg-primary hover:text-white"
+            >
               <span class="material-symbols-outlined">login</span>
               Iniciar sesión
             </button>
@@ -73,7 +82,9 @@
 
     <!-- Empty State -->
     @if (!isLoading() && groupedTickets().length === 0) {
-      <div class="flex flex-col items-center justify-center py-20 px-6 text-center border-2 border-dashed border-white/10 rounded-xl">
+      <div
+        class="flex flex-col items-center justify-center py-20 px-6 text-center border-2 border-dashed border-white/10 rounded-xl"
+      >
         <div class="size-24 rounded-full bg-primary/10 flex items-center justify-center mb-6">
           <span class="material-symbols-outlined text-primary text-5xl">confirmation_number</span>
         </div>
@@ -83,7 +94,8 @@
         </p>
         <a
           [routerLink]="['/']"
-          class="bg-primary text-white px-8 py-3 rounded-full font-bold text-lg hover:shadow-[0_0_20px_rgba(255,77,0,0.4)] transition-all">
+          class="bg-primary text-white px-8 py-3 rounded-full font-bold text-lg hover:shadow-[0_0_20px_rgba(255,77,0,0.4)] transition-all"
+        >
           Explorar Eventos
         </a>
       </div>
@@ -95,9 +107,13 @@
         @for (eventGroup of groupedTickets(); track eventGroup.eventId) {
           @let currentTicket = getCurrentTicket(eventGroup);
           <!-- Ticket Card -->
-          <div class="glass-card p-4 md:p-6 group flex flex-col md:flex-row gap-6 items-center transition-all hover:border-primary/30">
+          <div
+            class="glass-card p-4 md:p-6 group flex flex-col md:flex-row gap-6 items-center transition-all hover:border-primary/30"
+          >
             <!-- Event Image -->
-            <div class="w-full md:w-48 aspect-video md:aspect-square bg-center bg-cover rounded-lg shrink-0 overflow-hidden">
+            <div
+              class="w-full md:w-48 aspect-video md:aspect-square bg-center bg-cover rounded-lg shrink-0 overflow-hidden"
+            >
               @if (currentTicket.eventImageUrl) {
                 <img
                   [src]="currentTicket.eventImageUrl"
@@ -105,12 +121,16 @@
                   class="w-full h-full object-cover"
                 />
               } @else {
-                <div class="w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
-                  <span class="material-symbols-outlined text-white text-5xl">confirmation_number</span>
+                <div
+                  class="w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center"
+                >
+                  <span class="material-symbols-outlined text-white text-5xl"
+                    >confirmation_number</span
+                  >
                 </div>
               }
             </div>
-            
+
             <!-- Ticket Info -->
             <div class="flex flex-1 flex-col gap-4 w-full">
               <div class="flex justify-between items-start">
@@ -118,13 +138,15 @@
                   <span class="text-primary text-[10px] font-black tracking-[0.2em] uppercase">
                     {{ currentTicket.status === 'upcoming' ? 'Confirmado' : 'Pasado' }}
                   </span>
-                  <h3 class="text-white text-2xl font-bold leading-tight group-hover:text-primary transition-colors">
+                  <h3
+                    class="text-white text-2xl font-bold leading-tight group-hover:text-primary transition-colors"
+                  >
                     {{ currentTicket.eventName }}
                   </h3>
                   <div class="flex items-center gap-4 mt-2 flex-wrap">
                     <div class="flex items-center gap-1.5 text-white/60 text-sm">
                       <span class="material-symbols-outlined text-sm">calendar_today</span>
-                      {{ formatDate(currentTicket.eventDate) | slice:0:10 }}
+                      {{ formatDate(currentTicket.eventDate) | slice: 0 : 10 }}
                     </div>
                     <div class="flex items-center gap-1.5 text-white/60 text-sm">
                       <span class="material-symbols-outlined text-sm">schedule</span>
@@ -132,37 +154,48 @@
                     </div>
                     <div class="flex items-center gap-1.5 text-white/60 text-sm">
                       <span class="material-symbols-outlined text-sm">location_on</span>
-                      {{ currentTicket.venue | slice:0:20 }}
+                      {{ currentTicket.venue | slice: 0 : 20 }}
                     </div>
                   </div>
                 </div>
                 <div class="hidden sm:block">
-                  <div [class]="currentTicket.status === 'upcoming' ? 'bg-primary/20 text-primary' : 'bg-white/10 text-white/60'" 
-                       class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider">
+                  <div
+                    [class]="
+                      currentTicket.status === 'upcoming'
+                        ? 'bg-primary/20 text-primary'
+                        : 'bg-white/10 text-white/60'
+                    "
+                    class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider"
+                  >
                     {{ currentTicket.status === 'upcoming' ? 'Próximo' : 'Pasado' }}
                   </div>
                 </div>
               </div>
-              
+
               <div class="flex items-center justify-between mt-2 pt-4 border-t border-white/5">
                 <div class="flex -space-x-2">
                   @if (eventGroup.ticketCount > 1) {
-                    <div class="size-8 rounded-full border-2 border-background-dark bg-zinc-800 flex items-center justify-center text-[10px] font-bold text-white">
+                    <div
+                      class="size-8 rounded-full border-2 border-background-dark bg-zinc-800 flex items-center justify-center text-[10px] font-bold text-white"
+                    >
                       +{{ eventGroup.ticketCount - 1 }}
                     </div>
                   }
-                  <div class="size-8 rounded-full border-2 border-background-dark bg-zinc-700"></div>
+                  <div
+                    class="size-8 rounded-full border-2 border-background-dark bg-zinc-700"
+                  ></div>
                 </div>
-                <button 
+                <button
                   (click)="toggleEventDetails(eventGroup.eventId)"
-                  class="flex items-center gap-2 rounded-full bg-white text-black px-6 py-2.5 text-sm font-bold transition-transform active:scale-95 hover:bg-primary hover:text-white">
+                  class="flex items-center gap-2 rounded-full bg-white text-black px-6 py-2.5 text-sm font-bold transition-transform active:scale-95 hover:bg-primary hover:text-white"
+                >
                   Ver Tickets
                   <span class="material-symbols-outlined text-lg">qr_code_2</span>
                 </button>
               </div>
             </div>
           </div>
-          
+
           <!-- Expanded QR Details -->
           @if (expandedEventId() === eventGroup.eventId) {
             <div class="glass-card p-6 animate-slide-in">
@@ -172,9 +205,11 @@
                   <div class="bg-white p-4 rounded-lg">
                     <img [src]="currentTicket.qrCode" [alt]="'QR Code'" class="w-48 h-48" />
                   </div>
-                  <p class="text-white/60 text-xs font-mono">#{{ currentTicket.id.substring(0, 12) }}</p>
+                  <p class="text-white/60 text-xs font-mono">
+                    #{{ currentTicket.id.substring(0, 12) }}
+                  </p>
                 </div>
-                
+
                 <!-- Ticket Details -->
                 <div class="flex-1 space-y-4">
                   <div class="grid grid-cols-2 gap-4">
@@ -187,11 +222,12 @@
                       <p class="text-white font-bold">{{ currentTicket.price | currencyFormat }}</p>
                     </div>
                   </div>
-                  
+
                   <div class="flex gap-3 pt-4">
                     <button
                       (click)="downloadTicket(currentTicket.id)"
-                      class="flex-1 flex items-center justify-center gap-2 bg-primary text-white px-4 py-2.5 rounded-lg hover:bg-primary/80 transition-colors font-semibold">
+                      class="flex-1 flex items-center justify-center gap-2 bg-primary text-white px-4 py-2.5 rounded-lg hover:bg-primary/80 transition-colors font-semibold"
+                    >
                       <span class="material-symbols-outlined">download</span>
                       Descargar
                     </button>
@@ -199,18 +235,20 @@
                       <button
                         (click)="previousTicket(eventGroup)"
                         [disabled]="eventGroup.currentTicketIndex === 0"
-                        class="flex items-center justify-center gap-2 bg-white/10 text-white px-4 py-2.5 rounded-lg hover:bg-white/20 transition-colors disabled:opacity-50">
+                        class="flex items-center justify-center gap-2 bg-white/10 text-white px-4 py-2.5 rounded-lg hover:bg-white/20 transition-colors disabled:opacity-50"
+                      >
                         <span class="material-symbols-outlined">arrow_back</span>
                       </button>
                       <button
                         (click)="nextTicket(eventGroup)"
                         [disabled]="eventGroup.currentTicketIndex >= eventGroup.ticketCount - 1"
-                        class="flex items-center justify-center gap-2 bg-white/10 text-white px-4 py-2.5 rounded-lg hover:bg-white/20 transition-colors disabled:opacity-50">
+                        class="flex items-center justify-center gap-2 bg-white/10 text-white px-4 py-2.5 rounded-lg hover:bg-white/20 transition-colors disabled:opacity-50"
+                      >
                         <span class="material-symbols-outlined">arrow_forward</span>
                       </button>
                     }
                   </div>
-                  
+
                   @if (eventGroup.ticketCount > 1) {
                     <p class="text-white/40 text-xs text-center">
                       Ticket {{ eventGroup.currentTicketIndex + 1 }} de {{ eventGroup.ticketCount }}

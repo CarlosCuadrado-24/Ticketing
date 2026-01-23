@@ -17,7 +17,7 @@ describe('AdminLayoutComponent', () => {
         subscribe: (callbacks: any) => {
           callbacks.next();
           return { unsubscribe: () => {} };
-        }
+        },
       } as any),
       currentUser: signal({
         id: '1',

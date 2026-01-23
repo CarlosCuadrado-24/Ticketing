@@ -289,10 +289,10 @@ export class EventDetail implements OnInit, OnDestroy {
     }
 
     this.router.navigate(['/checkout'], {
-      queryParams: { 
-        eventId: currentEvent.id, 
+      queryParams: {
+        eventId: currentEvent.id,
         eventName: currentEvent.name,
-        eventImageUrl: currentEvent.imageUrl || this.getEventImage()
+        eventImageUrl: currentEvent.imageUrl || this.getEventImage(),
       },
     });
   }
@@ -324,9 +324,11 @@ export class EventDetail implements OnInit, OnDestroy {
   hasLowStock(): boolean {
     const configs = this.ticketConfigurations();
     const types = this.ticketTypes();
-    
-    return configs.some(c => this.getAvailableCount(c) < 50 && this.getAvailableCount(c) > 0) ||
-           types.some(t => this.getAvailableCount(t) < 50 && this.getAvailableCount(t) > 0);
+
+    return (
+      configs.some((c) => this.getAvailableCount(c) < 50 && this.getAvailableCount(c) > 0) ||
+      types.some((t) => this.getAvailableCount(t) < 50 && this.getAvailableCount(t) > 0)
+    );
   }
 
   getDuration(): string {
@@ -334,13 +336,13 @@ export class EventDetail implements OnInit, OnDestroy {
     if (!event?.startTime || !event?.endTime) {
       return '3-4 HOURS APPROX.';
     }
-    
+
     const start = event.startTime.split(':');
     const end = event.endTime.split(':');
     const startHour = parseInt(start[0]);
     const endHour = parseInt(end[0]);
     const duration = endHour - startHour;
-    
+
     return `${duration} HOURS`;
   }
 
@@ -349,12 +351,12 @@ export class EventDetail implements OnInit, OnDestroy {
     if (!event?.date) {
       return '19:00';
     }
-    
+
     // Extraer hora del campo date en formato ISO
     const eventDate = new Date(event.date);
     const hours = eventDate.getHours().toString().padStart(2, '0');
     const minutes = eventDate.getMinutes().toString().padStart(2, '0');
-    
+
     return `${hours}:${minutes}`;
   }
 
@@ -363,12 +365,12 @@ export class EventDetail implements OnInit, OnDestroy {
     if (!event?.date) {
       return '20:00';
     }
-    
+
     // Extraer hora del campo date y agregar 1 hora
     const eventDate = new Date(event.date);
     const startHour = (eventDate.getHours() + 1) % 24;
     const minutes = eventDate.getMinutes().toString().padStart(2, '0');
-    
+
     return `${startHour.toString().padStart(2, '0')}:${minutes}`;
   }
 }

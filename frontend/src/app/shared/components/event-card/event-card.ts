@@ -25,7 +25,7 @@ export class EventCard {
         return Math.min(...prices);
       }
     }
-    
+
     // Fallback a ticketTypes si existe
     if (this.event.ticketTypes && this.event.ticketTypes.length > 0) {
       const prices = this.event.ticketTypes
@@ -35,7 +35,7 @@ export class EventCard {
         return Math.min(...prices);
       }
     }
-    
+
     return 0;
   }
 

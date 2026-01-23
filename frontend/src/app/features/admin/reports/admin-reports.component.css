@@ -4,7 +4,7 @@
 
 .admin-reports h2 {
   margin-bottom: 30px;
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 .reports-grid {
@@ -14,7 +14,7 @@
 }
 
 .report-card {
-  background: #1A1A1A;
+  background: #1a1a1a;
   padding: 25px;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(255, 77, 0, 0.1);
@@ -27,7 +27,7 @@
 .report-card h3 {
   margin-top: 0;
   margin-bottom: 20px;
-  color: #FFFFFF;
+  color: #ffffff;
   border-bottom: 2px solid #1f618d;
   padding-bottom: 10px;
 }
@@ -51,7 +51,7 @@
 
 .metric .value {
   font-weight: bold;
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 .metric .value.revenue {
@@ -87,7 +87,7 @@
 
 .event-details h4 {
   margin: 0 0 5px 0;
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 .event-details p {
@@ -120,7 +120,7 @@
 
 .category-name,
 .type-name {
-  color: #FFFFFF;
+  color: #ffffff;
   font-weight: 500;
 }
 
@@ -149,7 +149,7 @@
 
 .month-info h4 {
   margin: 0 0 8px 0;
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 .month-info p {
@@ -198,7 +198,7 @@
 .error {
   text-align: center;
   padding: 40px;
-  background: #1A1A1A;
+  background: #1a1a1a;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(255, 77, 0, 0.1);
 }

@@ -1,4 +1,12 @@
-import { Component, OnInit, signal, ChangeDetectionStrategy, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  signal,
+  ChangeDetectionStrategy,
+  AfterViewInit,
+  ElementRef,
+  ViewChild,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AdminService } from '../../../services/admin.service';
 import { DashboardStats } from '../../../models/admin.model';
@@ -50,7 +58,7 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit {
         this.stats.set(stats);
         this.loading.set(false);
         console.log('[AdminDashboard] Stats set, loading = false');
-        
+
         // Create charts after data is loaded
         setTimeout(() => this.createCharts(), 100);
       },
@@ -78,25 +86,29 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit {
     if (!ctx) return;
 
     const topEvents = stats.topEvents.slice(0, 5);
-    const labels = topEvents.map(e => e.eventName.length > 20 ? e.eventName.substring(0, 20) + '...' : e.eventName);
-    const data = topEvents.map(e => e.ticketsSold);
+    const labels = topEvents.map((e) =>
+      e.eventName.length > 20 ? e.eventName.substring(0, 20) + '...' : e.eventName,
+    );
+    const data = topEvents.map((e) => e.ticketsSold);
 
     this.topEventsChart = new Chart(ctx, {
       type: 'doughnut',
       data: {
         labels,
-        datasets: [{
-          data,
-          backgroundColor: [
-            'rgba(255, 77, 0, 0.8)',
-            'rgba(57, 255, 20, 0.8)',
-            'rgba(255, 193, 7, 0.8)',
-            'rgba(33, 150, 243, 0.8)',
-            'rgba(156, 39, 176, 0.8)',
-          ],
-          borderColor: '#0A0A0A',
-          borderWidth: 3,
-        }]
+        datasets: [
+          {
+            data,
+            backgroundColor: [
+              'rgba(255, 77, 0, 0.8)',
+              'rgba(57, 255, 20, 0.8)',
+              'rgba(255, 193, 7, 0.8)',
+              'rgba(33, 150, 243, 0.8)',
+              'rgba(156, 39, 176, 0.8)',
+            ],
+            borderColor: '#0A0A0A',
+            borderWidth: 3,
+          },
+        ],
       },
       options: {
         responsive: true,
@@ -104,15 +116,15 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit {
         plugins: {
           legend: {
             position: 'right',
-            labels: { color: '#fff', font: { size: 11 } }
+            labels: { color: '#fff', font: { size: 11 } },
           },
           tooltip: {
             backgroundColor: '#1A1A1A',
             borderColor: '#FF4D00',
             borderWidth: 1,
-          }
-        }
-      }
+          },
+        },
+      },
     });
   }
 
@@ -124,55 +136,68 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit {
 
     // Take last 6 months and reverse to show chronologically
     const monthsData = stats.eventsByMonth.slice(0, 6).reverse();
-    const labels = monthsData.map(m => {
+    const labels = monthsData.map((m) => {
       const [year, month] = m.month.split('-');
-      const monthNames = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+      const monthNames = [
+        'Ene',
+        'Feb',
+        'Mar',
+        'Abr',
+        'May',
+        'Jun',
+        'Jul',
+        'Ago',
+        'Sep',
+        'Oct',
+        'Nov',
+        'Dic',
+      ];
       return `${monthNames[parseInt(month) - 1]} ${year}`;
     });
-    const data = monthsData.map(m => m.count);
+    const data = monthsData.map((m) => m.count);
 
     this.eventsByMonthChart = new Chart(ctx, {
       type: 'bar',
       data: {
         labels,
-        datasets: [{
-          label: 'Eventos Creados',
-          data,
-          backgroundColor: 'rgba(255, 77, 0, 0.7)',
-          borderColor: '#FF4D00',
-          borderWidth: 2,
-        }]
+        datasets: [
+          {
+            label: 'Eventos Creados',
+            data,
+            backgroundColor: 'rgba(255, 77, 0, 0.7)',
+            borderColor: '#FF4D00',
+            borderWidth: 2,
+          },
+        ],
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
           legend: {
-            labels: { color: '#fff', font: { size: 12 } }
+            labels: { color: '#fff', font: { size: 12 } },
           },
           tooltip: {
             backgroundColor: '#1A1A1A',
             borderColor: '#FF4D00',
             borderWidth: 1,
-          }
+          },
         },
         scales: {
           y: {
             beginAtZero: true,
-            ticks: { 
+            ticks: {
               color: '#999',
-              stepSize: 1
+              stepSize: 1,
             },
-            grid: { color: 'rgba(255, 255, 255, 0.05)' }
+            grid: { color: 'rgba(255, 255, 255, 0.05)' },
           },
           x: {
             ticks: { color: '#999' },
-            grid: { color: 'rgba(255, 255, 255, 0.05)' }
-          }
-        }
-      }
+            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+          },
+        },
+      },
     });
   }
-
-
 }

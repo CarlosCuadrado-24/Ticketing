@@ -14,29 +14,36 @@
       <p>STATUS: SYSTEM_ACTIVE</p>
       <p>MANIFEST: {{ 'now' | date: 'yyyy_MM_dd' }}</p>
     </div>
-    
+
     <!-- Main Title -->
     <div class="flex flex-col items-start gap-0 relative">
       <h1 class="distorted-title flex flex-col">
-        <span class="text-[14rem] md:text-[22rem] leading-[0.7] z-10 hover:skew-x-12 transition-transform">PRÓXIMOS</span>
-        <span class="serif-italic text-[10rem] md:text-[16rem] text-primary leading-[0.5] -mt-10 ml-20 md:ml-40 z-20 mix-blend-difference hover:-skew-x-12 transition-transform">EVENTOS</span>
+        <span
+          class="text-[14rem] md:text-[22rem] leading-[0.7] z-10 hover:skew-x-12 transition-transform"
+          >PRÓXIMOS</span
+        >
+        <span
+          class="serif-italic text-[10rem] md:text-[16rem] text-primary leading-[0.5] -mt-10 ml-20 md:ml-40 z-20 mix-blend-difference hover:-skew-x-12 transition-transform"
+          >EVENTOS</span
+        >
       </h1>
     </div>
-    
+
     <!-- Search Box -->
     <div class="mt-20 max-w-4xl relative z-30">
       <div class="bg-white p-2">
         <div class="bg-black border-[10px] border-white p-6 flex items-center gap-4">
-          <input 
+          <input
             [(ngModel)]="searchQuery"
             (input)="onSearchInput($event)"
-            class="w-full bg-transparent border-none focus:ring-0 text-4xl mono font-bold uppercase placeholder:text-zinc-800 text-white" 
-            placeholder="TYPE_SEARCH_QUERY..." 
+            class="w-full bg-transparent border-none focus:ring-0 text-4xl mono font-bold uppercase placeholder:text-zinc-800 text-white"
+            placeholder="TYPE_SEARCH_QUERY..."
             type="text"
           />
-          <button 
+          <button
             (click)="onSearch()"
-            class="bg-primary text-black px-10 py-4 font-black text-2xl hover:bg-white transition-colors">
+            class="bg-primary text-black px-10 py-4 font-black text-2xl hover:bg-white transition-colors"
+          >
             SCAN
           </button>
         </div>
@@ -54,13 +61,15 @@
         <app-event-filters></app-event-filters>
       </div>
     </aside>
-    
+
     <!-- Events Section -->
     <div class="flex-grow">
       <!-- Events Counter and Sort -->
       <div class="mb-12 flex justify-between items-end mono border-b-[6px] border-white pb-4">
         <div class="flex items-baseline gap-4">
-          <span class="text-6xl font-black leading-none">{{ events().length.toString().padStart(2, '0') }}</span>
+          <span class="text-6xl font-black leading-none">{{
+            events().length.toString().padStart(2, '0')
+          }}</span>
           <span class="text-lg text-primary font-bold">ENTITY_FOUND</span>
         </div>
         <div class="text-right">
@@ -68,7 +77,7 @@
           <p class="text-lg font-bold">{{ currentPage() }} / {{ totalPages }}</p>
         </div>
       </div>
-      
+
       <!-- Loading State -->
       @if (isLoading()) {
         <div class="flex justify-center py-20">
@@ -81,50 +90,62 @@
             <app-event-card [event]="event"></app-event-card>
           } @empty {
             <div class="col-span-full">
-              <div class="brutalist-border-orange bg-zinc-900 p-12 relative overflow-hidden max-w-xl mx-auto">
+              <div
+                class="brutalist-border-orange bg-zinc-900 p-12 relative overflow-hidden max-w-xl mx-auto"
+              >
                 <div class="halftone absolute inset-0 opacity-20"></div>
                 <div class="relative z-10 flex flex-col items-center text-center">
                   <span class="barcode text-white/20 text-6xl mb-6">NO_ENTITIES_FOUND</span>
                   <h4 class="distorted-title text-6xl mb-4">SEARCH_FAILED</h4>
-                  <p class="mono text-zinc-400 text-sm">NO DATA MATCHES YOUR QUERY PARAMETERS. TRY ADJUSTING FILTERS.</p>
+                  <p class="mono text-zinc-400 text-sm">
+                    NO DATA MATCHES YOUR QUERY PARAMETERS. TRY ADJUSTING FILTERS.
+                  </p>
                 </div>
               </div>
             </div>
           }
         </div>
-        
+
         <!-- Pagination Controls -->
         @if (events().length > eventsPerPage) {
           <div class="mt-16 flex flex-col items-center gap-8 pagination-container">
             <!-- Page Info Banner -->
             <div class="brutalist-border bg-black px-8 py-4">
               <p class="mono text-primary font-bold text-center">
-                VIEWING {{ ((currentPage() - 1) * eventsPerPage + 1) }} - {{ Math.min(currentPage() * eventsPerPage, events().length) }} OF {{ events().length }} EVENTS
+                VIEWING {{ (currentPage() - 1) * eventsPerPage + 1 }} -
+                {{ Math.min(currentPage() * eventsPerPage, events().length) }} OF
+                {{ events().length }} EVENTS
               </p>
             </div>
-            
+
             <!-- Navigation Buttons -->
             <div class="flex items-center gap-6">
               <!-- Previous Button -->
-              <button 
-                (click)="previousPage()" 
+              <button
+                (click)="previousPage()"
                 [disabled]="currentPage() === 1"
                 [class.opacity-30]="currentPage() === 1"
                 [class.cursor-not-allowed]="currentPage() === 1"
-                class="brutalist-border bg-black px-8 py-4 hover:bg-primary hover:text-black transition-colors disabled:hover:bg-black disabled:hover:text-white">
+                class="brutalist-border bg-black px-8 py-4 hover:bg-primary hover:text-black transition-colors disabled:hover:bg-black disabled:hover:text-white"
+              >
                 <span class="mono font-bold text-xl">&lt; PREV</span>
               </button>
-              
+
               <!-- Page Numbers -->
               <div class="flex gap-3">
                 @for (pageNum of pageNumbers; track pageNum) {
-                  @if (pageNum === 1 || pageNum === totalPages || (pageNum >= currentPage() - 1 && pageNum <= currentPage() + 1)) {
-                    <button 
+                  @if (
+                    pageNum === 1 ||
+                    pageNum === totalPages ||
+                    (pageNum >= currentPage() - 1 && pageNum <= currentPage() + 1)
+                  ) {
+                    <button
                       (click)="goToPage(pageNum)"
                       [class.bg-primary]="currentPage() === pageNum"
                       [class.text-black]="currentPage() === pageNum"
                       [class.border-primary]="currentPage() === pageNum"
-                      class="brutalist-border bg-black w-14 h-14 hover:bg-primary hover:text-black transition-colors">
+                      class="brutalist-border bg-black w-14 h-14 hover:bg-primary hover:text-black transition-colors"
+                    >
                       <span class="mono font-black text-xl">{{ pageNum }}</span>
                     </button>
                   } @else if (pageNum === currentPage() - 2 || pageNum === currentPage() + 2) {
@@ -132,30 +153,33 @@
                   }
                 }
               </div>
-              
+
               <!-- Next Button -->
-              <button 
-                (click)="nextPage()" 
+              <button
+                (click)="nextPage()"
                 [disabled]="currentPage() === totalPages"
                 [class.opacity-30]="currentPage() === totalPages"
                 [class.cursor-not-allowed]="currentPage() === totalPages"
-                class="brutalist-border bg-black px-8 py-4 hover:bg-primary hover:text-black transition-colors disabled:hover:bg-black disabled:hover:text-white">
+                class="brutalist-border bg-black px-8 py-4 hover:bg-primary hover:text-black transition-colors disabled:hover:bg-black disabled:hover:text-white"
+              >
                 <span class="mono font-bold text-xl">NEXT &gt;</span>
               </button>
             </div>
-            
+
             <!-- Quick Jump -->
             <div class="text-center">
               <p class="mono text-xs text-zinc-500 uppercase mb-2">Quick Navigation</p>
               <div class="flex gap-2 justify-center">
-                <button 
+                <button
                   (click)="goToPage(1)"
-                  class="mono text-xs px-3 py-1 border-2 border-zinc-700 hover:border-primary hover:text-primary transition-colors">
+                  class="mono text-xs px-3 py-1 border-2 border-zinc-700 hover:border-primary hover:text-primary transition-colors"
+                >
                   FIRST
                 </button>
-                <button 
+                <button
                   (click)="goToPage(totalPages)"
-                  class="mono text-xs px-3 py-1 border-2 border-zinc-700 hover:border-primary hover:text-primary transition-colors">
+                  class="mono text-xs px-3 py-1 border-2 border-zinc-700 hover:border-primary hover:text-primary transition-colors"
+                >
                   LAST
                 </button>
               </div>

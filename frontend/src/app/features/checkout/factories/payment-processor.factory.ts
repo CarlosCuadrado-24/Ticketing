@@ -34,7 +34,7 @@ export enum PaymentProcessorType {
   STRIPE = 'stripe',
   PAYPAL = 'paypal',
   SQUARE = 'square',
-  MOCK = 'mock'
+  MOCK = 'mock',
 }
 
 /**
@@ -42,21 +42,21 @@ export enum PaymentProcessorType {
  */
 class MockPaymentProcessor implements PaymentProcessor {
   processPayment(paymentData: PaymentData): Observable<PaymentResult> {
-    return new Observable(observer => {
+    return new Observable((observer) => {
       // Simulate processing delay
       setTimeout(() => {
         // Simulate different scenarios based on card number
         const cardNumber = paymentData.cardNumber.replace(/\s/g, '');
-        
+
         if (cardNumber.endsWith('0000')) {
           observer.next({
             success: false,
-            error: 'Card declined'
+            error: 'Card declined',
           });
         } else if (cardNumber.endsWith('1111')) {
           observer.next({
             success: false,
-            error: 'Insufficient funds'
+            error: 'Insufficient funds',
           });
         } else {
           observer.next({
@@ -64,8 +64,8 @@ class MockPaymentProcessor implements PaymentProcessor {
             transactionId: `mock_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
             processorResponse: {
               processor: 'mock',
-              timestamp: new Date().toISOString()
-            }
+              timestamp: new Date().toISOString(),
+            },
           });
         }
         observer.complete();
@@ -98,7 +98,7 @@ class MockPaymentProcessor implements PaymentProcessor {
 
     return {
       isValid: errors.length === 0,
-      errors
+      errors,
     };
   }
 
@@ -117,10 +117,10 @@ class MockPaymentProcessor implements PaymentProcessor {
 class StripePaymentProcessor implements PaymentProcessor {
   processPayment(paymentData: PaymentData): Observable<PaymentResult> {
     // In a real implementation, this would integrate with Stripe's API
-    return new Observable(observer => {
+    return new Observable((observer) => {
       observer.next({
         success: false,
-        error: 'Stripe integration not implemented'
+        error: 'Stripe integration not implemented',
       });
       observer.complete();
     });
@@ -130,7 +130,7 @@ class StripePaymentProcessor implements PaymentProcessor {
     // Stripe-specific validation would go here
     return {
       isValid: false,
-      errors: ['Stripe validation not implemented']
+      errors: ['Stripe validation not implemented'],
     };
   }
 
@@ -149,10 +149,10 @@ class StripePaymentProcessor implements PaymentProcessor {
 class PayPalPaymentProcessor implements PaymentProcessor {
   processPayment(paymentData: PaymentData): Observable<PaymentResult> {
     // In a real implementation, this would integrate with PayPal's API
-    return new Observable(observer => {
+    return new Observable((observer) => {
       observer.next({
         success: false,
-        error: 'PayPal integration not implemented'
+        error: 'PayPal integration not implemented',
       });
       observer.complete();
     });
@@ -162,7 +162,7 @@ class PayPalPaymentProcessor implements PaymentProcessor {
     // PayPal-specific validation would go here
     return {
       isValid: false,
-      errors: ['PayPal validation not implemented']
+      errors: ['PayPal validation not implemented'],
     };
   }
 
@@ -181,10 +181,9 @@ class PayPalPaymentProcessor implements PaymentProcessor {
  * Follows Open/Closed Principle - easy to add new processors without modifying existing code
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PaymentProcessorFactory {
-  
   /**
    * Create payment processor based on type
    */
@@ -192,10 +191,10 @@ export class PaymentProcessorFactory {
     switch (type) {
       case PaymentProcessorType.STRIPE:
         return new StripePaymentProcessor();
-      
+
       case PaymentProcessorType.PAYPAL:
         return new PayPalPaymentProcessor();
-      
+
       case PaymentProcessorType.MOCK:
       default:
         return new MockPaymentProcessor();
@@ -213,7 +212,7 @@ export class PaymentProcessorFactory {
    * Get processor by name
    */
   getProcessorByName(name: string): PaymentProcessor | null {
-    const type = Object.values(PaymentProcessorType).find(t => t === name.toLowerCase());
+    const type = Object.values(PaymentProcessorType).find((t) => t === name.toLowerCase());
     return type ? this.createProcessor(type) : null;
   }
 
@@ -247,9 +246,9 @@ export class PaymentProcessorFactory {
     features: string[];
   } {
     const processor = this.createProcessor(type);
-    
+
     const features: string[] = [];
-    
+
     switch (type) {
       case PaymentProcessorType.STRIPE:
         features.push('3D Secure', 'Recurring Payments', 'Multi-currency');
@@ -265,7 +264,7 @@ export class PaymentProcessorFactory {
     return {
       name: processor.getProcessorName(),
       supportedCardTypes: processor.getSupportedCardTypes(),
-      features
+      features,
     };
   }
 }

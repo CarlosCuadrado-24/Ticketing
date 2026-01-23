@@ -48,7 +48,7 @@ describe('AdminReportsComponent', () => {
 
   it('should handle export report', () => {
     spyOn(window.URL, 'createObjectURL').and.returnValue('blob:mock');
-    
+
     const mockLink = document.createElement('a');
     spyOn(mockLink, 'click');
     spyOn(document, 'createElement').and.returnValue(mockLink);

@@ -24,7 +24,7 @@ export const errorInterceptor: HttpInterceptorFn = (
         // Unauthorized - clear auth and redirect to login
         authService.logout().subscribe({
           next: () => router.navigate(['/login']),
-          error: () => router.navigate(['/login']) // Navigate anyway
+          error: () => router.navigate(['/login']), // Navigate anyway
         });
       } else if (error.status === 403) {
         // Forbidden

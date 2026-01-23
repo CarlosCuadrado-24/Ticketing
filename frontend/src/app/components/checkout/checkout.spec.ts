@@ -106,9 +106,12 @@ describe('Checkout', () => {
       component.step = 'payment';
       component.paymentForm = {
         validate: jasmine.createSpy().and.returnValue(true),
-        getFormData: jasmine
-          .createSpy()
-          .and.returnValue({ cardNumber: '4111111111111111', expiryDate: '12/28', cvv: '123', cardholderName: 'John Doe' }),
+        getFormData: jasmine.createSpy().and.returnValue({
+          cardNumber: '4111111111111111',
+          expiryDate: '12/28',
+          cvv: '123',
+          cardholderName: 'John Doe',
+        }),
       } as any;
       (component as any).contactData = {
         firstName: 'John',
@@ -150,11 +153,11 @@ describe('Checkout', () => {
         email: 'john@example.com',
         phone: '123456789',
       };
-      (component as any).paymentData = { 
-        cardNumber: '4111111111111111', 
+      (component as any).paymentData = {
+        cardNumber: '4111111111111111',
         expiryDate: '12/28', // Fecha futura válida
-        cvv: '123', 
-        cardholderName: 'John Doe' 
+        cvv: '123',
+        cardholderName: 'John Doe',
       };
 
       (checkoutService.confirmOrder as jasmine.Spy).and.returnValue(Promise.resolve());
@@ -169,7 +172,7 @@ describe('Checkout', () => {
       });
 
       // Wait for navigation
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 100));
 
       expect(router.navigate).toHaveBeenCalledWith(['/confirmation'], { queryParams: {} });
     });

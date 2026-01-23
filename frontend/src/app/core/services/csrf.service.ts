@@ -11,7 +11,7 @@ import { API_ENDPOINTS } from '../../config/api.constants';
  * Extracted from AuthService to follow Single Responsibility Principle
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CsrfService {
   private readonly http = inject(HttpClient);
@@ -25,7 +25,7 @@ export class CsrfService {
    */
   getToken(): Observable<string> {
     const now = Date.now();
-    
+
     // Return cached token if still valid
     if (this.cachedToken && now < this.tokenExpiry) {
       return of(this.cachedToken);
@@ -33,15 +33,15 @@ export class CsrfService {
 
     // Fetch new token
     return this.fetchToken().pipe(
-      tap(token => {
+      tap((token) => {
         this.cachedToken = token;
         this.tokenExpiry = now + this.TOKEN_CACHE_DURATION;
       }),
-      catchError(error => {
+      catchError((error) => {
         console.error('[CsrfService] Error fetching CSRF token:', error);
         this.clearCache();
         throw error;
-      })
+      }),
     );
   }
 
@@ -72,14 +72,15 @@ export class CsrfService {
    * Fetch CSRF token from server
    */
   private fetchToken(): Observable<string> {
-    return this.http.get<{ csrfToken: string }>(`${environment.apiUrl}${API_ENDPOINTS.CSRF.TOKEN}`)
+    return this.http
+      .get<{ csrfToken: string }>(`${environment.apiUrl}${API_ENDPOINTS.CSRF.TOKEN}`)
       .pipe(
-        tap(response => console.log('[CsrfService] CSRF token received')),
-        map(response => response.csrfToken), // Extract token from response
-        catchError(error => {
+        tap((response) => console.log('[CsrfService] CSRF token received')),
+        map((response) => response.csrfToken), // Extract token from response
+        catchError((error) => {
           console.error('[CsrfService] Failed to fetch CSRF token:', error);
           throw error;
-        })
+        }),
       );
   }
 }

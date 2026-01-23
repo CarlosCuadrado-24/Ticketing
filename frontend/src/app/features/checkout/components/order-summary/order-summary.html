@@ -1,5 +1,7 @@
 <div class="brutal-border bg-black p-8 space-y-10 relative overflow-hidden">
-  <div class="absolute top-0 right-10 bottom-0 w-12 flex flex-col justify-around items-center opacity-10 pointer-events-none">
+  <div
+    class="absolute top-0 right-10 bottom-0 w-12 flex flex-col justify-around items-center opacity-10 pointer-events-none"
+  >
     <div class="w-1 h-20 bg-white"></div>
     <div class="w-1 h-10 bg-white"></div>
     <div class="w-1 h-32 bg-white"></div>
@@ -7,10 +9,14 @@
   </div>
 
   <div class="flex justify-between items-start">
-    <h2 class="text-3xl font-impact uppercase italic leading-none tracking-tighter">Order<br/>Summary</h2>
+    <h2 class="text-3xl font-impact uppercase italic leading-none tracking-tighter">
+      Order<br />Summary
+    </h2>
     <div class="flex flex-col items-end">
       @if (checkoutService.reservation()) {
-        <span class="text-[8px] font-mono text-zinc-500">ID: #{{ checkoutService.reservation()!.id.substring(0, 12).toUpperCase() }}</span>
+        <span class="text-[8px] font-mono text-zinc-500"
+          >ID: #{{ checkoutService.reservation()!.id.substring(0, 12).toUpperCase() }}</span
+        >
       }
       <div class="w-12 h-4 bg-white/20"></div>
     </div>
@@ -23,15 +29,15 @@
       @for (item of cart(); track item.ticketTypeId) {
         <div class="flex gap-4">
           <div class="w-20 h-20 brutal-border border-2 overflow-hidden flex-shrink-0 bg-white">
-              @if (checkoutService.eventImageUrl()) {
-                <img
-                  [alt]="item.ticketTypeName"
-                  class="w-full h-full object-cover grayscale contrast-150"
-                  [src]="checkoutService.eventImageUrl()"
-                />
-              } @else {
-                <div class="w-full h-full bg-zinc-800">VIP</div>
-              }
+            @if (checkoutService.eventImageUrl()) {
+              <img
+                [alt]="item.ticketTypeName"
+                class="w-full h-full object-cover grayscale contrast-150"
+                [src]="checkoutService.eventImageUrl()"
+              />
+            } @else {
+              <div class="w-full h-full bg-zinc-800">VIP</div>
+            }
           </div>
           <div class="flex-1">
             <h3 class="font-mono font-bold text-sm uppercase leading-tight mb-1">
@@ -42,7 +48,8 @@
             </p>
             <button
               (click)="removeItem(item.ticketTypeId)"
-              class="text-[10px] font-mono text-red-400 hover:text-red-300 mt-2 transition-colors uppercase">
+              class="text-[10px] font-mono text-red-400 hover:text-red-300 mt-2 transition-colors uppercase"
+            >
               [Remove]
             </button>
           </div>
@@ -61,20 +68,38 @@
   </div>
 
   <div class="pt-6 border-t-[6px] border-white flex flex-col items-end gap-2">
-    <span class="font-mono text-[10px] font-bold uppercase tracking-[0.4em] text-zinc-500">Amount Due</span>
-    <div class="text-3xl md:text-4xl font-impact font-black text-primary tracking-tighter leading-none italic">
+    <span class="font-mono text-[10px] font-bold uppercase tracking-[0.4em] text-zinc-500"
+      >Amount Due</span
+    >
+    <div
+      class="text-3xl md:text-4xl font-impact font-black text-primary tracking-tighter leading-none italic"
+    >
       {{ total() | currencyFormat: 'COP' }}
     </div>
   </div>
 
   <div class="pt-8 flex flex-col items-center gap-6">
     <div class="flex gap-4 opacity-50 grayscale">
-      <img alt="Visa" class="h-3" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBuaUhPTZcC0AB1XDDCnzfkz2aqZ-WFTz1dAjp2qWINVvCH0kC-0ANnwrYM8lyiUlUTnJZ-RUiy8Cg35Z_dy-8SH9B7pHMQtEMSPSoe35O4mNkkMXCi1V7OMUz90nFBDFHpKYB-1wx2rO_L7MEOczQCI4S7X5lUJUB9dJchyj_4-BveOfcGJLfEgmqElrTkfUrrDC3HRzC7G7l1454r66nIOrmIhofZVY7Zjt6DzsxsTRJmLANnHKdRKcYuZ35aQcVrhfWX-ewirZ_6"/>
-      <img alt="Mastercard" class="h-3" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC0fb84xtNRivabrEo8Xob2h9prFkUjfyfbd1m7GomMKZW5qLlvcxp_kvh-8zvJ1KGqK_vO5sGXDdvRkZu6BcKfEq3qXfCqZsYwSoCc9cCKoKUY6RzCt2tZc36QE2nQ6W9z4nmi4wQJ_Apq2kYsgAvncyG2Mejo-ZWSZFOf1qE48QlY0c-NM__oqPTv3ti-OGLZKfEd_ghbVMWJyyoGqc6-XsbUHgAMPKwm2-E-r8dPU70hP5cwjiwEeBYIeJ39YTh5LGkdABjA_K_s"/>
-      <img alt="PayPal" class="h-3" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA4KRfbMlwFvvUJf4M57slrp3Y2lMP42NR-0sNsKRSJTo_lBKgqX7xFZ22WtMpBdF6IzYeJJvfYtIr46dLSEPOvpsw79903CVcwaH1QYAz_jyDIDcUfuAWcXCxgufwjAzk9TeDAuNP1Q7it4Hlze4PDNxJ3hfd1feAB8uY4KO-5ksixdizR-q7IPWx1K4fNXU8Eb4ecCvxIqRQavoVepdNkjfKFI0BA0_k-m14FeucNzmPsug3Abe6NHUkeoKHY1ZvIqNQ8tiCTh7fl"/>
+      <img
+        alt="Visa"
+        class="h-3"
+        src="https://lh3.googleusercontent.com/aida-public/AB6AXuBuaUhPTZcC0AB1XDDCnzfkz2aqZ-WFTz1dAjp2qWINVvCH0kC-0ANnwrYM8lyiUlUTnJZ-RUiy8Cg35Z_dy-8SH9B7pHMQtEMSPSoe35O4mNkkMXCi1V7OMUz90nFBDFHpKYB-1wx2rO_L7MEOczQCI4S7X5lUJUB9dJchyj_4-BveOfcGJLfEgmqElrTkfUrrDC3HRzC7G7l1454r66nIOrmIhofZVY7Zjt6DzsxsTRJmLANnHKdRKcYuZ35aQcVrhfWX-ewirZ_6"
+      />
+      <img
+        alt="Mastercard"
+        class="h-3"
+        src="https://lh3.googleusercontent.com/aida-public/AB6AXuC0fb84xtNRivabrEo8Xob2h9prFkUjfyfbd1m7GomMKZW5qLlvcxp_kvh-8zvJ1KGqK_vO5sGXDdvRkZu6BcKfEq3qXfCqZsYwSoCc9cCKoKUY6RzCt2tZc36QE2nQ6W9z4nmi4wQJ_Apq2kYsgAvncyG2Mejo-ZWSZFOf1qE48QlY0c-NM__oqPTv3ti-OGLZKfEd_ghbVMWJyyoGqc6-XsbUHgAMPKwm2-E-r8dPU70hP5cwjiwEeBYIeJ39YTh5LGkdABjA_K_s"
+      />
+      <img
+        alt="PayPal"
+        class="h-3"
+        src="https://lh3.googleusercontent.com/aida-public/AB6AXuA4KRfbMlwFvvUJf4M57slrp3Y2lMP42NR-0sNsKRSJTo_lBKgqX7xFZ22WtMpBdF6IzYeJJvfYtIr46dLSEPOvpsw79903CVcwaH1QYAz_jyDIDcUfuAWcXCxgufwjAzk9TeDAuNP1Q7it4Hlze4PDNxJ3hfd1feAB8uY4KO-5ksixdizR-q7IPWx1K4fNXU8Eb4ecCvxIqRQavoVepdNkjfKFI0BA0_k-m14FeucNzmPsug3Abe6NHUkeoKHY1ZvIqNQ8tiCTh7fl"
+      />
     </div>
     <div class="flex flex-col items-center gap-2">
-      <div class="h-8 w-[100px] bg-[repeating-linear-gradient(90deg,#fff,#fff_2px,transparent_2px,transparent_6px)]"></div>
+      <div
+        class="h-8 w-[100px] bg-[repeating-linear-gradient(90deg,#fff,#fff_2px,transparent_2px,transparent_6px)]"
+      ></div>
       <span class="text-[8px] font-mono text-zinc-600">ENCRYPTED_DATA_TRANSMISSION_256BIT</span>
     </div>
   </div>

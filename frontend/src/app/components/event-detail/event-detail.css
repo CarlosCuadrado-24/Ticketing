@@ -6,7 +6,7 @@
 
 /* Sticker Tape Badge */
 .sticker-tape {
-  background: #FF4D00;
+  background: #ff4d00;
   color: black;
   padding: 8px 20px;
   font-family: 'Space Mono', monospace;
@@ -62,8 +62,13 @@
 }
 
 @keyframes glitch-slide {
-  0%, 100% { transform: translateX(-100%); }
-  50% { transform: translateX(100%); }
+  0%,
+  100% {
+    transform: translateX(-100%);
+  }
+  50% {
+    transform: translateX(100%);
+  }
 }
 
 /* Rotated Text */

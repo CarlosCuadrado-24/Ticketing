@@ -14,7 +14,7 @@ export interface CartItem {
  * Follows Single Responsibility Principle - only handles cart logic
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CartService {
   // Private signals
@@ -30,31 +30,33 @@ export class CartService {
   readonly eventImageUrl = this._eventImageUrl.asReadonly();
 
   // Computed signals
-  readonly cartItemCount = computed(() => 
-    this._cart().reduce((sum, item) => sum + item.quantity, 0)
+  readonly cartItemCount = computed(() =>
+    this._cart().reduce((sum, item) => sum + item.quantity, 0),
   );
 
-  readonly subtotal = computed(() => 
-    this._cart().reduce((total, item) => total + (item.price * item.quantity), 0)
+  readonly subtotal = computed(() =>
+    this._cart().reduce((total, item) => total + item.price * item.quantity, 0),
   );
 
-  readonly tax = computed(() => 
-    Math.round(this.subtotal() * BUSINESS_RULES.TAX_RATE * 100) / 100
-  );
+  readonly tax = computed(() => Math.round(this.subtotal() * BUSINESS_RULES.TAX_RATE * 100) / 100);
 
   readonly processingFee = computed(() => BUSINESS_RULES.PROCESSING_FEE);
 
-  readonly total = computed(() => 
-    this.subtotal() // Solo el subtotal, sin tarifas adicionales
+  readonly total = computed(
+    () => this.subtotal(), // Solo el subtotal, sin tarifas adicionales
   );
 
   readonly isEmpty = computed(() => this._cart().length === 0);
 
   readonly isValid = computed(() => {
     const cart = this._cart();
-    return cart.length > 0 && 
-           cart.every(item => item.quantity > 0 && item.quantity <= BUSINESS_RULES.MAX_TICKETS_PER_TYPE) &&
-           this.cartItemCount() <= BUSINESS_RULES.MAX_TICKETS_PER_ORDER;
+    return (
+      cart.length > 0 &&
+      cart.every(
+        (item) => item.quantity > 0 && item.quantity <= BUSINESS_RULES.MAX_TICKETS_PER_TYPE,
+      ) &&
+      this.cartItemCount() <= BUSINESS_RULES.MAX_TICKETS_PER_ORDER
+    );
   });
 
   /**
@@ -70,21 +72,19 @@ export class CartService {
     }
 
     const currentCart = this._cart();
-    const existingItemIndex = currentCart.findIndex(item => item.ticketTypeId === ticketTypeId);
+    const existingItemIndex = currentCart.findIndex((item) => item.ticketTypeId === ticketTypeId);
 
     let updatedCart: CartItem[];
-    
+
     if (existingItemIndex >= 0) {
       // Update existing item
       const newQuantity = Math.min(
         currentCart[existingItemIndex].quantity + quantity,
-        BUSINESS_RULES.MAX_TICKETS_PER_TYPE
+        BUSINESS_RULES.MAX_TICKETS_PER_TYPE,
       );
-      
-      updatedCart = currentCart.map((item, index) => 
-        index === existingItemIndex 
-          ? { ...item, quantity: newQuantity }
-          : item
+
+      updatedCart = currentCart.map((item, index) =>
+        index === existingItemIndex ? { ...item, quantity: newQuantity } : item,
       );
     } else {
       // Add new item
@@ -92,7 +92,7 @@ export class CartService {
         ticketTypeId,
         ticketTypeName,
         quantity,
-        price
+        price,
       };
       updatedCart = [...currentCart, newItem];
     }
@@ -120,13 +120,11 @@ export class CartService {
 
     if (quantity === 0) {
       // Remove item if quantity is 0
-      updatedCart = currentCart.filter(item => item.ticketTypeId !== ticketTypeId);
+      updatedCart = currentCart.filter((item) => item.ticketTypeId !== ticketTypeId);
     } else {
       // Update quantity
-      updatedCart = currentCart.map(item => 
-        item.ticketTypeId === ticketTypeId 
-          ? { ...item, quantity }
-          : item
+      updatedCart = currentCart.map((item) =>
+        item.ticketTypeId === ticketTypeId ? { ...item, quantity } : item,
       );
     }
 
@@ -138,7 +136,7 @@ export class CartService {
    * Remove item from cart
    */
   removeFromCart(ticketTypeId: number): void {
-    const updatedCart = this._cart().filter(item => item.ticketTypeId !== ticketTypeId);
+    const updatedCart = this._cart().filter((item) => item.ticketTypeId !== ticketTypeId);
     this._cart.set(updatedCart);
     this.saveCart();
   }
@@ -154,7 +152,11 @@ export class CartService {
   /**
    * Set event information for the cart
    */
-  setEventInfo(eventId: string | number | undefined, eventName: string | undefined, eventImageUrl?: string): void {
+  setEventInfo(
+    eventId: string | number | undefined,
+    eventName: string | undefined,
+    eventImageUrl?: string,
+  ): void {
     this._eventId.set(eventId);
     this._eventName.set(eventName);
     this._eventImageUrl.set(eventImageUrl);
@@ -164,14 +166,14 @@ export class CartService {
    * Get cart item by ticket type ID
    */
   getCartItem(ticketTypeId: number): CartItem | undefined {
-    return this._cart().find(item => item.ticketTypeId === ticketTypeId);
+    return this._cart().find((item) => item.ticketTypeId === ticketTypeId);
   }
 
   /**
    * Check if ticket type is in cart
    */
   isInCart(ticketTypeId: number): boolean {
-    return this._cart().some(item => item.ticketTypeId === ticketTypeId);
+    return this._cart().some((item) => item.ticketTypeId === ticketTypeId);
   }
 
   /**
@@ -189,7 +191,7 @@ export class CartService {
     try {
       const stored = localStorage.getItem(STORAGE_KEYS.CART);
       if (!stored) return [];
-      
+
       const parsed = JSON.parse(stored);
       return Array.isArray(parsed) ? parsed : [];
     } catch (error) {

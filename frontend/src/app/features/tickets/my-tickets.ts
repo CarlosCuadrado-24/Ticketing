@@ -340,7 +340,7 @@ export class MyTicketsComponent implements OnInit {
 
     // Use backend endpoint to download PNG with brutalist design
     const downloadUrl = `${environment.apiUrl}/tickets/${ticketId}/download`;
-    
+
     // Open in new tab to force download
     window.open(downloadUrl, '_blank');
   }

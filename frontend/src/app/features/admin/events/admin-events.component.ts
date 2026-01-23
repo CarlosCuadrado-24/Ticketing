@@ -249,11 +249,11 @@ export class AdminEventsComponent implements OnInit {
   deleteEvent(eventId: string, eventName: string) {
     const confirmed = confirm(
       `¿Estás seguro de que deseas eliminar el evento "${eventName}"?\n\n` +
-      'Esta acción no se puede deshacer. Se eliminarán:\n' +
-      '• El evento\n' +
-      '• Todas las configuraciones de tickets\n' +
-      '• Los registros asociados\n\n' +
-      '⚠️ ADVERTENCIA: Esta acción es permanente.'
+        'Esta acción no se puede deshacer. Se eliminarán:\n' +
+        '• El evento\n' +
+        '• Todas las configuraciones de tickets\n' +
+        '• Los registros asociados\n\n' +
+        '⚠️ ADVERTENCIA: Esta acción es permanente.',
     );
 
     if (!confirmed) {
@@ -261,23 +261,23 @@ export class AdminEventsComponent implements OnInit {
     }
 
     this.loading.set(true);
-    this.eventService.deleteEvent(eventId).pipe(
-      finalize(() => this.loading.set(false))
-    ).subscribe({
-      next: () => {
-        this.toastService.success(`Evento "${eventName}" eliminado exitosamente`);
-        // Update local state
-        const updatedEvents = this.events().filter((e) => e.id.toString() !== eventId);
-        this.events.set(updatedEvents);
-        this.filterEvents();
-      },
-      error: (error) => {
-        console.error('[AdminEvents] Error deleting event:', error);
-        this.toastService.error(
-          'Error al eliminar el evento. ' + 
-          (error.message || 'Intenta nuevamente.')
-        );
-      },
-    });
+    this.eventService
+      .deleteEvent(eventId)
+      .pipe(finalize(() => this.loading.set(false)))
+      .subscribe({
+        next: () => {
+          this.toastService.success(`Evento "${eventName}" eliminado exitosamente`);
+          // Update local state
+          const updatedEvents = this.events().filter((e) => e.id.toString() !== eventId);
+          this.events.set(updatedEvents);
+          this.filterEvents();
+        },
+        error: (error) => {
+          console.error('[AdminEvents] Error deleting event:', error);
+          this.toastService.error(
+            'Error al eliminar el evento. ' + (error.message || 'Intenta nuevamente.'),
+          );
+        },
+      });
   }
 }

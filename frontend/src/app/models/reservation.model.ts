@@ -25,10 +25,8 @@ export interface ReservationWithTiming extends BaseReservation {
 }
 
 // Complete reservation interface
-export interface Reservation extends 
-  ReservationWithBuyer,
-  ReservationWithPrice,
-  ReservationWithTiming {}
+export interface Reservation
+  extends ReservationWithBuyer, ReservationWithPrice, ReservationWithTiming {}
 
 // Admin reservation interface
 export interface AdminReservation extends Reservation {

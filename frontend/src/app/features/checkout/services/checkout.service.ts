@@ -48,8 +48,8 @@ export class CheckoutService {
   readonly isLoading = this.paymentService.isProcessing; // Alias for backward compatibility
 
   // Additional computed signals
-  readonly canProceedToCheckout = computed(() => 
-    !this.isEmpty() && this.isValid() && this.authService.isAuthenticated()
+  readonly canProceedToCheckout = computed(
+    () => !this.isEmpty() && this.isValid() && this.authService.isAuthenticated(),
   );
 
   readonly checkoutSummary = computed(() => ({
@@ -58,7 +58,7 @@ export class CheckoutService {
     tax: this.tax(),
     processingFee: this.processingFee(),
     total: this.total(),
-    itemCount: this.cartItemCount()
+    itemCount: this.cartItemCount(),
   }));
 
   constructor() {
@@ -90,7 +90,11 @@ export class CheckoutService {
     this.clearPendingCheckout();
   }
 
-  setEventInfo(eventId: string | number | undefined, eventName: string | undefined, eventImageUrl?: string): void {
+  setEventInfo(
+    eventId: string | number | undefined,
+    eventName: string | undefined,
+    eventImageUrl?: string,
+  ): void {
     this.cartService.setEventInfo(eventId, eventName, eventImageUrl);
   }
 
@@ -117,7 +121,11 @@ export class CheckoutService {
     }
 
     try {
-      const success = await this.reservationService.createReservations(cartItems, eventId, userEmail);
+      const success = await this.reservationService.createReservations(
+        cartItems,
+        eventId,
+        userEmail,
+      );
       if (success) {
         this.cacheInvalidationService.invalidateEvent(String(eventId));
       }
@@ -133,16 +141,19 @@ export class CheckoutService {
   }
 
   // Payment operations - delegate to PaymentService
-  async processPayment(contactData: ContactData, paymentData: PaymentData): Promise<CompletedOrder> {
+  async processPayment(
+    contactData: ContactData,
+    paymentData: PaymentData,
+  ): Promise<CompletedOrder> {
     const cartItems = this.cart();
     const eventId = this.cartService.eventId();
     const eventName = this.cartService.eventName();
 
-    console.log('[CheckoutService] processPayment called with:', { 
-      cartItemsCount: cartItems.length, 
-      eventId, 
+    console.log('[CheckoutService] processPayment called with:', {
+      cartItemsCount: cartItems.length,
+      eventId,
       eventName,
-      contactEmail: contactData.email
+      contactEmail: contactData.email,
     });
 
     if (cartItems.length === 0) {
@@ -158,12 +169,12 @@ export class CheckoutService {
         this.tax(),
         this.processingFee(),
         eventId,
-        eventName
+        eventName,
       );
 
       // Clear cart and reservations after successful payment
       this.clearCart();
-      
+
       // Invalidate caches
       if (eventId) {
         this.cacheInvalidationService.invalidateEvent(String(eventId));
@@ -198,9 +209,9 @@ export class CheckoutService {
         cart: this.cart(),
         eventId: this.cartService.eventId(),
         eventName: this.cartService.eventName(),
-        timestamp: Date.now()
+        timestamp: Date.now(),
       };
-      
+
       localStorage.setItem(STORAGE_KEYS.PENDING_CHECKOUT, JSON.stringify(checkoutData));
     } catch (error) {
       console.error('[CheckoutService] Error saving pending checkout:', error);
@@ -217,7 +228,7 @@ export class CheckoutService {
 
       const checkoutData = JSON.parse(stored);
       const age = Date.now() - checkoutData.timestamp;
-      
+
       // Don't restore if older than 1 hour
       if (age > 60 * 60 * 1000) {
         this.clearPendingCheckout();
@@ -257,7 +268,11 @@ export class CheckoutService {
   /**
    * Confirm order - backward compatibility method
    */
-  async confirmOrder(paymentMethod: string, contactData: ContactData, paymentData: PaymentData): Promise<void> {
+  async confirmOrder(
+    paymentMethod: string,
+    contactData: ContactData,
+    paymentData: PaymentData,
+  ): Promise<void> {
     try {
       await this.processPayment(contactData, paymentData);
     } catch (error) {
@@ -285,7 +300,7 @@ export class CheckoutService {
       return {
         step: 'complete',
         canProceed: false,
-        nextAction: 'View confirmation'
+        nextAction: 'View confirmation',
       };
     }
 
@@ -293,7 +308,7 @@ export class CheckoutService {
       return {
         step: 'payment',
         canProceed: true,
-        nextAction: 'Complete payment'
+        nextAction: 'Complete payment',
       };
     }
 
@@ -301,14 +316,14 @@ export class CheckoutService {
       return {
         step: 'reservation',
         canProceed: true,
-        nextAction: 'Create reservation'
+        nextAction: 'Create reservation',
       };
     }
 
     return {
       step: 'cart',
       canProceed: this.canProceedToCheckout(),
-      nextAction: this.authService.isAuthenticated() ? 'Add items to cart' : 'Login to continue'
+      nextAction: this.authService.isAuthenticated() ? 'Add items to cart' : 'Login to continue',
     };
   }
 }

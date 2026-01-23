@@ -2,7 +2,7 @@
 
 .brutalist-border {
   border: 8px solid white;
-  box-shadow: 12px 12px 0px #FF4D00;
+  box-shadow: 12px 12px 0px #ff4d00;
 }
 
 .halftone {
@@ -11,11 +11,54 @@
 }
 
 .torn-edge {
-  clip-path: polygon(0% 0%, 5% 2%, 10% 0%, 15% 3%, 20% 0%, 25% 2%, 30% 0%, 35% 1%, 40% 0%, 45% 2%, 50% 0%, 55% 3%, 60% 0%, 65% 2%, 70% 0%, 75% 1%, 80% 0%, 85% 2%, 90% 0%, 95% 3%, 100% 0%, 100% 100%, 95% 98%, 90% 100%, 85% 97%, 80% 100%, 75% 98%, 70% 100%, 65% 97%, 60% 100%, 55% 98%, 50% 100%, 45% 97%, 40% 100%, 35% 98%, 30% 100%, 25% 97%, 20% 100%, 15% 98%, 10% 100%, 5% 97%, 0% 100%);
+  clip-path: polygon(
+    0% 0%,
+    5% 2%,
+    10% 0%,
+    15% 3%,
+    20% 0%,
+    25% 2%,
+    30% 0%,
+    35% 1%,
+    40% 0%,
+    45% 2%,
+    50% 0%,
+    55% 3%,
+    60% 0%,
+    65% 2%,
+    70% 0%,
+    75% 1%,
+    80% 0%,
+    85% 2%,
+    90% 0%,
+    95% 3%,
+    100% 0%,
+    100% 100%,
+    95% 98%,
+    90% 100%,
+    85% 97%,
+    80% 100%,
+    75% 98%,
+    70% 100%,
+    65% 97%,
+    60% 100%,
+    55% 98%,
+    50% 100%,
+    45% 97%,
+    40% 100%,
+    35% 98%,
+    30% 100%,
+    25% 97%,
+    20% 100%,
+    15% 98%,
+    10% 100%,
+    5% 97%,
+    0% 100%
+  );
 }
 
 .industrial-tape {
-  background-color: #FF4D00;
+  background-color: #ff4d00;
   color: black;
   padding: 4px 12px;
   font-weight: 900;
@@ -28,7 +71,9 @@
 .xerox-effect {
   filter: contrast(300%) grayscale(100%) brightness(80%);
   mix-blend-mode: screen;
-  transition: filter 1.5s ease-in-out, transform 1s ease-in-out;
+  transition:
+    filter 1.5s ease-in-out,
+    transform 1s ease-in-out;
 }
 
 /* Hover effect: recuperar color gradualmente */

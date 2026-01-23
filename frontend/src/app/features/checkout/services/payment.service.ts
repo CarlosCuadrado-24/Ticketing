@@ -50,7 +50,7 @@ export interface CompletedOrder {
  * Follows Single Responsibility Principle - only handles payment logic
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PaymentService {
   private readonly http = inject(HttpClient);
@@ -76,7 +76,7 @@ export class PaymentService {
     tax: number,
     processingFee: number,
     eventId?: string | number,
-    eventName?: string
+    eventName?: string,
   ): Promise<CompletedOrder> {
     if (this._isProcessing()) {
       throw new Error('Payment is already being processed');
@@ -103,14 +103,16 @@ export class PaymentService {
         paymentInfo: {
           cardNumber: paymentData.cardNumber,
           expiryDate: paymentData.expiryDate,
-          cvv: paymentData.cvv
-        }
+          cvv: paymentData.cvv,
+        },
       };
 
       console.log('[PaymentService] Processing payment for tickets:', purchasePayload);
 
       // Process payment through tickets/purchase endpoint
-      const response = await this.http.post<any[]>(`${environment.apiUrl}/tickets/purchase`, purchasePayload).toPromise();
+      const response = await this.http
+        .post<any[]>(`${environment.apiUrl}/tickets/purchase`, purchasePayload)
+        .toPromise();
 
       if (!response || response.length === 0) {
         throw new Error('No response from payment service');
@@ -119,11 +121,11 @@ export class PaymentService {
       console.log('[PaymentService] Payment processed successfully:', response);
 
       // Map backend tickets to PurchasedTicket format
-      const tickets: PurchasedTicket[] = response.map(ticket => ({
+      const tickets: PurchasedTicket[] = response.map((ticket) => ({
         id: ticket.id,
         ticketTypeName: ticket.type,
         price: ticket.price,
-        qrCode: ticket.qrToken || ''
+        qrCode: ticket.qrToken || '',
       }));
 
       // Create completed order object
@@ -137,7 +139,7 @@ export class PaymentService {
         total: subtotal + tax + processingFee,
         purchaseDate: new Date().toISOString(),
         eventId,
-        eventName
+        eventName,
       };
 
       this._completedOrder.set(completedOrder);
@@ -149,15 +151,14 @@ export class PaymentService {
       this.invalidateCaches(eventId);
 
       return completedOrder;
-
     } catch (error: any) {
       console.error('[PaymentService] Payment processing failed:', error);
-      
+
       // Handle specific payment errors
       if (error?.error?.message) {
         throw new Error(error.error.message);
       }
-      
+
       throw new Error('Payment processing failed. Please try again.');
     } finally {
       this._isProcessing.set(false);
@@ -188,7 +189,7 @@ export class PaymentService {
     const [month, year] = paymentData.expiryDate.split('/');
     const expiryDate = new Date(2000 + parseInt(year), parseInt(month) - 1);
     const now = new Date();
-    
+
     if (expiryDate < now) {
       throw new Error('Card has expired');
     }
@@ -220,12 +221,12 @@ export class PaymentService {
    */
   private detectCardType(cardNumber: string): string {
     const number = cardNumber.replace(/\s/g, '');
-    
+
     if (/^4/.test(number)) return 'Visa';
     if (/^5[1-5]/.test(number)) return 'Mastercard';
     if (/^3[47]/.test(number)) return 'American Express';
     if (/^6/.test(number)) return 'Discover';
-    
+
     return 'Unknown';
   }
 
@@ -237,9 +238,9 @@ export class PaymentService {
       const buyerInfo = {
         name: `${contactData.firstName} ${contactData.lastName}`,
         email: contactData.email,
-        phone: contactData.phone
+        phone: contactData.phone,
       };
-      
+
       localStorage.setItem(STORAGE_KEYS.BUYER_INFO, JSON.stringify(buyerInfo));
     } catch (error) {
       console.error('[PaymentService] Error storing buyer info:', error);
@@ -255,7 +256,7 @@ export class PaymentService {
       if (eventId) {
         this.cacheInvalidationService.invalidateEvent(String(eventId));
       }
-      
+
       // Note: Add these methods to CacheInvalidationService if needed
       // this.cacheInvalidationService.invalidateUserTickets();
       // this.cacheInvalidationService.invalidateOrders();

@@ -4,12 +4,12 @@
     <span class="barcode block mb-2">FILTER_MANIFEST</span>
     <p class="font-bold">// CATEGORY_SELECTION</p>
   </div>
-  
+
   <!-- Categories -->
   <nav class="space-y-4 mono">
     @for (cat of categories; track cat) {
-      <a 
-        (click)="selectCategory(cat)" 
+      <a
+        (click)="selectCategory(cat)"
         class="block group cursor-pointer"
         [class.text-white]="selectedCategory === cat"
         [class.text-zinc-500]="selectedCategory !== cat"
@@ -18,7 +18,7 @@
         <span class="mr-2" [class.text-primary]="selectedCategory === cat">
           {{ selectedCategory === cat ? '[X]' : '[ ]' }}
         </span>
-        <span 
+        <span
           class="text-2xl font-bold"
           [class.line-through]="selectedCategory === cat"
           [class.group-hover:no-underline]="selectedCategory === cat"
@@ -28,16 +28,18 @@
       </a>
     }
   </nav>
-  
+
   <!-- Additional Filters -->
   <div class="space-y-8 pt-8 border-t border-zinc-800">
     <!-- Price Range -->
     <div class="mono">
-      <p class="text-xs text-primary mb-4 font-bold">PRICE_THROTTLE [0 - {{ (priceMax / 1000).toFixed(0) }}K]</p>
-      <input 
+      <p class="text-xs text-primary mb-4 font-bold">
+        PRICE_THROTTLE [0 - {{ (priceMax / 1000).toFixed(0) }}K]
+      </p>
+      <input
         [(ngModel)]="priceMax"
         (ngModelChange)="applyFilters()"
-        class="w-full h-8 bg-zinc-900 border-2 border-white appearance-none cursor-crosshair accent-primary" 
+        class="w-full h-8 bg-zinc-900 border-2 border-white appearance-none cursor-crosshair accent-primary"
         type="range"
         min="0"
         max="150000"
@@ -48,35 +50,36 @@
         <span>${{ (priceMax / 1000).toFixed(0) }}K+</span>
       </div>
     </div>
-    
+
     <!-- Date Filter -->
     <div class="mono">
       <p class="text-xs text-primary mb-4 font-bold">TEMPORAL_LOC [DD/MM/YY]</p>
-      <input 
+      <input
         [(ngModel)]="dateFrom"
         (ngModelChange)="applyFilters()"
-        class="w-full bg-black border-2 border-zinc-700 p-4 text-sm font-bold focus:border-primary outline-none text-white" 
-        placeholder="00/00/00" 
+        class="w-full bg-black border-2 border-zinc-700 p-4 text-sm font-bold focus:border-primary outline-none text-white"
+        placeholder="00/00/00"
         type="date"
       />
     </div>
-    
+
     <!-- Location Filter -->
     <div class="mono">
       <p class="text-xs text-primary mb-4 font-bold">LOCATION_VECTOR</p>
-      <input 
+      <input
         [(ngModel)]="location"
         (ngModelChange)="applyFilters()"
-        class="w-full bg-black border-2 border-zinc-700 p-4 text-sm font-bold focus:border-primary outline-none text-white placeholder:text-zinc-700" 
-        placeholder="ZONE_QUERY..." 
+        class="w-full bg-black border-2 border-zinc-700 p-4 text-sm font-bold focus:border-primary outline-none text-white placeholder:text-zinc-700"
+        placeholder="ZONE_QUERY..."
         type="text"
       />
     </div>
-    
+
     <!-- Clear Button -->
-    <button 
+    <button
       (click)="clearFilters()"
-      class="w-full bg-zinc-900 border-2 border-zinc-700 hover:bg-primary hover:text-black py-4 mono font-black text-xs transition-all uppercase">
+      class="w-full bg-zinc-900 border-2 border-zinc-700 hover:bg-primary hover:text-black py-4 mono font-black text-xs transition-all uppercase"
+    >
       TERMINATE_FILTERS
     </button>
   </div>

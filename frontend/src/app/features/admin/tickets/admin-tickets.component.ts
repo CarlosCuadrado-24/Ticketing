@@ -203,11 +203,11 @@ export class AdminTicketsComponent implements OnInit {
     if (!this.pagination) return [];
     const current = this.pagination.page;
     const total = this.pagination.totalPages;
-    
+
     // Show max 3 pages
     const maxPages = 3;
     let pages: number[] = [];
-    
+
     if (total <= maxPages) {
       // Show all pages if total is less than max
       for (let i = 1; i <= total; i++) {
@@ -223,8 +223,7 @@ export class AdminTicketsComponent implements OnInit {
         pages = [current - 1, current, current + 1];
       }
     }
-    
+
     return pages;
   }
 }
-

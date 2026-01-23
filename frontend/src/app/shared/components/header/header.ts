@@ -38,7 +38,7 @@ export class Header {
         console.error('[Header] Logout error:', error);
         // Navigate anyway since auth data is cleared
         this.router.navigate(['/']);
-      }
+      },
     });
   }
 }

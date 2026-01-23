@@ -7,10 +7,9 @@ import { STORAGE_KEYS } from '../../config/storage.constants';
  * Extracted from AuthService to follow Single Responsibility Principle
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class TokenService {
-  
   /**
    * Store access token in sessionStorage
    */
@@ -91,7 +90,7 @@ export class TokenService {
     try {
       const payload = this.decodeTokenPayload(token);
       if (!payload.exp) return false;
-      
+
       const currentTime = Math.floor(Date.now() / 1000);
       return payload.exp < currentTime;
     } catch (error) {
@@ -110,7 +109,7 @@ export class TokenService {
       if (parts.length !== 3) {
         throw new Error('Invalid JWT format');
       }
-      
+
       const payload = parts[1];
       const decoded = atob(payload.replace(/-/g, '+').replace(/_/g, '/'));
       return JSON.parse(decoded);
@@ -126,7 +125,7 @@ export class TokenService {
     try {
       const payload = this.decodeTokenPayload(token);
       if (!payload.exp) return null;
-      
+
       return new Date(payload.exp * 1000);
     } catch (error) {
       console.error('[TokenService] Error getting token expiration:', error);
@@ -145,7 +144,7 @@ export class TokenService {
         email: payload.email,
         role: payload.role,
         firstName: payload.firstName,
-        lastName: payload.lastName
+        lastName: payload.lastName,
       };
     } catch (error) {
       console.error('[TokenService] Error extracting user from token:', error);

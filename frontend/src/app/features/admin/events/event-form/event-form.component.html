@@ -1,31 +1,45 @@
 <!-- Grainy Overlay -->
-<div class="fixed top-0 left-0 w-full h-full pointer-events-none z-50 opacity-[0.03]" style="background: url(&quot;data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E&quot;);"></div>
+<div
+  class="fixed top-0 left-0 w-full h-full pointer-events-none z-50 opacity-[0.03]"
+  style="
+    background: url(&quot;data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E&quot;);
+  "
+></div>
 
 <!-- Top Progress Bar -->
 <div class="fixed top-0 left-0 w-full z-50">
   <div class="h-1 bg-primary/20 w-full">
-    <div class="h-full bg-primary transition-all duration-500" [style.width.%]="getProgressPercentage()"></div>
+    <div
+      class="h-full bg-primary transition-all duration-500"
+      [style.width.%]="getProgressPercentage()"
+    ></div>
   </div>
 </div>
 
 <div class="relative flex flex-col min-h-screen bg-gradient-to-br from-[#111111] to-black">
   <!-- Header / Nav Bar -->
-  <header class="sticky top-1 z-40 flex items-center justify-between border-b border-white/10 bg-background-dark/80 backdrop-blur-md px-6 md:px-20 py-4">
+  <header
+    class="sticky top-1 z-40 flex items-center justify-between border-b border-white/10 bg-background-dark/80 backdrop-blur-md px-6 md:px-20 py-4"
+  >
     <div class="flex items-center gap-4">
       <div class="bg-primary p-1">
-        <span class="material-symbols-outlined text-black font-bold text-2xl">{{ isEditing() ? 'edit_note' : 'rocket_launch' }}</span>
+        <span class="material-symbols-outlined text-black font-bold text-2xl">{{
+          isEditing() ? 'edit_note' : 'rocket_launch'
+        }}</span>
       </div>
-      <h1 class="text-xl md:text-2xl font-black uppercase tracking-tighter">{{ isEditing() ? 'Editar Evento' : 'Crear Nuevo Evento' }}</h1>
+      <h1 class="text-xl md:text-2xl font-black uppercase tracking-tighter">
+        {{ isEditing() ? 'Editar Evento' : 'Crear Nuevo Evento' }}
+      </h1>
     </div>
     <div class="flex gap-3">
-      <button 
+      <button
         type="button"
         (click)="onCancel()"
         class="flex items-center justify-center rounded border border-white/20 px-5 py-2 text-sm font-bold uppercase tracking-wider hover:bg-white hover:text-black transition-colors"
       >
         Cancelar
       </button>
-      <button 
+      <button
         type="submit"
         form="eventForm"
         [disabled]="form.invalid || loading()"
@@ -42,18 +56,29 @@
         <!-- STEP 1: Información Básica -->
         <div class="flex flex-col gap-4">
           <div class="flex items-center gap-3">
-            <span class="text-primary font-bold text-sm tracking-[0.2em] uppercase">Paso 01 / 03</span>
+            <span class="text-primary font-bold text-sm tracking-[0.2em] uppercase"
+              >Paso 01 / 03</span
+            >
             <div class="h-px flex-1 bg-white/10"></div>
           </div>
           <div>
-            <h2 class="text-4xl md:text-6xl font-black uppercase leading-none tracking-tighter italic">01. Información Básica</h2>
-            <p class="text-white/50 mt-4 text-lg max-w-xl">Define la identidad visual y los conceptos fundamentales de tu experiencia.</p>
+            <h2
+              class="text-4xl md:text-6xl font-black uppercase leading-none tracking-tighter italic"
+            >
+              01. Información Básica
+            </h2>
+            <p class="text-white/50 mt-4 text-lg max-w-xl">
+              Define la identidad visual y los conceptos fundamentales de tu experiencia.
+            </p>
           </div>
         </div>
 
         <!-- Event Name -->
         <div class="group flex flex-col gap-2">
-          <label for="name" class="text-xs font-bold uppercase tracking-[0.2em] text-white/40 group-focus-within:text-primary transition-colors">
+          <label
+            for="name"
+            class="text-xs font-bold uppercase tracking-[0.2em] text-white/40 group-focus-within:text-primary transition-colors"
+          >
             Nombre del Evento *
           </label>
           <input
@@ -78,7 +103,10 @@
 
         <!-- Description -->
         <div class="group flex flex-col gap-2">
-          <label for="description" class="text-xs font-bold uppercase tracking-[0.2em] text-white/40 group-focus-within:text-primary transition-colors">
+          <label
+            for="description"
+            class="text-xs font-bold uppercase tracking-[0.2em] text-white/40 group-focus-within:text-primary transition-colors"
+          >
             Descripción Corta *
           </label>
           <textarea
@@ -86,7 +114,9 @@
             formControlName="description"
             placeholder="Resume la esencia del evento para captar la atención..."
             class="w-full bg-white/5 border border-white/10 p-5 min-h-[120px] text-lg placeholder:text-white/20 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all rounded"
-            [class.border-red-500]="form.get('description')?.invalid && form.get('description')?.touched"
+            [class.border-red-500]="
+              form.get('description')?.invalid && form.get('description')?.touched
+            "
           ></textarea>
           <div class="text-right text-[10px] text-white/30 uppercase tracking-widest">
             {{ form.get('description')?.value?.length || 0 }} caracteres
@@ -101,7 +131,10 @@
         <!-- Date & Category Row -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div class="group flex flex-col gap-2">
-            <label for="date" class="text-xs font-bold uppercase tracking-[0.2em] text-white/40 group-focus-within:text-primary transition-colors">
+            <label
+              for="date"
+              class="text-xs font-bold uppercase tracking-[0.2em] text-white/40 group-focus-within:text-primary transition-colors"
+            >
               Fecha y Hora *
             </label>
             <input
@@ -119,12 +152,16 @@
           </div>
 
           <div class="flex flex-col gap-2">
-            <label class="text-xs font-bold uppercase tracking-[0.2em] text-white/40">Categoría del Evento *</label>
+            <label class="text-xs font-bold uppercase tracking-[0.2em] text-white/40"
+              >Categoría del Evento *</label
+            >
             <select
               id="category"
               formControlName="category"
               class="w-full bg-white/5 border border-white/10 p-4 text-white focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all rounded"
-              [class.border-red-500]="form.get('category')?.invalid && form.get('category')?.touched"
+              [class.border-red-500]="
+                form.get('category')?.invalid && form.get('category')?.touched
+              "
             >
               <option value="" class="bg-black">Selecciona una categoría</option>
               @for (cat of categories; track cat) {
@@ -142,19 +179,30 @@
         <!-- STEP 2: Ubicación -->
         <div class="flex flex-col gap-4 pt-8 border-t border-white/10">
           <div class="flex items-center gap-3">
-            <span class="text-primary font-bold text-sm tracking-[0.2em] uppercase">Paso 02 / 03</span>
+            <span class="text-primary font-bold text-sm tracking-[0.2em] uppercase"
+              >Paso 02 / 03</span
+            >
             <div class="h-px flex-1 bg-white/10"></div>
           </div>
           <div>
-            <h2 class="text-4xl md:text-6xl font-black uppercase leading-none tracking-tighter italic">02. Ubicación</h2>
-            <p class="text-white/50 mt-4 text-lg max-w-xl">Especifica dónde se realizará el evento.</p>
+            <h2
+              class="text-4xl md:text-6xl font-black uppercase leading-none tracking-tighter italic"
+            >
+              02. Ubicación
+            </h2>
+            <p class="text-white/50 mt-4 text-lg max-w-xl">
+              Especifica dónde se realizará el evento.
+            </p>
           </div>
         </div>
 
         <!-- Location & Venue Row -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div class="group flex flex-col gap-2">
-            <label for="location" class="text-xs font-bold uppercase tracking-[0.2em] text-white/40 group-focus-within:text-primary transition-colors">
+            <label
+              for="location"
+              class="text-xs font-bold uppercase tracking-[0.2em] text-white/40 group-focus-within:text-primary transition-colors"
+            >
               Dirección *
             </label>
             <input
@@ -163,7 +211,9 @@
               formControlName="location"
               placeholder="Ej: Cra. 5 #6-64"
               class="w-full bg-white/5 border border-white/10 p-4 text-white placeholder:text-white/20 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all rounded"
-              [class.border-red-500]="form.get('location')?.invalid && form.get('location')?.touched"
+              [class.border-red-500]="
+                form.get('location')?.invalid && form.get('location')?.touched
+              "
             />
             @if (form.get('location')?.invalid && form.get('location')?.touched) {
               <div class="text-red-400 text-xs uppercase tracking-widest mt-1">
@@ -173,7 +223,10 @@
           </div>
 
           <div class="group flex flex-col gap-2">
-            <label for="venueName" class="text-xs font-bold uppercase tracking-[0.2em] text-white/40 group-focus-within:text-primary transition-colors">
+            <label
+              for="venueName"
+              class="text-xs font-bold uppercase tracking-[0.2em] text-white/40 group-focus-within:text-primary transition-colors"
+            >
               Nombre del Lugar *
             </label>
             <input
@@ -182,7 +235,9 @@
               formControlName="venueName"
               placeholder="Ej: Teatro Principal"
               class="w-full bg-white/5 border border-white/10 p-4 text-white placeholder:text-white/20 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all rounded"
-              [class.border-red-500]="form.get('venueName')?.invalid && form.get('venueName')?.touched"
+              [class.border-red-500]="
+                form.get('venueName')?.invalid && form.get('venueName')?.touched
+              "
             />
             @if (form.get('venueName')?.invalid && form.get('venueName')?.touched) {
               <div class="text-red-400 text-xs uppercase tracking-widest mt-1">
@@ -194,19 +249,28 @@
 
         <!-- Image Upload Section -->
         <div class="flex flex-col gap-4">
-          <label class="text-xs font-bold uppercase tracking-[0.2em] text-white/40">Imagen de Portada (Poster)</label>
+          <label class="text-xs font-bold uppercase tracking-[0.2em] text-white/40"
+            >Imagen de Portada (Poster)</label
+          >
           <div class="relative group">
             @if (!imagePreview()) {
               <label for="image" class="cursor-pointer">
-                <div class="border-2 border-dashed border-white/10 group-hover:border-primary/50 group-hover:bg-primary/5 min-h-[300px] flex flex-col items-center justify-center gap-4 rounded transition-all">
-                  <div class="w-16 h-16 rounded-full border border-white/10 flex items-center justify-center group-hover:border-primary group-hover:text-primary transition-all">
+                <div
+                  class="border-2 border-dashed border-white/10 group-hover:border-primary/50 group-hover:bg-primary/5 min-h-[300px] flex flex-col items-center justify-center gap-4 rounded transition-all"
+                >
+                  <div
+                    class="w-16 h-16 rounded-full border border-white/10 flex items-center justify-center group-hover:border-primary group-hover:text-primary transition-all"
+                  >
                     <span class="material-symbols-outlined text-3xl">add_photo_alternate</span>
                   </div>
                   <div class="text-center">
                     <p class="font-bold uppercase tracking-widest text-sm">Arrastra tu arte aquí</p>
                     <p class="text-white/40 text-xs mt-1">Recomendado: 1920x1080px (Máx 5MB)</p>
                   </div>
-                  <button type="button" class="mt-2 px-6 py-2 bg-white text-black text-[10px] font-black uppercase tracking-[0.2em] rounded">
+                  <button
+                    type="button"
+                    class="mt-2 px-6 py-2 bg-white text-black text-[10px] font-black uppercase tracking-[0.2em] rounded"
+                  >
                     Explorar Archivos
                   </button>
                 </div>
@@ -236,12 +300,20 @@
         <!-- STEP 3: Tickets -->
         <div class="flex flex-col gap-4 pt-8 border-t border-white/10">
           <div class="flex items-center gap-3">
-            <span class="text-primary font-bold text-sm tracking-[0.2em] uppercase">Paso 03 / 03</span>
+            <span class="text-primary font-bold text-sm tracking-[0.2em] uppercase"
+              >Paso 03 / 03</span
+            >
             <div class="h-px flex-1 bg-white/10"></div>
           </div>
           <div>
-            <h2 class="text-4xl md:text-6xl font-black uppercase leading-none tracking-tighter italic">03. Configuración de Tickets</h2>
-            <p class="text-white/50 mt-4 text-lg max-w-xl">Define los tipos de entrada y precios.</p>
+            <h2
+              class="text-4xl md:text-6xl font-black uppercase leading-none tracking-tighter italic"
+            >
+              03. Configuración de Tickets
+            </h2>
+            <p class="text-white/50 mt-4 text-lg max-w-xl">
+              Define los tipos de entrada y precios.
+            </p>
           </div>
         </div>
 
@@ -249,16 +321,23 @@
           <!-- GENERAL Ticket -->
           <div formGroupName="general" class="bg-white/5 border border-white/10 p-6 rounded-lg">
             <div class="flex items-center gap-3 mb-4">
-              <span class="material-symbols-outlined text-primary text-2xl">confirmation_number</span>
+              <span class="material-symbols-outlined text-primary text-2xl"
+                >confirmation_number</span
+              >
               <h3 class="text-xl font-black uppercase tracking-tight">Entrada General *</h3>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="group flex flex-col gap-2">
-                <label for="generalPrice" class="text-xs font-bold uppercase tracking-[0.2em] text-white/40 group-focus-within:text-primary transition-colors">
+                <label
+                  for="generalPrice"
+                  class="text-xs font-bold uppercase tracking-[0.2em] text-white/40 group-focus-within:text-primary transition-colors"
+                >
                   Precio (COP) *
                 </label>
                 <div class="relative">
-                  <span class="absolute left-4 top-1/2 -translate-y-1/2 text-white/50 font-bold">$</span>
+                  <span class="absolute left-4 top-1/2 -translate-y-1/2 text-white/50 font-bold"
+                    >$</span
+                  >
                   <input
                     id="generalPrice"
                     type="number"
@@ -266,10 +345,14 @@
                     placeholder="0"
                     step="1"
                     class="w-full bg-black border border-white/10 pl-8 pr-4 py-3 text-white font-bold placeholder:text-white/10 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all rounded"
-                    [class.border-red-500]="generalTickets?.get('price')?.invalid && generalTickets?.get('price')?.touched"
+                    [class.border-red-500]="
+                      generalTickets?.get('price')?.invalid && generalTickets?.get('price')?.touched
+                    "
                   />
                 </div>
-                @if (generalTickets?.get('price')?.invalid && generalTickets?.get('price')?.touched) {
+                @if (
+                  generalTickets?.get('price')?.invalid && generalTickets?.get('price')?.touched
+                ) {
                   <div class="text-red-400 text-xs uppercase tracking-widest mt-1">
                     @if (generalTickets?.get('price')?.getError('required')) {
                       <span>El precio es requerido</span>
@@ -282,7 +365,10 @@
               </div>
 
               <div class="group flex flex-col gap-2">
-                <label for="generalQty" class="text-xs font-bold uppercase tracking-[0.2em] text-white/40 group-focus-within:text-primary transition-colors">
+                <label
+                  for="generalQty"
+                  class="text-xs font-bold uppercase tracking-[0.2em] text-white/40 group-focus-within:text-primary transition-colors"
+                >
                   Cantidad Disponible *
                 </label>
                 <input
@@ -291,9 +377,15 @@
                   formControlName="quantity"
                   placeholder="0"
                   class="w-full bg-black border border-white/10 px-4 py-3 text-white font-bold placeholder:text-white/10 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all rounded"
-                  [class.border-red-500]="generalTickets?.get('quantity')?.invalid && generalTickets?.get('quantity')?.touched"
+                  [class.border-red-500]="
+                    generalTickets?.get('quantity')?.invalid &&
+                    generalTickets?.get('quantity')?.touched
+                  "
                 />
-                @if (generalTickets?.get('quantity')?.invalid && generalTickets?.get('quantity')?.touched) {
+                @if (
+                  generalTickets?.get('quantity')?.invalid &&
+                  generalTickets?.get('quantity')?.touched
+                ) {
                   <div class="text-red-400 text-xs uppercase tracking-widest mt-1">
                     @if (generalTickets?.get('quantity')?.getError('required')) {
                       <span>La cantidad es requerida</span>
@@ -308,7 +400,10 @@
           </div>
 
           <!-- VIP Ticket -->
-          <div formGroupName="vip" class="bg-gradient-to-br from-primary/10 to-transparent border border-primary/30 p-6 rounded-lg">
+          <div
+            formGroupName="vip"
+            class="bg-gradient-to-br from-primary/10 to-transparent border border-primary/30 p-6 rounded-lg"
+          >
             <div class="flex items-center gap-3 mb-2">
               <span class="material-symbols-outlined text-primary text-2xl">stars</span>
               <h3 class="text-xl font-black uppercase tracking-tight">Entrada VIP</h3>
@@ -317,11 +412,16 @@
             <p class="text-white/50 text-sm mb-4">Deja vacío si no deseas ofrecer entradas VIP</p>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="group flex flex-col gap-2">
-                <label for="vipPrice" class="text-xs font-bold uppercase tracking-[0.2em] text-white/40 group-focus-within:text-primary transition-colors">
+                <label
+                  for="vipPrice"
+                  class="text-xs font-bold uppercase tracking-[0.2em] text-white/40 group-focus-within:text-primary transition-colors"
+                >
                   Precio (COP)
                 </label>
                 <div class="relative">
-                  <span class="absolute left-4 top-1/2 -translate-y-1/2 text-white/50 font-bold">$</span>
+                  <span class="absolute left-4 top-1/2 -translate-y-1/2 text-white/50 font-bold"
+                    >$</span
+                  >
                   <input
                     id="vipPrice"
                     type="number"
@@ -334,7 +434,10 @@
               </div>
 
               <div class="group flex flex-col gap-2">
-                <label for="vipQty" class="text-xs font-bold uppercase tracking-[0.2em] text-white/40 group-focus-within:text-primary transition-colors">
+                <label
+                  for="vipQty"
+                  class="text-xs font-bold uppercase tracking-[0.2em] text-white/40 group-focus-within:text-primary transition-colors"
+                >
                   Cantidad Disponible
                 </label>
                 <input
@@ -349,7 +452,10 @@
           </div>
 
           <!-- EARLY BIRD Ticket -->
-          <div formGroupName="early_bird" class="bg-gradient-to-br from-orange-500/10 to-transparent border border-orange-500/30 p-6 rounded-lg">
+          <div
+            formGroupName="early_bird"
+            class="bg-gradient-to-br from-orange-500/10 to-transparent border border-orange-500/30 p-6 rounded-lg"
+          >
             <div class="flex items-center gap-3 mb-2">
               <span class="material-symbols-outlined text-orange-500 text-2xl">schedule</span>
               <h3 class="text-xl font-black uppercase tracking-tight">Entrada Early Bird</h3>
@@ -358,11 +464,16 @@
             <p class="text-white/50 text-sm mb-4">Precio especial para compras anticipadas</p>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="group flex flex-col gap-2">
-                <label for="earlyBirdPrice" class="text-xs font-bold uppercase tracking-[0.2em] text-white/40 group-focus-within:text-orange-500 transition-colors">
+                <label
+                  for="earlyBirdPrice"
+                  class="text-xs font-bold uppercase tracking-[0.2em] text-white/40 group-focus-within:text-orange-500 transition-colors"
+                >
                   Precio (COP)
                 </label>
                 <div class="relative">
-                  <span class="absolute left-4 top-1/2 -translate-y-1/2 text-white/50 font-bold">$</span>
+                  <span class="absolute left-4 top-1/2 -translate-y-1/2 text-white/50 font-bold"
+                    >$</span
+                  >
                   <input
                     id="earlyBirdPrice"
                     type="number"
@@ -375,7 +486,10 @@
               </div>
 
               <div class="group flex flex-col gap-2">
-                <label for="earlyBirdQty" class="text-xs font-bold uppercase tracking-[0.2em] text-white/40 group-focus-within:text-orange-500 transition-colors">
+                <label
+                  for="earlyBirdQty"
+                  class="text-xs font-bold uppercase tracking-[0.2em] text-white/40 group-focus-within:text-orange-500 transition-colors"
+                >
                   Cantidad Disponible
                 </label>
                 <input
@@ -400,7 +514,9 @@
             <span class="text-black font-black text-xl uppercase tracking-tighter">
               {{ loading() ? 'Guardando...' : isEditing() ? 'Actualizar Evento' : 'Crear Evento' }}
             </span>
-            <span class="material-symbols-outlined text-black font-bold group-hover:translate-x-1 transition-transform">
+            <span
+              class="material-symbols-outlined text-black font-bold group-hover:translate-x-1 transition-transform"
+            >
               {{ loading() ? 'hourglass_empty' : 'arrow_forward' }}
             </span>
           </button>

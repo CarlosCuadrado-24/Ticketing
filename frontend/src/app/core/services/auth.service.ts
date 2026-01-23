@@ -92,11 +92,11 @@ export class AuthService {
    */
   getDefaultRouteForUser(user: User): string {
     const roleRoutes: Record<string, string> = {
-      'ADMIN': '/admin/dashboard',
-      'ORGANIZER': '/admin/events',
-      'BUYER': '/'
+      ADMIN: '/admin/dashboard',
+      ORGANIZER: '/admin/events',
+      BUYER: '/',
     };
-    
+
     return roleRoutes[user.role] || '/';
   }
 
@@ -105,11 +105,11 @@ export class AuthService {
    */
   login(credentials: LoginRequest): Observable<AuthResponse> {
     this._isLoading.set(true);
-    
+
     return this.csrfService.getToken().pipe(
-      switchMap(csrfToken => this.performLogin(credentials, csrfToken)),
-      tap(response => this.handleSuccessfulAuth(response)),
-      catchError(error => this.handleAuthError(error, 'login'))
+      switchMap((csrfToken) => this.performLogin(credentials, csrfToken)),
+      tap((response) => this.handleSuccessfulAuth(response)),
+      catchError((error) => this.handleAuthError(error, 'login')),
     );
   }
 
@@ -118,11 +118,11 @@ export class AuthService {
    */
   register(userData: RegisterRequest): Observable<AuthResponse> {
     this._isLoading.set(true);
-    
+
     return this.csrfService.getToken().pipe(
-      switchMap(csrfToken => this.performRegistration(userData, csrfToken)),
-      tap(response => this.handleSuccessfulAuth(response)),
-      catchError(error => this.handleAuthError(error, 'register'))
+      switchMap((csrfToken) => this.performRegistration(userData, csrfToken)),
+      tap((response) => this.handleSuccessfulAuth(response)),
+      catchError((error) => this.handleAuthError(error, 'register')),
     );
   }
 
@@ -131,18 +131,18 @@ export class AuthService {
    */
   logout(): Observable<void> {
     this._isLoading.set(true);
-    
+
     return this.http.post<void>(`${environment.apiUrl}${API_ENDPOINTS.AUTH.LOGOUT}`, {}).pipe(
       tap(() => this.clearAuthData()),
-      catchError(error => {
+      catchError((error) => {
         // Clear auth data even if logout request fails
         this.clearAuthData();
         console.error('[AuthService] Logout error:', error);
-        return new Observable<void>(observer => {
+        return new Observable<void>((observer) => {
           observer.next();
           observer.complete();
         });
-      })
+      }),
     );
   }
 
@@ -160,21 +160,23 @@ export class AuthService {
    */
   refreshToken(): Observable<AuthResponse> {
     const refreshToken = this.tokenService.getRefreshToken();
-    
+
     if (!refreshToken) {
       this.clearAuthData();
       throw new Error('No refresh token available');
     }
 
-    return this.http.post<AuthResponse>(`${environment.apiUrl}${API_ENDPOINTS.AUTH.REFRESH}`, {
-      refreshToken
-    }).pipe(
-      tap(response => this.handleSuccessfulAuth(response)),
-      catchError(error => {
-        this.clearAuthData();
-        throw error;
+    return this.http
+      .post<AuthResponse>(`${environment.apiUrl}${API_ENDPOINTS.AUTH.REFRESH}`, {
+        refreshToken,
       })
-    );
+      .pipe(
+        tap((response) => this.handleSuccessfulAuth(response)),
+        catchError((error) => {
+          this.clearAuthData();
+          throw error;
+        }),
+      );
   }
 
   /**
@@ -182,9 +184,9 @@ export class AuthService {
    */
   ensureValidToken(): Observable<boolean> {
     const accessToken = this.tokenService.getAccessToken();
-    
+
     if (!accessToken) {
-      return new Observable(observer => {
+      return new Observable((observer) => {
         observer.next(false);
         observer.complete();
       });
@@ -196,11 +198,11 @@ export class AuthService {
         catchError(() => {
           this.clearAuthData();
           return [false];
-        })
+        }),
       );
     }
 
-    return new Observable(observer => {
+    return new Observable((observer) => {
       observer.next(true);
       observer.complete();
     });
@@ -217,18 +219,29 @@ export class AuthService {
    * Perform login HTTP request
    */
   private performLogin(credentials: LoginRequest, csrfToken: string): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${environment.apiUrl}${API_ENDPOINTS.AUTH.LOGIN}`, credentials, {
-      headers: { 'X-CSRF-Token': csrfToken }
-    });
+    return this.http.post<AuthResponse>(
+      `${environment.apiUrl}${API_ENDPOINTS.AUTH.LOGIN}`,
+      credentials,
+      {
+        headers: { 'X-CSRF-Token': csrfToken },
+      },
+    );
   }
 
   /**
    * Perform registration HTTP request
    */
-  private performRegistration(userData: RegisterRequest, csrfToken: string): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${environment.apiUrl}${API_ENDPOINTS.AUTH.REGISTER}`, userData, {
-      headers: { 'X-CSRF-Token': csrfToken }
-    });
+  private performRegistration(
+    userData: RegisterRequest,
+    csrfToken: string,
+  ): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(
+      `${environment.apiUrl}${API_ENDPOINTS.AUTH.REGISTER}`,
+      userData,
+      {
+        headers: { 'X-CSRF-Token': csrfToken },
+      },
+    );
   }
 
   /**
@@ -237,14 +250,14 @@ export class AuthService {
   private handleSuccessfulAuth(response: AuthResponse): void {
     this._currentUser.set(response.user);
     this.tokenService.setAccessToken(response.accessToken);
-    
+
     if (response.refreshToken) {
       this.tokenService.setRefreshToken(response.refreshToken);
     }
-    
+
     this.saveUserToStorage(response.user);
     this._isLoading.set(false);
-    
+
     console.log('[AuthService] Authentication successful for user:', response.user.email);
   }
 
@@ -254,9 +267,9 @@ export class AuthService {
   private handleAuthError(error: any, operation: string): Observable<never> {
     this._isLoading.set(false);
     console.error(`[AuthService] ${operation} error:`, error);
-    
+
     let errorMessage = 'Authentication failed';
-    
+
     if (error?.error?.message) {
       errorMessage = error.error.message;
     } else if (error?.status === 401) {
@@ -264,7 +277,7 @@ export class AuthService {
     } else if (error?.status === 429) {
       errorMessage = 'Too many attempts. Please try again later';
     }
-    
+
     throw new Error(errorMessage);
   }
 
@@ -287,7 +300,7 @@ export class AuthService {
     this._isLoading.set(false);
     this.tokenService.clearTokens();
     this.csrfService.clearCache();
-    
+
     try {
       localStorage.removeItem(STORAGE_KEYS.USER);
     } catch (error) {

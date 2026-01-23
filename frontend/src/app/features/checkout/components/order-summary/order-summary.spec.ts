@@ -39,7 +39,7 @@ describe('OrderSummary', () => {
   it('should display cart items', async () => {
     fixture.detectChanges();
     await fixture.whenStable();
-    
+
     const compiled = fixture.nativeElement;
     const items = compiled.querySelectorAll('.cart-item');
 

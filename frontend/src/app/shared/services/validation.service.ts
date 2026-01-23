@@ -18,10 +18,9 @@ export interface FileValidationResult extends ValidationResult {
  * Implements Strategy pattern for different validation types
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ValidationService {
-
   /**
    * Validate email address
    */
@@ -36,7 +35,7 @@ export class ValidationService {
 
     return {
       isValid: errors.length === 0,
-      errors
+      errors,
     };
   }
 
@@ -50,25 +49,27 @@ export class ValidationService {
       errors.push('Password is required');
     } else {
       if (password.length < BUSINESS_RULES.MIN_PASSWORD_LENGTH) {
-        errors.push(`Password must be at least ${BUSINESS_RULES.MIN_PASSWORD_LENGTH} characters long`);
+        errors.push(
+          `Password must be at least ${BUSINESS_RULES.MIN_PASSWORD_LENGTH} characters long`,
+        );
       }
-      
+
       if (password.length > BUSINESS_RULES.MAX_PASSWORD_LENGTH) {
         errors.push(`Password must not exceed ${BUSINESS_RULES.MAX_PASSWORD_LENGTH} characters`);
       }
-      
+
       if (!/(?=.*[a-z])/.test(password)) {
         errors.push('Password must contain at least one lowercase letter');
       }
-      
+
       if (!/(?=.*[A-Z])/.test(password)) {
         errors.push('Password must contain at least one uppercase letter');
       }
-      
+
       if (!/(?=.*\d)/.test(password)) {
         errors.push('Password must contain at least one number');
       }
-      
+
       if (!/(?=.*[@$!%*?&])/.test(password)) {
         errors.push('Password must contain at least one special character (@$!%*?&)');
       }
@@ -76,7 +77,7 @@ export class ValidationService {
 
     return {
       isValid: errors.length === 0,
-      errors
+      errors,
     };
   }
 
@@ -91,7 +92,7 @@ export class ValidationService {
     } else {
       // Remove all non-digit characters for validation
       const digitsOnly = phone.replace(/\D/g, '');
-      
+
       if (digitsOnly.length < 10) {
         errors.push('Phone number must be at least 10 digits');
       } else if (digitsOnly.length > 15) {
@@ -101,7 +102,7 @@ export class ValidationService {
 
     return {
       isValid: errors.length === 0,
-      errors
+      errors,
     };
   }
 
@@ -115,7 +116,7 @@ export class ValidationService {
       errors.push(`${fieldName} is required`);
     } else {
       const trimmed = name.trim();
-      
+
       if (trimmed.length < 1) {
         errors.push(`${fieldName} cannot be empty`);
       } else if (trimmed.length > 50) {
@@ -127,7 +128,7 @@ export class ValidationService {
 
     return {
       isValid: errors.length === 0,
-      errors
+      errors,
     };
   }
 
@@ -141,7 +142,7 @@ export class ValidationService {
       errors.push('Card number is required');
     } else {
       const digitsOnly = cardNumber.replace(/\s/g, '');
-      
+
       if (!/^\d+$/.test(digitsOnly)) {
         errors.push('Card number can only contain digits');
       } else if (digitsOnly.length < 13 || digitsOnly.length > 19) {
@@ -153,7 +154,7 @@ export class ValidationService {
 
     return {
       isValid: errors.length === 0,
-      errors
+      errors,
     };
   }
 
@@ -171,14 +172,14 @@ export class ValidationService {
       const [month, year] = expiryDate.split('/');
       const monthNum = parseInt(month, 10);
       const yearNum = parseInt(year, 10);
-      
+
       if (monthNum < 1 || monthNum > 12) {
         errors.push('Invalid month');
       } else {
         const currentDate = new Date();
         const currentYear = currentDate.getFullYear() % 100;
         const currentMonth = currentDate.getMonth() + 1;
-        
+
         if (yearNum < currentYear || (yearNum === currentYear && monthNum < currentMonth)) {
           errors.push('Card has expired');
         }
@@ -187,7 +188,7 @@ export class ValidationService {
 
     return {
       isValid: errors.length === 0,
-      errors
+      errors,
     };
   }
 
@@ -205,7 +206,7 @@ export class ValidationService {
 
     return {
       isValid: errors.length === 0,
-      errors
+      errors,
     };
   }
 
@@ -223,8 +224,8 @@ export class ValidationService {
       if (file.size > maxSize) {
         errors.push(`File size must not exceed ${maxSizeMB || BUSINESS_RULES.MAX_FILE_SIZE_MB}MB`);
       }
-      
-      if (!allowed.some(type => type === file.type)) {
+
+      if (!allowed.some((type) => type === file.type)) {
         errors.push(`File type not allowed. Allowed types: ${allowed.join(', ')}`);
       }
     }
@@ -234,7 +235,7 @@ export class ValidationService {
       errors,
       file,
       size: file?.size,
-      type: file?.type
+      type: file?.type,
     };
   }
 
@@ -255,7 +256,7 @@ export class ValidationService {
 
     return {
       isValid: errors.length === 0,
-      errors
+      errors,
     };
   }
 
@@ -266,12 +267,14 @@ export class ValidationService {
     const errors: string[] = [];
 
     if (query && query.trim().length < BUSINESS_RULES.MIN_SEARCH_QUERY_LENGTH) {
-      errors.push(`Search query must be at least ${BUSINESS_RULES.MIN_SEARCH_QUERY_LENGTH} characters`);
+      errors.push(
+        `Search query must be at least ${BUSINESS_RULES.MIN_SEARCH_QUERY_LENGTH} characters`,
+      );
     }
 
     return {
       isValid: errors.length === 0,
-      errors
+      errors,
     };
   }
 
@@ -286,7 +289,7 @@ export class ValidationService {
     } else {
       const eventDate = new Date(date);
       const now = new Date();
-      
+
       if (isNaN(eventDate.getTime())) {
         errors.push('Invalid date format');
       } else if (eventDate < now) {
@@ -296,7 +299,7 @@ export class ValidationService {
 
     return {
       isValid: errors.length === 0,
-      errors
+      errors,
     };
   }
 
@@ -316,7 +319,7 @@ export class ValidationService {
 
     return {
       isValid: errors.length === 0,
-      errors
+      errors,
     };
   }
 
@@ -349,13 +352,13 @@ export class ValidationService {
    */
   formatPhoneNumber(phone: string): string {
     const digitsOnly = phone.replace(/\D/g, '');
-    
+
     if (digitsOnly.length === 10) {
       return `(${digitsOnly.slice(0, 3)}) ${digitsOnly.slice(3, 6)}-${digitsOnly.slice(6)}`;
     } else if (digitsOnly.length === 11 && digitsOnly.startsWith('1')) {
       return `+1 (${digitsOnly.slice(1, 4)}) ${digitsOnly.slice(4, 7)}-${digitsOnly.slice(7)}`;
     }
-    
+
     return phone;
   }
 
@@ -384,7 +387,7 @@ export class ValidationService {
 
     return {
       isValid,
-      errors: allErrors
+      errors: allErrors,
     };
   }
 }

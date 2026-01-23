@@ -7,32 +7,44 @@
     <!-- HERO SECTION -->
     <section class="grid grid-cols-1 lg:grid-cols-12 min-h-screen border-b-8 border-white relative">
       <!-- Sidebar rotated text -->
-      <div class="lg:col-span-1 border-r-8 border-white flex flex-col items-center justify-center p-4">
-        <span class="rotated-text font-mono text-[10px] tracking-[0.5em] uppercase opacity-50">SCROLL_DOWN_TO_DECAY</span>
+      <div
+        class="lg:col-span-1 border-r-8 border-white flex flex-col items-center justify-center p-4"
+      >
+        <span class="rotated-text font-mono text-[10px] tracking-[0.5em] uppercase opacity-50"
+          >SCROLL_DOWN_TO_DECAY</span
+        >
         <div class="mt-10 font-mono text-xl text-white">↓</div>
       </div>
 
       <!-- Hero Image with overlay -->
       <div class="lg:col-span-7 relative overflow-hidden group">
-        <img [src]="getEventImage()" 
-             [alt]="event()!.name"
-             class="w-full h-full object-cover halftone-xerox scale-105"/>
+        <img
+          [src]="getEventImage()"
+          [alt]="event()!.name"
+          class="w-full h-full object-cover halftone-xerox scale-105"
+        />
         <div class="absolute inset-0 bg-primary/10 mix-blend-overlay"></div>
-        
+
         <!-- Event Title Overlay -->
-        <div class="absolute inset-0 flex flex-col justify-end p-8 md:p-12 z-10 pointer-events-none">
+        <div
+          class="absolute inset-0 flex flex-col justify-end p-8 md:p-12 z-10 pointer-events-none"
+        >
           <div class="sticker-tape mb-8 scale-150 origin-left">
-            {{ event()!.eventDetails?.[0]?.category || 'FEATURED EVENT' }} // {{ event()!.date.substring(0, 4) }}
+            {{ event()!.eventDetails?.[0]?.category || 'FEATURED EVENT' }} //
+            {{ event()!.date.substring(0, 4) }}
           </div>
           <h1 class="anti-design-title break-all text-white">
-            <span class="text-primary">{{ event()!.name.split(' ')[0] || 'EVENT' }}</span><br/>
+            <span class="text-primary">{{ event()!.name.split(' ')[0] || 'EVENT' }}</span
+            ><br />
             {{ event()!.name.substring(event()!.name.indexOf(' ') + 1) || 'EXPERIENCE' }}
           </h1>
         </div>
       </div>
 
       <!-- Event Quick Info Sidebar -->
-      <div class="lg:col-span-4 border-l-8 border-white bg-black p-8 md:p-16 flex flex-col justify-between">
+      <div
+        class="lg:col-span-4 border-l-8 border-white bg-black p-8 md:p-16 flex flex-col justify-between"
+      >
         <div class="space-y-12">
           <!-- Date/Time Box -->
           <div class="border-8 border-white p-6 -ml-16 bg-black relative z-20">
@@ -48,7 +60,7 @@
               <div>
                 <p class="technical-mono mb-1">GEO_LOCATOR</p>
                 <p class="font-serif text-3xl font-bold italic uppercase">
-                  {{ event()!.venueName || 'VENUE' }}<br/>{{ event()!.location }}
+                  {{ event()!.venueName || 'VENUE' }}<br />{{ event()!.location }}
                 </p>
               </div>
             </div>
@@ -60,7 +72,9 @@
               <span class="font-mono text-primary text-4xl font-black">#02</span>
               <div>
                 <p class="technical-mono mb-1">SONIC_TAG</p>
-                <p class="font-serif text-3xl italic">{{ event()!.eventDetails?.[0]?.category || 'GENERAL' }}</p>
+                <p class="font-serif text-3xl italic">
+                  {{ event()!.eventDetails?.[0]?.category || 'GENERAL' }}
+                </p>
               </div>
             </div>
           </div>
@@ -81,13 +95,19 @@
       <div class="lg:col-span-7 p-8 md:p-16 border-r-8 border-white space-y-32">
         <!-- Organizer Info -->
         <div class="relative">
-          <div class="absolute -top-10 -left-10 text-[200px] font-brutal text-white/5 pointer-events-none select-none">INFO</div>
+          <div
+            class="absolute -top-10 -left-10 text-[200px] font-brutal text-white/5 pointer-events-none select-none"
+          >
+            INFO
+          </div>
           <div class="border-8 border-white p-12 bg-black relative z-10">
             <div class="flex flex-col md:flex-row gap-10 items-start">
               <div class="w-48 h-48 border-8 border-white overflow-hidden flex-shrink-0">
-                <img alt="Organizer"
-                     class="w-full h-full object-cover halftone-xerox"
-                     src="https://lh3.googleusercontent.com/aida-public/AB6AXuCsa7lWmASC0zIyGYfmumyEuDxkLrzVosdDLmZWUqZmO8yKMxYWIOBIXVa4i3lkhZJGZaMWkqmjDW67A9l83nwBBA4T--5Hc29VC8hWNw5RLizjIC3e3GFq5QT48SP75xQcegvgSDb8EkZExPcEmHCmgMw8T3evDxDs_EjgXPkzj4sEuczRpEwexLpy4HFKF113AyO-GbBWsAE2tcyIsAvBhsPlT0ZHkF0HzTKdOlaoADKyzRYRhGnxXW3u82JuucDiJ3ul6irTxwMv"/>
+                <img
+                  alt="Organizer"
+                  class="w-full h-full object-cover halftone-xerox"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuCsa7lWmASC0zIyGYfmumyEuDxkLrzVosdDLmZWUqZmO8yKMxYWIOBIXVa4i3lkhZJGZaMWkqmjDW67A9l83nwBBA4T--5Hc29VC8hWNw5RLizjIC3e3GFq5QT48SP75xQcegvgSDb8EkZExPcEmHCmgMw8T3evDxDs_EjgXPkzj4sEuczRpEwexLpy4HFKF113AyO-GbBWsAE2tcyIsAvBhsPlT0ZHkF0HzTKdOlaoADKyzRYRhGnxXW3u82JuucDiJ3ul6irTxwMv"
+                />
               </div>
               <div class="space-y-6">
                 <div class="sticker-tape">VERIFIED HOST</div>
@@ -106,14 +126,22 @@
 
         <!-- Description -->
         <div class="max-w-3xl space-y-12">
-          <h2 class="font-brutal text-7xl tracking-tighter border-b-8 border-white pb-4 inline-block">THE_CORE</h2>
+          <h2
+            class="font-brutal text-7xl tracking-tighter border-b-8 border-white pb-4 inline-block"
+          >
+            THE_CORE
+          </h2>
           <div class="font-serif text-3xl leading-[1.1] text-white space-y-12 italic">
             <p>
-              <span class="bg-white text-black not-italic px-2">EXPERIENCIA ÚNICA.</span> {{ event()!.description || 'Un evento inolvidable que transformará tu percepción del entretenimiento.' }}
+              <span class="bg-white text-black not-italic px-2">EXPERIENCIA ÚNICA.</span>
+              {{
+                event()!.description ||
+                  'Un evento inolvidable que transformará tu percepción del entretenimiento.'
+              }}
             </p>
             @if (event()?.eventDetails?.[0]) {
               <p class="font-industrial text-base not-italic opacity-60 leading-relaxed uppercase">
-                TECHNICAL SPECS:<br/>
+                TECHNICAL SPECS:<br />
                 @if (event()!.eventDetails![0].capacity) {
                   CAPACIDAD: {{ event()!.eventDetails![0].capacity }} PERSONAS /
                 }
@@ -133,7 +161,9 @@
         <div class="space-y-12">
           <h3 class="font-brutal text-7xl tracking-tighter">TIMELINE_</h3>
           <div class="border-t-8 border-white">
-            <div class="border-b-8 border-white py-12 flex justify-between items-center group cursor-help hover:bg-white hover:text-black transition-none">
+            <div
+              class="border-b-8 border-white py-12 flex justify-between items-center group cursor-help hover:bg-white hover:text-black transition-none"
+            >
               <div class="flex items-end gap-6">
                 <span class="font-mono text-6xl">01</span>
                 <div class="pb-1">
@@ -143,7 +173,9 @@
               </div>
               <div class="font-mono text-6xl pr-4 opacity-0 group-hover:opacity-100">→</div>
             </div>
-            <div class="border-b-8 border-white py-12 flex justify-between items-center group cursor-help hover:bg-white hover:text-black transition-none">
+            <div
+              class="border-b-8 border-white py-12 flex justify-between items-center group cursor-help hover:bg-white hover:text-black transition-none"
+            >
               <div class="flex items-end gap-6">
                 <span class="font-mono text-6xl text-primary">02</span>
                 <div class="pb-1">
@@ -154,7 +186,9 @@
               <div class="font-mono text-6xl pr-4 opacity-0 group-hover:opacity-100">→</div>
             </div>
             @if (event()!.endTime) {
-              <div class="border-b-8 border-white py-12 flex justify-between items-center group cursor-help hover:bg-white hover:text-black transition-none">
+              <div
+                class="border-b-8 border-white py-12 flex justify-between items-center group cursor-help hover:bg-white hover:text-black transition-none"
+              >
                 <div class="flex items-end gap-6">
                   <span class="font-mono text-6xl">03</span>
                   <div class="pb-1">
@@ -171,9 +205,16 @@
         <!-- Map Section -->
         @if (event()?.location) {
           <div class="space-y-6">
-            <h3 class="font-brutal text-5xl tracking-tighter border-b-8 border-white pb-4 inline-block">LOCATION_MAP</h3>
+            <h3
+              class="font-brutal text-5xl tracking-tighter border-b-8 border-white pb-4 inline-block"
+            >
+              LOCATION_MAP
+            </h3>
             <div class="border-8 border-white overflow-hidden" style="min-height: 400px">
-              <app-map-viewer [location]="event()!.location" [venueName]="event()!.venueName"></app-map-viewer>
+              <app-map-viewer
+                [location]="event()!.location"
+                [venueName]="event()!.venueName"
+              ></app-map-viewer>
             </div>
           </div>
         }
@@ -182,8 +223,12 @@
       <!-- Right Column: Ticket Selection -->
       <div class="lg:col-span-5 p-8 md:p-12 bg-white/5 relative">
         <div class="sticky top-40">
-          <div class="bg-white text-black border-8 border-white p-10 space-y-10 relative overflow-hidden">
-            <div class="absolute top-0 right-0 p-4 rotated-text border-l-8 border-b-8 border-black font-mono text-[10px] uppercase font-bold">
+          <div
+            class="bg-white text-black border-8 border-white p-10 space-y-10 relative overflow-hidden"
+          >
+            <div
+              class="absolute top-0 right-0 p-4 rotated-text border-l-8 border-b-8 border-black font-mono text-[10px] uppercase font-bold"
+            >
               TKT_SYS_2.0
             </div>
 
@@ -202,21 +247,31 @@
                     <div class="flex items-center gap-2">
                       <h4 class="font-brutal text-2xl uppercase">{{ getTicketName(config) }}</h4>
                       @if (getAvailableCount(config) < 50 && getAvailableCount(config) > 0) {
-                        <span class="bg-primary text-black px-1 font-mono text-[10px] font-bold">LTD</span>
+                        <span class="bg-primary text-black px-1 font-mono text-[10px] font-bold"
+                          >LTD</span
+                        >
                       }
                     </div>
-                    <p class="font-mono text-4xl font-black">{{ getTicketPrice(config) | currencyFormat }}</p>
+                    <p class="font-mono text-4xl font-black">
+                      {{ getTicketPrice(config) | currencyFormat }}
+                    </p>
                   </div>
-                  
+
                   @if (!isTicketSoldOut(config)) {
                     <div class="flex items-center border-8 border-black">
-                      <button (click)="decreaseQty(config)"
-                              class="w-16 h-16 flex items-center justify-center bg-primary text-black font-black text-3xl hover:bg-black hover:text-white transition-none border-r-8 border-black">
+                      <button
+                        (click)="decreaseQty(config)"
+                        class="w-16 h-16 flex items-center justify-center bg-primary text-black font-black text-3xl hover:bg-black hover:text-white transition-none border-r-8 border-black"
+                      >
                         -
                       </button>
-                      <span class="w-20 text-center font-mono text-3xl font-black">{{ selectedQuantities[config.type] || 0 }}</span>
-                      <button (click)="increaseQty(config)"
-                              class="w-16 h-16 flex items-center justify-center bg-primary text-black font-black text-3xl hover:bg-black hover:text-white transition-none">
+                      <span class="w-20 text-center font-mono text-3xl font-black">{{
+                        selectedQuantities[config.type] || 0
+                      }}</span>
+                      <button
+                        (click)="increaseQty(config)"
+                        class="w-16 h-16 flex items-center justify-center bg-primary text-black font-black text-3xl hover:bg-black hover:text-white transition-none"
+                      >
                         +
                       </button>
                     </div>
@@ -226,7 +281,7 @@
                     </div>
                   }
                 </div>
-                
+
                 @if (!$last) {
                   <div class="glitch-line !bg-black/20"></div>
                 }
@@ -239,21 +294,31 @@
                     <div class="flex items-center gap-2">
                       <h4 class="font-brutal text-2xl uppercase">{{ getTicketName(type) }}</h4>
                       @if (getAvailableCount(type) < 50 && getAvailableCount(type) > 0) {
-                        <span class="bg-primary text-black px-1 font-mono text-[10px] font-bold">LTD</span>
+                        <span class="bg-primary text-black px-1 font-mono text-[10px] font-bold"
+                          >LTD</span
+                        >
                       }
                     </div>
-                    <p class="font-mono text-4xl font-black">{{ getTicketPrice(type) | currencyFormat }}</p>
+                    <p class="font-mono text-4xl font-black">
+                      {{ getTicketPrice(type) | currencyFormat }}
+                    </p>
                   </div>
-                  
+
                   @if (!isTicketSoldOut(type)) {
                     <div class="flex items-center border-8 border-black">
-                      <button (click)="decreaseQty(type)"
-                              class="w-16 h-16 flex items-center justify-center bg-primary text-black font-black text-3xl hover:bg-black hover:text-white transition-none border-r-8 border-black">
+                      <button
+                        (click)="decreaseQty(type)"
+                        class="w-16 h-16 flex items-center justify-center bg-primary text-black font-black text-3xl hover:bg-black hover:text-white transition-none border-r-8 border-black"
+                      >
                         -
                       </button>
-                      <span class="w-20 text-center font-mono text-3xl font-black">{{ selectedQuantities[getConfigKey(type)] || 0 }}</span>
-                      <button (click)="increaseQty(type)"
-                              class="w-16 h-16 flex items-center justify-center bg-primary text-black font-black text-3xl hover:bg-black hover:text-white transition-none">
+                      <span class="w-20 text-center font-mono text-3xl font-black">{{
+                        selectedQuantities[getConfigKey(type)] || 0
+                      }}</span>
+                      <button
+                        (click)="increaseQty(type)"
+                        class="w-16 h-16 flex items-center justify-center bg-primary text-black font-black text-3xl hover:bg-black hover:text-white transition-none"
+                      >
                         +
                       </button>
                     </div>
@@ -263,7 +328,7 @@
                     </div>
                   }
                 </div>
-                
+
                 @if (!$last) {
                   <div class="glitch-line !bg-black/20"></div>
                 }
@@ -272,7 +337,9 @@
 
             <div class="pt-10 border-t-8 border-black flex justify-between items-end">
               <span class="technical-mono !text-black font-black">TOTAL_DUE</span>
-              <span class="font-mono text-7xl font-black leading-none">{{ getTotal() | currencyFormat }}</span>
+              <span class="font-mono text-7xl font-black leading-none">{{
+                getTotal() | currencyFormat
+              }}</span>
             </div>
           </div>
 
@@ -287,8 +354,12 @@
           </checkout-button>
 
           <div class="mt-8 flex justify-between items-center px-4">
-            <div class="rotated-text font-mono text-[8px] opacity-40 text-white">ENCRYPTED_TRANSACTION_ID_{{ event()!.id }}</div>
-            <div class="font-serif text-[40px] opacity-20 tracking-[-0.2em] text-white">||||||||||||||||||</div>
+            <div class="rotated-text font-mono text-[8px] opacity-40 text-white">
+              ENCRYPTED_TRANSACTION_ID_{{ event()!.id }}
+            </div>
+            <div class="font-serif text-[40px] opacity-20 tracking-[-0.2em] text-white">
+              ||||||||||||||||||
+            </div>
           </div>
         </div>
       </div>

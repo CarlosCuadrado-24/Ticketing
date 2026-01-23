@@ -34,19 +34,23 @@ describe('EventDetail', () => {
   beforeEach(async () => {
     const selectedEventSignal = signal(mockEvent);
     const isLoadingSignal = signal(false);
-    
+
     eventService = jasmine.createSpyObj('EventService', ['loadEventById', 'clearSelectedEvent']);
     Object.defineProperty(eventService, 'selectedEvent', {
       get: () => selectedEventSignal,
-      configurable: true
+      configurable: true,
     });
     Object.defineProperty(eventService, 'isLoading', {
       get: () => isLoadingSignal,
-      configurable: true
+      configurable: true,
     });
-    
+
     orders = jasmine.createSpyObj('Orders', ['createOrder']);
-    checkoutService = jasmine.createSpyObj('CheckoutService', ['clearCart', 'addToCart', 'setEventInfo']);
+    checkoutService = jasmine.createSpyObj('CheckoutService', [
+      'clearCart',
+      'addToCart',
+      'setEventInfo',
+    ]);
     toastService = jasmine.createSpyObj('ToastService', ['show']);
     router = jasmine.createSpyObj('Router', ['navigate']);
     route = { snapshot: { paramMap: { get: () => '1' } } };

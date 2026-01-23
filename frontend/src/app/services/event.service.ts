@@ -56,7 +56,10 @@ export class EventService {
       // Filtro de categoría
       if (filters.category && event.eventDetails && event.eventDetails.length > 0) {
         const eventCategory = event.eventDetails[0].category;
-        if (eventCategory && !eventCategory.toLowerCase().includes(filters.category.toLowerCase())) {
+        if (
+          eventCategory &&
+          !eventCategory.toLowerCase().includes(filters.category.toLowerCase())
+        ) {
           return false;
         }
       }
@@ -94,7 +97,7 @@ export class EventService {
       // Filtro de precio máximo
       if (filters.priceMax !== undefined && filters.priceMax > 0) {
         let minPrice = 0;
-        
+
         // Obtener precio mínimo del evento
         if (event.ticketConfigurations && event.ticketConfigurations.length > 0) {
           const prices = event.ticketConfigurations
@@ -104,14 +107,12 @@ export class EventService {
             minPrice = Math.min(...prices);
           }
         } else if (event.ticketTypes && event.ticketTypes.length > 0) {
-          const prices = event.ticketTypes
-            .map((t) => Number(t.price))
-            .filter((price) => price > 0);
+          const prices = event.ticketTypes.map((t) => Number(t.price)).filter((price) => price > 0);
           if (prices.length > 0) {
             minPrice = Math.min(...prices);
           }
         }
-        
+
         // Filtrar si el precio mínimo supera el máximo del filtro
         if (minPrice > filters.priceMax) {
           return false;

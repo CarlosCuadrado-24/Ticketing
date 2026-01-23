@@ -1,17 +1,19 @@
 <div class="relative group">
   <!-- Halftone Background Shadow (más pequeña) -->
-  <div class="absolute -top-4 -left-4 w-full h-full bg-primary/20 halftone -z-10 border-[4px] border-primary"></div>
-  
+  <div
+    class="absolute -top-4 -left-4 w-full h-full bg-primary/20 halftone -z-10 border-[4px] border-primary"
+  ></div>
+
   <!-- Main Card Container -->
   <div class="brutalist-border bg-black flex flex-col overflow-hidden">
     <!-- Image Section (más pequeña) -->
     <div class="w-full relative h-[280px] overflow-hidden bg-zinc-800 border-b-[6px] border-white">
-      <img 
-        [src]="getEventImage()" 
-        [alt]="event.name" 
+      <img
+        [src]="getEventImage()"
+        [alt]="event.name"
         class="w-full h-full object-cover xerox-effect group-hover:scale-110"
       />
-      
+
       <!-- Live Badge (más pequeño) -->
       <div class="absolute top-3 left-3 flex flex-col gap-1">
         <span class="industrial-tape text-sm">LIVE_FEED</span>
@@ -20,7 +22,7 @@
         </span>
       </div>
     </div>
-    
+
     <!-- Content Section (más compacto) -->
     <div class="w-full p-6 flex flex-col justify-between relative bg-black">
       <div class="space-y-3">
@@ -33,19 +35,21 @@
             E-{{ event.id.toString().substring(0, 6) }}
           </div>
         </div>
-        
+
         <!-- Event Title (más pequeño) -->
-        <h3 class="distorted-title text-4xl text-white uppercase group-hover:text-primary transition-colors line-clamp-2">
+        <h3
+          class="distorted-title text-4xl text-white uppercase group-hover:text-primary transition-colors line-clamp-2"
+        >
           {{ event.name }}
         </h3>
-        
+
         <!-- Location (más compacto) -->
         <div class="flex items-center gap-2 border-y border-white/20 py-2 mono">
           <span class="material-symbols-outlined text-primary text-sm">location_on</span>
           <span class="text-xs font-bold uppercase line-clamp-1">{{ event.location }}</span>
         </div>
       </div>
-      
+
       <!-- Price and Action (más compacto) -->
       <div class="mt-6 flex items-center justify-between gap-4">
         <div class="mono">
@@ -55,11 +59,15 @@
             <span class="text-sm">COP</span>
           </p>
         </div>
-        <a 
+        <a
           [routerLink]="['/event', event.id]"
-          class="bg-white text-black px-6 py-3 font-black text-base hover:bg-primary transition-all flex items-center justify-center gap-2 group/btn whitespace-nowrap">
+          class="bg-white text-black px-6 py-3 font-black text-base hover:bg-primary transition-all flex items-center justify-center gap-2 group/btn whitespace-nowrap"
+        >
           EXECUTE
-          <span class="material-symbols-outlined text-lg font-black group-hover/btn:translate-x-1 transition-transform">bolt</span>
+          <span
+            class="material-symbols-outlined text-lg font-black group-hover/btn:translate-x-1 transition-transform"
+            >bolt</span
+          >
         </a>
       </div>
     </div>

@@ -7,7 +7,9 @@
 
 <div class="relative flex flex-col min-h-screen">
   <!-- Header -->
-  <header class="sticky top-1 z-40 flex items-center justify-between border-b border-white/10 bg-background-dark/80 backdrop-blur-md px-6 md:px-20 py-4">
+  <header
+    class="sticky top-1 z-40 flex items-center justify-between border-b border-white/10 bg-background-dark/80 backdrop-blur-md px-6 md:px-20 py-4"
+  >
     <div class="flex items-center gap-4">
       <div class="bg-primary p-1">
         <span class="material-symbols-outlined text-black font-bold text-2xl">person_add</span>
@@ -17,9 +19,11 @@
       </h1>
     </div>
     <div class="flex gap-3">
-      <button (click)="onCancel()"
-              type="button"
-              class="flex items-center justify-center rounded border border-white/20 px-5 py-2 text-sm font-bold uppercase tracking-wider hover:bg-white hover:text-black transition-colors">
+      <button
+        (click)="onCancel()"
+        type="button"
+        class="flex items-center justify-center rounded border border-white/20 px-5 py-2 text-sm font-bold uppercase tracking-wider hover:bg-white hover:text-black transition-colors"
+      >
         Cancelar
       </button>
     </div>
@@ -36,11 +40,17 @@
           <div class="h-px flex-1 bg-white/10"></div>
         </div>
         <div>
-          <h2 class="text-4xl md:text-6xl font-black uppercase leading-none tracking-tighter italic">
+          <h2
+            class="text-4xl md:text-6xl font-black uppercase leading-none tracking-tighter italic"
+          >
             {{ isEditMode ? 'Actualizar Datos' : '01. Información del Usuario' }}
           </h2>
           <p class="text-white/50 mt-4 text-lg max-w-xl">
-            {{ isEditMode ? 'Modifica los datos del usuario en el sistema.' : 'Ingresa los datos básicos para crear una nueva cuenta de usuario.' }}
+            {{
+              isEditMode
+                ? 'Modifica los datos del usuario en el sistema.'
+                : 'Ingresa los datos básicos para crear una nueva cuenta de usuario.'
+            }}
           </p>
         </div>
       </div>
@@ -56,7 +66,9 @@
       @if (loading) {
         <div class="flex items-center justify-center py-20">
           <div class="text-center">
-            <div class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-white border-t-primary mb-4"></div>
+            <div
+              class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-white border-t-primary mb-4"
+            ></div>
             <p class="text-white/60 font-mono uppercase text-sm">Cargando usuario...</p>
           </div>
         </div>
@@ -65,19 +77,23 @@
         <form (ngSubmit)="onSubmit()" #userFormRef="ngForm" class="flex flex-col gap-8">
           <!-- Email -->
           <div class="group flex flex-col gap-2">
-            <label for="email" 
-                   class="text-xs font-bold uppercase tracking-[0.2em] text-white/40 group-focus-within:text-primary transition-colors">
+            <label
+              for="email"
+              class="text-xs font-bold uppercase tracking-[0.2em] text-white/40 group-focus-within:text-primary transition-colors"
+            >
               Email del Usuario
             </label>
-            <input id="email"
-                   type="email"
-                   [(ngModel)]="userForm.email"
-                   name="email"
-                   required
-                   #email="ngModel"
-                   [disabled]="loading"
-                   class="w-full bg-transparent border-b border-white/20 py-4 text-2xl md:text-3xl font-bold placeholder:text-white/10 focus:outline-none focus:border-primary transition-all rounded-none"
-                   placeholder="usuario@ejemplo.com"/>
+            <input
+              id="email"
+              type="email"
+              [(ngModel)]="userForm.email"
+              name="email"
+              required
+              #email="ngModel"
+              [disabled]="loading"
+              class="w-full bg-transparent border-b border-white/20 py-4 text-2xl md:text-3xl font-bold placeholder:text-white/10 focus:outline-none focus:border-primary transition-all rounded-none"
+              placeholder="usuario@ejemplo.com"
+            />
             @if (email.invalid && email.touched) {
               <div class="text-red-400 text-xs uppercase tracking-widest mt-1">
                 Email es requerido y debe ser válido
@@ -88,20 +104,24 @@
           <!-- Password (solo en modo creación) -->
           @if (!isEditMode) {
             <div class="group flex flex-col gap-2">
-              <label for="password"
-                     class="text-xs font-bold uppercase tracking-[0.2em] text-white/40 group-focus-within:text-primary transition-colors">
+              <label
+                for="password"
+                class="text-xs font-bold uppercase tracking-[0.2em] text-white/40 group-focus-within:text-primary transition-colors"
+              >
                 Contraseña
               </label>
-              <input id="password"
-                     type="password"
-                     [(ngModel)]="userForm.password"
-                     name="password"
-                     required
-                     minlength="8"
-                     #passwordInput="ngModel"
-                     [disabled]="loading"
-                     class="w-full bg-transparent border-b border-white/20 py-4 text-2xl md:text-3xl font-bold placeholder:text-white/10 focus:outline-none focus:border-primary transition-all rounded-none"
-                     placeholder="Mínimo 8 caracteres"/>
+              <input
+                id="password"
+                type="password"
+                [(ngModel)]="userForm.password"
+                name="password"
+                required
+                minlength="8"
+                #passwordInput="ngModel"
+                [disabled]="loading"
+                class="w-full bg-transparent border-b border-white/20 py-4 text-2xl md:text-3xl font-bold placeholder:text-white/10 focus:outline-none focus:border-primary transition-all rounded-none"
+                placeholder="Mínimo 8 caracteres"
+              />
               @if (passwordInput.invalid && passwordInput.touched) {
                 <div class="text-red-400 text-xs uppercase tracking-widest mt-1">
                   Contraseña debe tener al menos 8 caracteres
@@ -112,19 +132,23 @@
 
           <!-- First Name -->
           <div class="group flex flex-col gap-2">
-            <label for="firstName"
-                   class="text-xs font-bold uppercase tracking-[0.2em] text-white/40 group-focus-within:text-primary transition-colors">
+            <label
+              for="firstName"
+              class="text-xs font-bold uppercase tracking-[0.2em] text-white/40 group-focus-within:text-primary transition-colors"
+            >
               Nombre
             </label>
-            <input id="firstName"
-                   type="text"
-                   [(ngModel)]="userForm.firstName"
-                   name="firstName"
-                   required
-                   #firstName="ngModel"
-                   [disabled]="loading"
-                   class="w-full bg-transparent border-b border-white/20 py-4 text-2xl md:text-3xl font-bold placeholder:text-white/10 focus:outline-none focus:border-primary transition-all rounded-none"
-                   placeholder="Ej. Carlos"/>
+            <input
+              id="firstName"
+              type="text"
+              [(ngModel)]="userForm.firstName"
+              name="firstName"
+              required
+              #firstName="ngModel"
+              [disabled]="loading"
+              class="w-full bg-transparent border-b border-white/20 py-4 text-2xl md:text-3xl font-bold placeholder:text-white/10 focus:outline-none focus:border-primary transition-all rounded-none"
+              placeholder="Ej. Carlos"
+            />
             @if (firstName.invalid && firstName.touched) {
               <div class="text-red-400 text-xs uppercase tracking-widest mt-1">
                 Nombre es requerido
@@ -134,19 +158,23 @@
 
           <!-- Last Name -->
           <div class="group flex flex-col gap-2">
-            <label for="lastName"
-                   class="text-xs font-bold uppercase tracking-[0.2em] text-white/40 group-focus-within:text-primary transition-colors">
+            <label
+              for="lastName"
+              class="text-xs font-bold uppercase tracking-[0.2em] text-white/40 group-focus-within:text-primary transition-colors"
+            >
               Apellido
             </label>
-            <input id="lastName"
-                   type="text"
-                   [(ngModel)]="userForm.lastName"
-                   name="lastName"
-                   required
-                   #lastName="ngModel"
-                   [disabled]="loading"
-                   class="w-full bg-transparent border-b border-white/20 py-4 text-2xl md:text-3xl font-bold placeholder:text-white/10 focus:outline-none focus:border-primary transition-all rounded-none"
-                   placeholder="Ej. González"/>
+            <input
+              id="lastName"
+              type="text"
+              [(ngModel)]="userForm.lastName"
+              name="lastName"
+              required
+              #lastName="ngModel"
+              [disabled]="loading"
+              class="w-full bg-transparent border-b border-white/20 py-4 text-2xl md:text-3xl font-bold placeholder:text-white/10 focus:outline-none focus:border-primary transition-all rounded-none"
+              placeholder="Ej. González"
+            />
             @if (lastName.invalid && lastName.touched) {
               <div class="text-red-400 text-xs uppercase tracking-widest mt-1">
                 Apellido es requerido
@@ -161,14 +189,16 @@
             </label>
             <div class="flex flex-wrap gap-2">
               @for (role of roles; track role) {
-                <button type="button"
-                        (click)="userForm.role = role"
-                        [class.bg-primary]="userForm.role === role"
-                        [class.text-black]="userForm.role === role"
-                        [class.border-primary]="userForm.role === role"
-                        [class.border-white/10]="userForm.role !== role"
-                        [class.text-white/60]="userForm.role !== role"
-                        class="px-4 py-2 border font-bold text-xs uppercase tracking-wider rounded transition-colors hover:border-white/40 hover:text-white">
+                <button
+                  type="button"
+                  (click)="userForm.role = role"
+                  [class.bg-primary]="userForm.role === role"
+                  [class.text-black]="userForm.role === role"
+                  [class.border-primary]="userForm.role === role"
+                  [class.border-white/10]="userForm.role !== role"
+                  [class.text-white/60]="userForm.role !== role"
+                  class="px-4 py-2 border font-bold text-xs uppercase tracking-wider rounded transition-colors hover:border-white/40 hover:text-white"
+                >
                   {{ role }}
                 </button>
               }
@@ -177,13 +207,17 @@
 
           <!-- Form Footer Actions -->
           <div class="mt-12 pt-8 border-t border-white/10 flex justify-end">
-            <button type="submit"
-                    [disabled]="!userFormRef.valid || loading"
-                    class="group flex items-center gap-4 bg-primary px-10 py-5 rounded hover:bg-white transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+            <button
+              type="submit"
+              [disabled]="!userFormRef.valid || loading"
+              class="group flex items-center gap-4 bg-primary px-10 py-5 rounded hover:bg-white transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            >
               <span class="text-black font-black text-xl uppercase tracking-tighter">
                 {{ loading ? 'Guardando...' : isEditMode ? 'Actualizar Usuario' : 'Crear Usuario' }}
               </span>
-              <span class="material-symbols-outlined text-black font-bold group-hover:translate-x-1 transition-transform">
+              <span
+                class="material-symbols-outlined text-black font-bold group-hover:translate-x-1 transition-transform"
+              >
                 {{ isEditMode ? 'save' : 'arrow_forward' }}
               </span>
             </button>

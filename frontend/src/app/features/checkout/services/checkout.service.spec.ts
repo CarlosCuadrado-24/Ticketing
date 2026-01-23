@@ -9,7 +9,9 @@ describe('CheckoutService', () => {
 
   beforeEach(() => {
     ordersService = {
-      createOrder: jasmine.createSpy().and.returnValue({ toPromise: () => Promise.resolve({ id: 1 }) }),
+      createOrder: jasmine
+        .createSpy()
+        .and.returnValue({ toPromise: () => Promise.resolve({ id: 1 }) }),
       confirmOrder: jasmine.createSpy(),
     };
 
@@ -32,7 +34,7 @@ describe('CheckoutService', () => {
       service.addToCart(1, 'VIP Ticket', 2, 100);
 
       expect(service.cart().length).toBeGreaterThan(0);
-      const item = service.cart().find(i => i.ticketTypeId === 1);
+      const item = service.cart().find((i) => i.ticketTypeId === 1);
       expect(item).toBeDefined();
       expect(item?.ticketTypeName).toBe('VIP Ticket');
       expect(item?.quantity).toBe(2);
@@ -43,7 +45,7 @@ describe('CheckoutService', () => {
       service.addToCart(1, 'VIP Ticket', 2, 100);
       service.addToCart(1, 'VIP Ticket', 3, 100);
 
-      const item = service.cart().find(i => i.ticketTypeId === 1);
+      const item = service.cart().find((i) => i.ticketTypeId === 1);
       expect(item?.quantity).toBe(5);
     });
 
@@ -53,15 +55,15 @@ describe('CheckoutService', () => {
 
       service.removeFromCart(1);
 
-      expect(service.cart().find(i => i.ticketTypeId === 1)).toBeUndefined();
-      expect(service.cart().find(i => i.ticketTypeId === 2)).toBeDefined();
+      expect(service.cart().find((i) => i.ticketTypeId === 1)).toBeUndefined();
+      expect(service.cart().find((i) => i.ticketTypeId === 2)).toBeDefined();
     });
 
     it('should update item quantity', () => {
       service.addToCart(1, 'VIP Ticket', 2, 100);
       service.updateQuantity(1, 5);
 
-      const item = service.cart().find(i => i.ticketTypeId === 1);
+      const item = service.cart().find((i) => i.ticketTypeId === 1);
       expect(item?.quantity).toBe(5);
     });
 
@@ -69,7 +71,7 @@ describe('CheckoutService', () => {
       service.addToCart(1, 'VIP Ticket', 2, 100);
       service.updateQuantity(1, 0);
 
-      expect(service.cart().find(i => i.ticketTypeId === 1)).toBeUndefined();
+      expect(service.cart().find((i) => i.ticketTypeId === 1)).toBeUndefined();
     });
 
     it('should clear cart', () => {
@@ -116,7 +118,7 @@ describe('CheckoutService', () => {
         jasmine.clock().uninstall();
       } catch {}
     });
-    
+
     it('should have reservation from reservation service', () => {
       // The reservation is now managed by ReservationService
       // We can only test that the signal is exposed
@@ -136,12 +138,12 @@ describe('CheckoutService', () => {
   describe('confirmOrder', () => {
     it('should confirm order successfully', async () => {
       service.addToCart(1, 'VIP Ticket', 2, 100);
-      
+
       const paymentData = {
         cardNumber: '4111111111111111',
         expiryDate: '12/25',
         cvv: '123',
-        cardholderName: 'Test User'
+        cardholderName: 'Test User',
       };
 
       // Just verify the method exists and can be called

@@ -14,7 +14,7 @@
 
 .dashboard-header h2 {
   margin: 0;
-  color: #FFFFFF;
+  color: #ffffff;
   font-size: 2rem;
   font-weight: 700;
 }
@@ -23,7 +23,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  background: #FF4D00;
+  background: #ff4d00;
   color: white;
   border: none;
   padding: 12px 24px;
@@ -61,14 +61,18 @@
   width: 60px;
   height: 60px;
   border: 4px solid rgba(255, 77, 0, 0.1);
-  border-top: 4px solid #FF4D00;
+  border-top: 4px solid #ff4d00;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .loading p {
@@ -85,7 +89,7 @@
   flex-direction: column;
   align-items: center;
   gap: 16px;
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 .error .material-symbols-outlined {
@@ -111,7 +115,7 @@
 }
 
 .stat-card {
-  background: #1A1A1A;
+  background: #1a1a1a;
   padding: 24px;
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
@@ -144,11 +148,21 @@
   opacity: 0.05;
 }
 
-.stat-card.primary::before { background: #FF4D00; }
-.stat-card.success::before { background: #39FF14; }
-.stat-card.warning::before { background: #FFC107; }
-.stat-card.revenue::before { background: #9C27B0; }
-.stat-card.info::before { background: #2196F3; }
+.stat-card.primary::before {
+  background: #ff4d00;
+}
+.stat-card.success::before {
+  background: #39ff14;
+}
+.stat-card.warning::before {
+  background: #ffc107;
+}
+.stat-card.revenue::before {
+  background: #9c27b0;
+}
+.stat-card.info::before {
+  background: #2196f3;
+}
 
 .stat-icon {
   width: 56px;
@@ -162,27 +176,27 @@
 
 .stat-card.primary .stat-icon {
   background: rgba(255, 77, 0, 0.1);
-  color: #FF4D00;
+  color: #ff4d00;
 }
 
 .stat-card.success .stat-icon {
   background: rgba(57, 255, 20, 0.1);
-  color: #39FF14;
+  color: #39ff14;
 }
 
 .stat-card.warning .stat-icon {
   background: rgba(255, 193, 7, 0.1);
-  color: #FFC107;
+  color: #ffc107;
 }
 
 .stat-card.revenue .stat-icon {
   background: rgba(156, 39, 176, 0.1);
-  color: #9C27B0;
+  color: #9c27b0;
 }
 
 .stat-card.info .stat-icon {
   background: rgba(33, 150, 243, 0.1);
-  color: #2196F3;
+  color: #2196f3;
 }
 
 .stat-icon .material-symbols-outlined {
@@ -197,7 +211,7 @@
   margin: 0 0 4px 0;
   font-size: 2rem;
   font-weight: 700;
-  color: #FFFFFF;
+  color: #ffffff;
   line-height: 1;
 }
 
@@ -211,7 +225,7 @@
 .stat-trend {
   display: inline-block;
   font-size: 0.8rem;
-  color: #39FF14;
+  color: #39ff14;
   font-weight: 600;
   padding: 4px 8px;
   background: rgba(57, 255, 20, 0.1);
@@ -226,7 +240,7 @@
 }
 
 .chart-container {
-  background: #1A1A1A;
+  background: #1a1a1a;
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   overflow: hidden;
@@ -247,7 +261,7 @@
 
 .chart-header h3 {
   margin: 0;
-  color: #FFFFFF;
+  color: #ffffff;
   font-size: 1.1rem;
   font-weight: 600;
   display: flex;
@@ -256,7 +270,7 @@
 }
 
 .chart-header .material-symbols-outlined {
-  color: #FF4D00;
+  color: #ff4d00;
   font-size: 24px;
 }
 
@@ -278,7 +292,7 @@
 
 .recent-events,
 .top-events {
-  background: #1A1A1A;
+  background: #1a1a1a;
   padding: 0;
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
@@ -295,7 +309,7 @@
 
 .section-header h3 {
   margin: 0;
-  color: #FFFFFF;
+  color: #ffffff;
   font-size: 1.1rem;
   font-weight: 600;
   display: flex;
@@ -304,14 +318,14 @@
 }
 
 .section-header .material-symbols-outlined {
-  color: #FF4D00;
+  color: #ff4d00;
   font-size: 24px;
 }
 
 .view-all-btn {
   background: transparent;
-  color: #FF4D00;
-  border: 1px solid #FF4D00;
+  color: #ff4d00;
+  border: 1px solid #ff4d00;
   padding: 6px 16px;
   border-radius: 6px;
   cursor: pointer;
@@ -321,7 +335,7 @@
 }
 
 .view-all-btn:hover {
-  background: #FF4D00;
+  background: #ff4d00;
   color: white;
 }
 
@@ -355,7 +369,7 @@
 }
 
 .event-icon .material-symbols-outlined {
-  color: #FF4D00;
+  color: #ff4d00;
   font-size: 24px;
 }
 
@@ -365,7 +379,7 @@
 
 .event-info h4 {
   margin: 0 0 8px 0;
-  color: #FFFFFF;
+  color: #ffffff;
   font-size: 1rem;
   font-weight: 600;
 }
@@ -389,7 +403,7 @@
 
 .badge-upcoming {
   background: rgba(57, 255, 20, 0.1);
-  color: #39FF14;
+  color: #39ff14;
   padding: 6px 12px;
   border-radius: 6px;
   font-size: 0.75rem;
@@ -418,7 +432,7 @@
 .event-rank {
   width: 40px;
   height: 40px;
-  background: linear-gradient(135deg, #FF4D00, #ff6a2f);
+  background: linear-gradient(135deg, #ff4d00, #ff6a2f);
   border-radius: 10px;
   display: flex;
   align-items: center;
@@ -438,7 +452,7 @@
 
 .event-details h4 {
   margin: 0 0 8px 0;
-  color: #FFFFFF;
+  color: #ffffff;
   font-size: 1rem;
   font-weight: 600;
 }
@@ -461,12 +475,12 @@
 
 .stat-badge.tickets {
   background: rgba(57, 255, 20, 0.1);
-  color: #39FF14;
+  color: #39ff14;
 }
 
 .stat-badge.revenue {
   background: rgba(156, 39, 176, 0.1);
-  color: #9C27B0;
+  color: #9c27b0;
 }
 
 .stat-badge .material-symbols-outlined {
@@ -490,7 +504,7 @@
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #FF4D00, #39FF14);
+  background: linear-gradient(90deg, #ff4d00, #39ff14);
   border-radius: 4px;
   transition: width 0.5s ease;
 }
@@ -532,7 +546,7 @@
 
 .events-list::-webkit-scrollbar-thumb,
 .top-events-list::-webkit-scrollbar-thumb {
-  background: #FF4D00;
+  background: #ff4d00;
   border-radius: 3px;
 }
 
@@ -540,7 +554,7 @@
   .charts-section {
     grid-template-columns: 1fr;
   }
-  
+
   .chart-container.large,
   .chart-container.medium {
     grid-column: span 1;
@@ -551,11 +565,11 @@
   .dashboard-content {
     grid-template-columns: 1fr;
   }
-  
+
   .stats-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .dashboard-header {
     flex-direction: column;
     align-items: flex-start;

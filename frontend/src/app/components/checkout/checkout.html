@@ -13,28 +13,29 @@
           </span>
           <h1 class="text-7xl md:text-9xl font-distressed leading-none">Secure Checkout</h1>
         </div>
-        
+
         @if (reservation() && !reservationExpired()) {
           <div class="brutal-border p-8 bg-black flex flex-col items-center min-w-[300px]">
             <span class="font-mono text-[10px] uppercase tracking-widest text-zinc-400 mb-2">
               Reservation expires in
             </span>
-            <div 
-              class="text-7xl font-mono font-bold text-primary tabular-nums tracking-tighter" 
-              style="text-shadow: 0 0 20px rgba(255, 77, 0, 0.4);">
+            <div
+              class="text-7xl font-mono font-bold text-primary tabular-nums tracking-tighter"
+              style="text-shadow: 0 0 20px rgba(255, 77, 0, 0.4)"
+            >
               {{ checkoutService.timeRemainingFormatted() }}
             </div>
           </div>
         }
-        
+
         @if (reservationExpired()) {
-          <div class="brutal-border p-8 bg-black flex flex-col items-center min-w-[300px] border-red-500">
+          <div
+            class="brutal-border p-8 bg-black flex flex-col items-center min-w-[300px] border-red-500"
+          >
             <span class="font-mono text-[10px] uppercase tracking-widest text-red-400 mb-2">
               Reservation expired
             </span>
-            <div class="text-5xl font-mono font-bold text-red-500">
-              EXPIRED
-            </div>
+            <div class="text-5xl font-mono font-bold text-red-500">EXPIRED</div>
           </div>
         }
       </div>
@@ -45,7 +46,9 @@
           <!-- Contact Form -->
           @if (step === 'contact') {
             <section class="brutal-border bg-black p-10 relative">
-              <div class="absolute -top-4 -left-1 bg-white text-black px-4 py-1 text-xs font-bold uppercase font-mono">
+              <div
+                class="absolute -top-4 -left-1 bg-white text-black px-4 py-1 text-xs font-bold uppercase font-mono"
+              >
                 01. CONTACT_INFO
               </div>
               <app-contact-form #contactForm></app-contact-form>
@@ -55,7 +58,9 @@
           <!-- Payment Form -->
           @if (step === 'payment') {
             <section class="brutal-border bg-black p-10 relative">
-              <div class="absolute -top-4 -left-1 bg-white text-black px-4 py-1 text-xs font-bold uppercase font-mono">
+              <div
+                class="absolute -top-4 -left-1 bg-white text-black px-4 py-1 text-xs font-bold uppercase font-mono"
+              >
                 02. PAYMENT_METHOD
               </div>
               <app-payment-form #paymentForm></app-payment-form>
@@ -64,17 +69,22 @@
 
           <!-- Navigation Buttons -->
           <div class="flex flex-col md:flex-row gap-6 pt-4">
-            <button 
+            <button
               (click)="previousStep()"
               [disabled]="step === 'contact'"
-              class="w-full md:w-1/3 brutal-border bg-black text-white hover:bg-zinc-900 p-8 font-mono font-bold uppercase text-xl transition-none flex items-center justify-center gap-4 group disabled:opacity-50 disabled:cursor-not-allowed">
-              <span class="material-symbols-outlined transition-transform group-hover:-translate-x-2">arrow_back</span>
+              class="w-full md:w-1/3 brutal-border bg-black text-white hover:bg-zinc-900 p-8 font-mono font-bold uppercase text-xl transition-none flex items-center justify-center gap-4 group disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <span
+                class="material-symbols-outlined transition-transform group-hover:-translate-x-2"
+                >arrow_back</span
+              >
               Back
             </button>
-            <button 
+            <button
               (click)="nextStep()"
               [disabled]="reservationExpired()"
-              class="w-full md:w-2/3 bg-primary text-black p-8 font-impact font-black uppercase text-4xl italic tracking-tighter hover:bg-white transition-none border-[6px] border-primary hover:border-white disabled:opacity-50 disabled:cursor-not-allowed">
+              class="w-full md:w-2/3 bg-primary text-black p-8 font-impact font-black uppercase text-4xl italic tracking-tighter hover:bg-white transition-none border-[6px] border-primary hover:border-white disabled:opacity-50 disabled:cursor-not-allowed"
+            >
               {{ step === 'payment' ? 'Confirm Payment →' : 'Next Step →' }}
             </button>
           </div>

@@ -39,7 +39,7 @@ export class EventFiltersComponent implements OnInit, OnDestroy {
     'Turismo',
     'Acción Extremo',
     'Inmersiones a los centros de experiencias',
-    'Comfama'
+    'Comfama',
   ];
 
   ngOnInit(): void {
@@ -59,7 +59,10 @@ export class EventFiltersComponent implements OnInit, OnDestroy {
     const filters: IEventFilters = {
       searchQuery: this.searchQuery || undefined,
       location: this.location || undefined,
-      category: this.selectedCategory && this.selectedCategory !== 'All' ? this.selectedCategory : undefined,
+      category:
+        this.selectedCategory && this.selectedCategory !== 'All'
+          ? this.selectedCategory
+          : undefined,
       priceMax: this.priceMax || undefined,
       dateFrom: this.dateFrom || undefined,
     };

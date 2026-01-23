@@ -12,19 +12,19 @@ describe('AuthService', () => {
     email: 'test@test.com',
     firstName: 'Test',
     lastName: 'User',
-    role: 'BUYER'
+    role: 'BUYER',
   };
 
   const mockAuthResponse: AuthResponse = {
     accessToken: 'mock-access-token',
     refreshToken: 'mock-refresh-token',
-    user: mockUser
+    user: mockUser,
   };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      providers: [AuthService]
+      providers: [AuthService],
     });
     service = TestBed.inject(AuthService);
     httpMock = TestBed.inject(HttpTestingController);
@@ -58,7 +58,7 @@ describe('AuthService', () => {
             expect(localStorage.getItem('user')).toBe(JSON.stringify(mockUser));
             done();
           },
-          error: done.fail
+          error: done.fail,
         });
 
         // Mock CSRF token request
@@ -79,7 +79,7 @@ describe('AuthService', () => {
       it('should reject authentication and clear any existing session', (done) => {
         // Given
         const credentials: LoginRequest = { email: 'test@test.com', password: 'wrong' };
-        
+
         // Pre-populate storage to test cleanup
         sessionStorage.setItem('accessToken', 'old-token');
         localStorage.setItem('user', JSON.stringify(mockUser));
@@ -93,7 +93,7 @@ describe('AuthService', () => {
             expect(service.isAuthenticated()).toBe(false);
             expect(service.currentUser()).toBeNull();
             done();
-          }
+          },
         });
 
         // Mock CSRF token request
@@ -102,7 +102,10 @@ describe('AuthService', () => {
 
         // Mock failed login request
         const loginReq = httpMock.expectOne(`${environment.apiUrl}/auth/login`);
-        loginReq.flush({ message: 'Invalid credentials' }, { status: 401, statusText: 'Unauthorized' });
+        loginReq.flush(
+          { message: 'Invalid credentials' },
+          { status: 401, statusText: 'Unauthorized' },
+        );
       });
     });
 
@@ -113,7 +116,7 @@ describe('AuthService', () => {
           email: 'new@test.com',
           password: 'password',
           firstName: 'New',
-          lastName: 'User'
+          lastName: 'User',
         };
 
         // When
@@ -124,7 +127,7 @@ describe('AuthService', () => {
             expect(service.isAuthenticated()).toBe(true);
             done();
           },
-          error: done.fail
+          error: done.fail,
         });
 
         // Mock CSRF token request
@@ -154,7 +157,7 @@ describe('AuthService', () => {
       const newTokenResponse: AuthResponse = {
         accessToken: 'new-access-token',
         refreshToken: 'new-refresh-token',
-        user: mockUser
+        user: mockUser,
       };
 
       // When
@@ -166,7 +169,7 @@ describe('AuthService', () => {
           expect(sessionStorage.getItem('refreshToken')).toBe('new-refresh-token');
           done();
         },
-        error: done.fail
+        error: done.fail,
       });
 
       // Mock refresh request
@@ -188,7 +191,7 @@ describe('AuthService', () => {
           expect(localStorage.getItem('user')).toBeNull();
           done();
         },
-        error: done.fail
+        error: done.fail,
       });
 
       // Mock logout request
@@ -202,7 +205,7 @@ describe('AuthService', () => {
     it('should load user from storage on initialization', () => {
       // Clear any existing service instance
       TestBed.resetTestingModule();
-      
+
       // Given
       localStorage.setItem('user', JSON.stringify(mockUser));
       sessionStorage.setItem('accessToken', 'stored-token');
@@ -210,16 +213,16 @@ describe('AuthService', () => {
       // When - Reconfigure TestBed with fresh service
       TestBed.configureTestingModule({
         imports: [HttpClientTestingModule],
-        providers: [AuthService]
+        providers: [AuthService],
       });
-      
+
       const newService = TestBed.inject(AuthService);
 
       // Then
       expect(newService.currentUser()).toEqual(mockUser);
       expect(newService.getToken()).toBe('stored-token');
       expect(newService.isAuthenticated()).toBe(true);
-      
+
       // Cleanup
       localStorage.clear();
       sessionStorage.clear();
@@ -228,7 +231,7 @@ describe('AuthService', () => {
     it('should handle corrupted storage data gracefully', () => {
       // Clear any existing service instance
       TestBed.resetTestingModule();
-      
+
       // Given
       localStorage.setItem('user', 'invalid-json');
       sessionStorage.setItem('accessToken', 'token');
@@ -236,15 +239,15 @@ describe('AuthService', () => {
       // When - Reconfigure TestBed with fresh service
       TestBed.configureTestingModule({
         imports: [HttpClientTestingModule],
-        providers: [AuthService]
+        providers: [AuthService],
       });
-      
+
       const newService = TestBed.inject(AuthService);
 
       // Then
       expect(newService.currentUser()).toBeNull();
       expect(newService.isAuthenticated()).toBe(false);
-      
+
       // Cleanup
       localStorage.clear();
       sessionStorage.clear();
@@ -278,7 +281,7 @@ describe('AuthService', () => {
           expect(error).toBeDefined();
           expect(service.isLoading()).toBe(false);
           done();
-        }
+        },
       });
 
       // Mock network error
@@ -297,7 +300,7 @@ describe('AuthService', () => {
           // Then
           expect(error.status).toBe(401);
           done();
-        }
+        },
       });
 
       // Mock server error

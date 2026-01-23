@@ -43,7 +43,7 @@ export abstract class BaseApiService<T extends BaseEntity> {
 
   constructor(
     protected readonly http: HttpClient,
-    protected readonly endpoint: string
+    protected readonly endpoint: string,
   ) {
     this.baseUrl = `${environment.apiUrl}${endpoint}`;
   }
@@ -53,52 +53,43 @@ export abstract class BaseApiService<T extends BaseEntity> {
    */
   getAll(query?: PaginationQuery): Observable<T[] | PaginatedResponse<T>> {
     const params = this.buildHttpParams(query);
-    return this.http.get<T[] | PaginatedResponse<T>>(this.baseUrl, { params })
-      .pipe(
-        retry(1),
-        catchError(this.handleError.bind(this))
-      );
+    return this.http
+      .get<T[] | PaginatedResponse<T>>(this.baseUrl, { params })
+      .pipe(retry(1), catchError(this.handleError.bind(this)));
   }
 
   /**
    * Get entity by ID
    */
   getById(id: string | number): Observable<T> {
-    return this.http.get<T>(`${this.baseUrl}/${id}`)
-      .pipe(
-        retry(1),
-        catchError(this.handleError.bind(this))
-      );
+    return this.http
+      .get<T>(`${this.baseUrl}/${id}`)
+      .pipe(retry(1), catchError(this.handleError.bind(this)));
   }
 
   /**
    * Create new entity
    */
   create(entity: Omit<T, 'id'>): Observable<T> {
-    return this.http.post<T>(this.baseUrl, entity)
-      .pipe(
-        catchError(this.handleError.bind(this))
-      );
+    return this.http.post<T>(this.baseUrl, entity).pipe(catchError(this.handleError.bind(this)));
   }
 
   /**
    * Update existing entity
    */
   update(id: string | number, entity: Partial<T>): Observable<T> {
-    return this.http.put<T>(`${this.baseUrl}/${id}`, entity)
-      .pipe(
-        catchError(this.handleError.bind(this))
-      );
+    return this.http
+      .put<T>(`${this.baseUrl}/${id}`, entity)
+      .pipe(catchError(this.handleError.bind(this)));
   }
 
   /**
    * Delete entity
    */
   delete(id: string | number): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}/${id}`)
-      .pipe(
-        catchError(this.handleError.bind(this))
-      );
+    return this.http
+      .delete<void>(`${this.baseUrl}/${id}`)
+      .pipe(catchError(this.handleError.bind(this)));
   }
 
   /**
@@ -106,11 +97,9 @@ export abstract class BaseApiService<T extends BaseEntity> {
    */
   search(query: string, filters?: Record<string, any>): Observable<T[]> {
     const params = this.buildHttpParams({ search: query, ...filters });
-    return this.http.get<T[]>(`${this.baseUrl}/search`, { params })
-      .pipe(
-        retry(1),
-        catchError(this.handleError.bind(this))
-      );
+    return this.http
+      .get<T[]>(`${this.baseUrl}/search`, { params })
+      .pipe(retry(1), catchError(this.handleError.bind(this)));
   }
 
   /**
@@ -118,16 +107,16 @@ export abstract class BaseApiService<T extends BaseEntity> {
    */
   protected buildHttpParams(query?: Record<string, any>): HttpParams {
     let params = new HttpParams();
-    
+
     if (query) {
-      Object.keys(query).forEach(key => {
+      Object.keys(query).forEach((key) => {
         const value = query[key];
         if (value !== undefined && value !== null && value !== '') {
           params = params.set(key, String(value));
         }
       });
     }
-    
+
     return params;
   }
 
@@ -137,7 +126,7 @@ export abstract class BaseApiService<T extends BaseEntity> {
    */
   protected handleError(error: HttpErrorResponse): Observable<never> {
     let errorMessage = 'An unexpected error occurred';
-    
+
     if (error.error instanceof ErrorEvent) {
       // Client-side error
       errorMessage = `Client Error: ${error.error.message}`;
@@ -177,7 +166,7 @@ export abstract class BaseApiService<T extends BaseEntity> {
       status: error.status,
       message: errorMessage,
       url: error.url,
-      error: error.error
+      error: error.error,
     });
 
     return throwError(() => new Error(errorMessage));

@@ -15,7 +15,7 @@ import { EventFiltersComponent } from '../../shared/components/event-filters/eve
 })
 export class EventList implements OnInit, OnDestroy {
   private readonly eventService = inject(EventService);
-  
+
   // Exponer Math para el template
   readonly Math = Math;
 
@@ -25,10 +25,10 @@ export class EventList implements OnInit, OnDestroy {
 
   // Mobile filters modal
   readonly showFilters = signal(false);
-  
+
   // Search query
   searchQuery = '';
-  
+
   // Pagination
   readonly currentPage = signal(1);
   readonly eventsPerPage = 4; // Mostrar 4 eventos por página (2x2 en grid)
@@ -36,11 +36,11 @@ export class EventList implements OnInit, OnDestroy {
   toggleFilters(): void {
     this.showFilters.update((v) => !v);
   }
-  
+
   onSearch(): void {
     this.eventService.updateFilters({ searchQuery: this.searchQuery });
   }
-  
+
   onSearchInput(event: Event): void {
     const input = event.target as HTMLInputElement;
     this.searchQuery = input.value;
@@ -54,23 +54,23 @@ export class EventList implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.eventService.clearFilters();
   }
-  
+
   // Métodos de paginación
   get totalPages(): number {
     const total = this.events().length;
     return Math.max(1, Math.ceil(total / this.eventsPerPage));
   }
-  
+
   get paginatedEvents() {
     const allEvents = this.events();
     const start = (this.currentPage() - 1) * this.eventsPerPage;
     return allEvents.slice(start, start + this.eventsPerPage);
   }
-  
+
   get pageNumbers(): number[] {
     return Array.from({ length: this.totalPages }, (_, i) => i + 1);
   }
-  
+
   goToPage(page: number): void {
     if (page >= 1 && page <= this.totalPages) {
       this.currentPage.set(page);
@@ -78,13 +78,13 @@ export class EventList implements OnInit, OnDestroy {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }
-  
+
   nextPage(): void {
     if (this.currentPage() < this.totalPages) {
       this.goToPage(this.currentPage() + 1);
     }
   }
-  
+
   previousPage(): void {
     if (this.currentPage() > 1) {
       this.goToPage(this.currentPage() - 1);

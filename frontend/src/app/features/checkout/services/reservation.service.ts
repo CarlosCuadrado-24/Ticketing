@@ -13,7 +13,7 @@ import { CartItem } from './cart.service';
  * Follows Single Responsibility Principle - only handles reservation logic
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ReservationService {
   private readonly http = inject(HttpClient);
@@ -55,9 +55,9 @@ export class ReservationService {
    * Create reservations for cart items
    */
   async createReservations(
-    cartItems: CartItem[], 
-    eventId: string | number, 
-    buyerEmail: string
+    cartItems: CartItem[],
+    eventId: string | number,
+    buyerEmail: string,
   ): Promise<boolean> {
     if (!eventId || !buyerEmail || cartItems.length === 0) {
       console.warn('[ReservationService] Cannot create reservations: missing required data');
@@ -95,7 +95,7 @@ export class ReservationService {
           expiresAt: new Date(response.expiresAt),
           status: response.status,
           buyerEmail: response.buyerEmail,
-          currency: response.currency || 'USD'
+          currency: response.currency || 'USD',
         });
       }
 
@@ -128,7 +128,7 @@ export class ReservationService {
    */
   async cancelReservations(): Promise<void> {
     const reservations = this.getStoredReservations();
-    
+
     if (reservations.length === 0) {
       return;
     }
@@ -215,13 +215,15 @@ export class ReservationService {
     try {
       const stored = localStorage.getItem(STORAGE_KEYS.RESERVATIONS);
       if (!stored) return [];
-      
+
       const parsed = JSON.parse(stored);
-      return Array.isArray(parsed) ? parsed.map(r => ({
-        ...r,
-        expiresAt: new Date(r.expiresAt),
-        createdAt: r.createdAt ? new Date(r.createdAt) : undefined
-      })) : [];
+      return Array.isArray(parsed)
+        ? parsed.map((r) => ({
+            ...r,
+            expiresAt: new Date(r.expiresAt),
+            createdAt: r.createdAt ? new Date(r.createdAt) : undefined,
+          }))
+        : [];
     } catch (error) {
       console.error('[ReservationService] Error loading reservations:', error);
       return [];
@@ -255,13 +257,13 @@ export class ReservationService {
    */
   private mapTicketTypeName(ticketTypeName: string): string {
     const mapping: Record<string, string> = {
-      'General': 'GENERAL',
-      'VIP': 'VIP',
-      'Premium': 'PREMIUM',
-      'Student': 'STUDENT',
-      'Senior': 'SENIOR'
+      General: 'GENERAL',
+      VIP: 'VIP',
+      Premium: 'PREMIUM',
+      Student: 'STUDENT',
+      Senior: 'SENIOR',
     };
-    
+
     return mapping[ticketTypeName] || ticketTypeName.toUpperCase();
   }
 

@@ -5,16 +5,23 @@
       <div class="inline-block p-4 border-4 border-neon mb-6">
         <span class="material-symbols-outlined text-8xl text-neon leading-none">check_circle</span>
       </div>
-      <h1 class="font-distressed text-7xl md:text-9xl uppercase tracking-tighter leading-tight mb-4 strobe-text">
-        PURCHASE<br/>CONFIRMED!
+      <h1
+        class="font-distressed text-7xl md:text-9xl uppercase tracking-tighter leading-tight mb-4 strobe-text"
+      >
+        PURCHASE<br />CONFIRMED!
       </h1>
-      <p class="text-xl max-w-2xl mx-auto text-white/80 border-t-2 border-b-2 border-white/20 py-4 uppercase tracking-[0.2em]">
-        YOUR TICKET IS READY TO PRINT OR SAVE FOR YOUR UPCOMING EVENT. {{ ticketCount() }} TICKET(S) CONFIRMED.
+      <p
+        class="text-xl max-w-2xl mx-auto text-white/80 border-t-2 border-b-2 border-white/20 py-4 uppercase tracking-[0.2em]"
+      >
+        YOUR TICKET IS READY TO PRINT OR SAVE FOR YOUR UPCOMING EVENT. {{ ticketCount() }} TICKET(S)
+        CONFIRMED.
       </p>
       @if (buyerEmail()) {
         <div class="mt-8 bg-neon/10 border border-neon p-3 inline-flex items-center gap-3">
           <span class="material-symbols-outlined text-neon">mail</span>
-          <span class="text-neon font-bold uppercase font-mono text-sm">CONFIRMATION SENT TO: {{ buyerEmail() }}</span>
+          <span class="text-neon font-bold uppercase font-mono text-sm"
+            >CONFIRMATION SENT TO: {{ buyerEmail() }}</span
+          >
         </div>
       }
     </header>
@@ -23,7 +30,9 @@
     @if (isLoading()) {
       <div class="flex justify-center py-20">
         <div class="text-center">
-          <div class="inline-block animate-spin rounded-full h-16 w-16 border-b-4 border-primary mb-4"></div>
+          <div
+            class="inline-block animate-spin rounded-full h-16 w-16 border-b-4 border-primary mb-4"
+          ></div>
           <p class="text-white/60 text-lg font-mono">LOADING TICKETS...</p>
         </div>
       </div>
@@ -48,32 +57,42 @@
         @for (ticket of tickets(); track ticket.id; let i = $index) {
           <div class="relative group">
             <div class="absolute -top-4 -left-4 text-primary font-display text-4xl opacity-50">
-              {{ (i + 1).toString().padStart(2, '0') }}/{{ tickets().length.toString().padStart(2, '0') }}
+              {{ (i + 1).toString().padStart(2, '0') }}/{{
+                tickets().length.toString().padStart(2, '0')
+              }}
             </div>
-            <div class="absolute -bottom-8 right-0 text-white/10 font-display text-9xl pointer-events-none select-none">
+            <div
+              class="absolute -bottom-8 right-0 text-white/10 font-display text-9xl pointer-events-none select-none"
+            >
               VALID_PASS
             </div>
-            
-            <div class="bg-white text-black brutal-border-thick relative overflow-hidden flex flex-col md:flex-row min-h-[500px]">
+
+            <div
+              class="bg-white text-black brutal-border-thick relative overflow-hidden flex flex-col md:flex-row min-h-[500px]"
+            >
               <!-- Left Section: Event Info -->
               <div class="flex-1 border-b-[6px] md:border-b-0 md:border-r-[6px] border-black">
                 <!-- Event Image -->
                 <div class="relative h-64 border-b-[6px] border-black bg-black">
                   @if (ticket.eventImage) {
-                    <img 
-                      [alt]="ticket.eventName" 
-                      class="w-full h-full object-cover halftone opacity-80" 
+                    <img
+                      [alt]="ticket.eventName"
+                      class="w-full h-full object-cover halftone opacity-80"
                       [src]="getEventImageUrl(ticket.eventImage)"
                     />
                   } @else {
                     <div class="w-full h-full bg-zinc-900"></div>
                   }
-                  <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
-                  
-                  <div class="absolute top-6 left-6 bg-primary text-white font-impact px-4 py-2 text-xl italic uppercase">
+                  <div
+                    class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"
+                  ></div>
+
+                  <div
+                    class="absolute top-6 left-6 bg-primary text-white font-impact px-4 py-2 text-xl italic uppercase"
+                  >
                     {{ ticket.type }} ACCESSO
                   </div>
-                  
+
                   <div class="absolute bottom-6 left-6">
                     <h2 class="font-impact text-5xl uppercase text-white tracking-tighter">
                       {{ ticket.eventName || 'EVENT' }}
@@ -84,18 +103,32 @@
                 <!-- Event Details Grid -->
                 <div class="p-8 grid grid-cols-2 gap-y-12 gap-x-8">
                   <div>
-                    <label class="block font-impact text-xs uppercase mb-1 tracking-widest text-black/50">DATE & TIME</label>
-                    <div class="bg-black text-primary p-2 font-impact text-3xl inline-block uppercase">
+                    <label
+                      class="block font-impact text-xs uppercase mb-1 tracking-widest text-black/50"
+                      >DATE & TIME</label
+                    >
+                    <div
+                      class="bg-black text-primary p-2 font-impact text-3xl inline-block uppercase"
+                    >
                       {{ formatEventDate(ticket.eventDate) }}
                     </div>
                     <div class="mt-2 text-sm font-bold border-l-4 border-black pl-2">
-                      {{ formatEventTime(ticket.eventDate) || ticket.eventStartTime || 'HORA POR CONFIRMAR' }}
+                      {{
+                        formatEventTime(ticket.eventDate) ||
+                          ticket.eventStartTime ||
+                          'HORA POR CONFIRMAR'
+                      }}
                     </div>
                   </div>
 
                   <div>
-                    <label class="block font-impact text-xs uppercase mb-1 tracking-widest text-black/50">LOCATION</label>
-                    <div class="bg-black text-primary p-2 font-impact text-2xl inline-block uppercase leading-tight">
+                    <label
+                      class="block font-impact text-xs uppercase mb-1 tracking-widest text-black/50"
+                      >LOCATION</label
+                    >
+                    <div
+                      class="bg-black text-primary p-2 font-impact text-2xl inline-block uppercase leading-tight"
+                    >
                       {{ ticket.eventVenueName || ticket.eventLocation || 'VENUE' }}
                     </div>
                     @if (ticket.eventLocation && ticket.eventLocation !== ticket.eventVenueName) {
@@ -106,7 +139,10 @@
                   </div>
 
                   <div>
-                    <label class="block font-impact text-xs uppercase mb-1 tracking-widest text-black/50">OWNER</label>
+                    <label
+                      class="block font-impact text-xs uppercase mb-1 tracking-widest text-black/50"
+                      >OWNER</label
+                    >
                     <div class="font-impact text-3xl uppercase tracking-tighter leading-none">
                       {{ buyerName() || 'TICKET HOLDER' }}
                     </div>
@@ -114,13 +150,21 @@
 
                   <div class="flex justify-between">
                     <div>
-                      <label class="block font-impact text-xs uppercase mb-1 tracking-widest text-black/50">TYPE</label>
-                      <div class="font-impact text-3xl uppercase text-primary italic underline decoration-4">
+                      <label
+                        class="block font-impact text-xs uppercase mb-1 tracking-widest text-black/50"
+                        >TYPE</label
+                      >
+                      <div
+                        class="font-impact text-3xl uppercase text-primary italic underline decoration-4"
+                      >
                         {{ ticket.type }}
                       </div>
                     </div>
                     <div>
-                      <label class="block font-impact text-xs uppercase mb-1 tracking-widest text-black/50 text-right">PRICE</label>
+                      <label
+                        class="block font-impact text-xs uppercase mb-1 tracking-widest text-black/50 text-right"
+                        >PRICE</label
+                      >
                       <div class="font-impact text-3xl uppercase text-right">
                         {{ ticket.price | currencyFormat: 'COP' }}
                       </div>
@@ -129,7 +173,9 @@
                 </div>
 
                 <!-- Serial Number Bar -->
-                <div class="border-t-[6px] border-black p-4 flex items-center justify-between bg-zinc-100">
+                <div
+                  class="border-t-[6px] border-black p-4 flex items-center justify-between bg-zinc-100"
+                >
                   <div class="flex gap-2">
                     <div class="w-1 h-8 bg-black"></div>
                     <div class="w-2 h-8 bg-black"></div>
@@ -155,39 +201,49 @@
                   </div>
 
                   <div class="flex items-center gap-4">
-                    <span class="vertical-text text-[10px] font-bold tracking-[0.5em] uppercase border-r border-black pr-2 font-mono">
+                    <span
+                      class="vertical-text text-[10px] font-bold tracking-[0.5em] uppercase border-r border-black pr-2 font-mono"
+                    >
                       SCAN TO ENTER
                     </span>
                     <div class="border-[4px] border-black p-2 bg-white">
                       @if (getQRCodeUrl(ticket.qrToken)) {
-                        <img 
-                          [alt]="'QR Code ' + ticket.code" 
-                          class="w-40 h-40 grayscale" 
+                        <img
+                          [alt]="'QR Code ' + ticket.code"
+                          class="w-40 h-40 grayscale"
                           [src]="getQRCodeUrl(ticket.qrToken)"
                         />
                       } @else {
                         <div class="w-40 h-40 bg-zinc-200 flex items-center justify-center">
-                          <span class="material-symbols-outlined text-6xl text-black/30">qr_code</span>
+                          <span class="material-symbols-outlined text-6xl text-black/30"
+                            >qr_code</span
+                          >
                         </div>
                       }
                     </div>
                   </div>
 
                   <div class="text-center">
-                    <div class="bg-black text-white px-4 py-1 text-xl font-impact uppercase tracking-widest">
+                    <div
+                      class="bg-black text-white px-4 py-1 text-xl font-impact uppercase tracking-widest"
+                    >
                       {{ ticket.code || ticket.id.substring(0, 10).toUpperCase() }}
                     </div>
                   </div>
 
                   <div class="w-full space-y-4 pt-4 border-t-2 border-dashed border-black">
-                    <div class="flex justify-between items-center text-xs font-bold uppercase font-mono">
+                    <div
+                      class="flex justify-between items-center text-xs font-bold uppercase font-mono"
+                    >
                       <span>STATUS</span>
                       <span class="bg-neon text-black px-2 py-0.5">
                         {{ ticket.status || 'VALIDATED' }}
                       </span>
                     </div>
-                    <div class="bg-primary text-white text-center py-2 font-impact text-lg shadow-lg" 
-                         [style.transform]="i % 2 === 0 ? 'rotate(2deg)' : 'rotate(-1deg)'">
+                    <div
+                      class="bg-primary text-white text-center py-2 font-impact text-lg shadow-lg"
+                      [style.transform]="i % 2 === 0 ? 'rotate(2deg)' : 'rotate(-1deg)'"
+                    >
                       CONFIRMED
                     </div>
                   </div>
@@ -195,14 +251,16 @@
 
                 <!-- Action Buttons -->
                 <div class="flex flex-col border-t-[6px] border-black">
-                  <button 
+                  <button
                     (click)="downloadTicket(ticket)"
-                    class="w-full bg-primary hover:bg-orange-600 text-white font-impact text-xl py-6 flex items-center justify-center gap-3 transition-all active:translate-y-1">
+                    class="w-full bg-primary hover:bg-orange-600 text-white font-impact text-xl py-6 flex items-center justify-center gap-3 transition-all active:translate-y-1"
+                  >
                     <span class="material-symbols-outlined">download</span>
                     DOWNLOAD PDF
                   </button>
-                  <button 
-                    class="w-full bg-black hover:bg-zinc-800 text-white font-impact text-xl py-6 flex items-center justify-center gap-3 border-t-[6px] border-white transition-all active:translate-y-1">
+                  <button
+                    class="w-full bg-black hover:bg-zinc-800 text-white font-impact text-xl py-6 flex items-center justify-center gap-3 border-t-[6px] border-white transition-all active:translate-y-1"
+                  >
                     <span class="material-symbols-outlined">share</span>
                     SHARE PASS
                   </button>
@@ -217,17 +275,22 @@
     <!-- Important Information Section -->
     @if (!isLoading() && tickets().length > 0) {
       <section class="mt-20 border-[4px] border-primary p-8 bg-black relative overflow-hidden">
-        <div class="absolute top-0 right-0 p-2 text-primary/20 font-display text-6xl select-none">IMPORTANT</div>
+        <div class="absolute top-0 right-0 p-2 text-primary/20 font-display text-6xl select-none">
+          IMPORTANT
+        </div>
         <div class="relative z-10 flex flex-col md:flex-row gap-8 items-center">
           <div class="bg-primary text-black p-4 shrink-0">
             <span class="material-symbols-outlined text-5xl">warning</span>
           </div>
           <div class="space-y-4">
-            <h3 class="font-impact text-3xl uppercase tracking-tighter text-primary">Información Importante / Attention</h3>
+            <h3 class="font-impact text-3xl uppercase tracking-tighter text-primary">
+              Información Importante / Attention
+            </h3>
             <p class="text-white/80 leading-relaxed font-bold tracking-tight font-mono text-sm">
-              POR FAVOR, PRESENTA ESTE TICKET EN LA ENTRADA PARA SU VALIDACIÓN. ESTE TICKET ES VÁLIDO PARA UN INGRESO ÚNICO. 
-              LA REVENTA NO AUTORIZADA (O SU INTENTO) ES MOTIVO DE CONFISCACIÓN Y CANCELACIÓN SIN COMPENSACIÓN.
-              KEEP YOUR QR CODE PRIVATE. UNAUTHORIZED SHARING VOIDS TICKET VALIDITY IMMEDIATELY.
+              POR FAVOR, PRESENTA ESTE TICKET EN LA ENTRADA PARA SU VALIDACIÓN. ESTE TICKET ES
+              VÁLIDO PARA UN INGRESO ÚNICO. LA REVENTA NO AUTORIZADA (O SU INTENTO) ES MOTIVO DE
+              CONFISCACIÓN Y CANCELACIÓN SIN COMPENSACIÓN. KEEP YOUR QR CODE PRIVATE. UNAUTHORIZED
+              SHARING VOIDS TICKET VALIDITY IMMEDIATELY.
             </p>
           </div>
         </div>

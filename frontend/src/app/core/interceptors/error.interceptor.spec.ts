@@ -36,7 +36,7 @@ describe('errorInterceptor', () => {
       subscribe: (callbacks: any) => {
         callbacks.next();
         return { unsubscribe: () => {} };
-      }
+      },
     } as any);
 
     const promise = httpClient

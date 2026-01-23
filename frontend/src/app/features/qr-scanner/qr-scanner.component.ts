@@ -327,7 +327,7 @@ export class QRScannerComponent implements OnInit, OnDestroy {
 
             if (response.valid) {
               this.scanState.set('success');
-              this.validatedCount.update(count => count + 1);
+              this.validatedCount.update((count) => count + 1);
               this.toastService.show('¡Entrada válida! Acceso permitido', 'success');
               this.playSound('success');
             } else {
@@ -466,7 +466,7 @@ export class QRScannerComponent implements OnInit, OnDestroy {
       this.toastService.show('Ingresa un ID de ticket válido', 'warning');
       return;
     }
-    
+
     // Simulate QR detection with manual ID
     this.onQRDetected(ticketId);
     this.manualTicketId.set('');
@@ -491,19 +491,18 @@ export class QRScannerComponent implements OnInit, OnDestroy {
 
   getEventName(): string {
     const eventId = this.selectedEventId();
-    const event = this.events().find(e => e.id === eventId);
+    const event = this.events().find((e) => e.id === eventId);
     return event?.name || 'Evento desconocido';
   }
 
   getEventDate(): string {
     const eventId = this.selectedEventId();
-    const event = this.events().find(e => e.id === eventId);
+    const event = this.events().find((e) => e.id === eventId);
     if (!event?.date) return 'Fecha no disponible';
     return new Date(event.date).toLocaleDateString('es-ES', {
       day: '2-digit',
       month: '2-digit',
-      year: 'numeric'
+      year: 'numeric',
     });
   }
 }
-

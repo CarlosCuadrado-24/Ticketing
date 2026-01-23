@@ -73,7 +73,7 @@ export class EventForm implements OnInit {
     formData.append('date', new Date(this.form.get('date')?.value).toISOString());
     formData.append('location', this.form.get('location')?.value);
     formData.append('venueName', this.form.get('venueName')?.value || '');
-    
+
     const description = this.form.get('description')?.value;
     if (description) {
       formData.append('description', description);
