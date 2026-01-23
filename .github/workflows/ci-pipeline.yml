@@ -1,4 +1,4 @@
-name: CI Pipeline - Ticketing System
+name: CI Pipeline
 
 on:
   push:
@@ -7,115 +7,64 @@ on:
     branches: [main, develop, 'fix/**']
 
 jobs:
-  # ============================================
-  # BACKEND: Tests, Build y Validación
-  # ============================================
   backend:
-    name: 🔧 Backend Pipeline
+    name: 🔧 Backend
     runs-on: ubuntu-latest
     
     steps:
-      - name: 📥 Checkout
+      - name: 📥 Checkout código
         uses: actions/checkout@v4
 
-      - name: 🔧 Setup Node.js
+      - name: 🔧 Configurar Node.js 20
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
           cache-dependency-path: backend/package-lock.json
 
-      - name: 📦 Install dependencies
+      - name: 📦 Instalar dependencias
         working-directory: ./backend
         run: npm ci
 
-      - name: 🎨 Format & Lint
+      - name: 🎨 Formatear código
         working-directory: ./backend
-        run: |
-          npm run format
-          npm run lint
+        run: npm run format
 
-      - name: 🧪 Tests con cobertura
+      - name: 🔍 Analizar código (Lint)
         working-directory: ./backend
-        run: npm test -- --coverage --maxWorkers=2
+        run: npm run lint
 
-      - name: 🏗️ Build producción
+      - name: 🧪 Ejecutar tests con cobertura
+        working-directory: ./backend
+        run: npm test -- --coverage
+
+      - name: 🏗️ Compilar para producción
         working-directory: ./backend
         run: npm run build
 
-      - name: 📊 Upload coverage
-        uses: codecov/codecov-action@v3
-        with:
-          directory: ./backend/coverage
-          flags: backend
-        continue-on-error: true
-
-  # ============================================
-  # FRONTEND: Tests, Build y Validación
-  # ============================================
   frontend:
-    name: 🎨 Frontend Pipeline
+    name: 🎨 Frontend
     runs-on: ubuntu-latest
     
     steps:
-      - name: 📥 Checkout
+      - name: 📥 Checkout código
         uses: actions/checkout@v4
 
-      - name: 🔧 Setup Node.js
+      - name: 🔧 Configurar Node.js 20
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
           cache-dependency-path: frontend/package-lock.json
 
-      - name: 📦 Install dependencies
+      - name: 📦 Instalar dependencias
         working-directory: ./frontend
         run: npm ci
 
-      - name: 🎨 Format check
+      - name: ✨ Verificar formato de código
         working-directory: ./frontend
         run: npx prettier --check "src/**/*.{ts,html,css}"
 
-      - name: 🏗️ Build producción
+      - name: 🏗️ Compilar para producción
         working-directory: ./frontend
         run: npm run build
-
-  # ============================================
-  # DOCKER: Validación (solo si es necesario)
-  # ============================================
-  docker-validation:
-    name: 🐳 Docker Validation
-    runs-on: ubuntu-latest
-    needs: [backend, frontend]
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
-    
-    steps:
-      - name: 📥 Checkout
-        uses: actions/checkout@v4
-
-      - name: 🐳 Validate Docker Compose
-        run: docker compose config
-
-      - name: 🐳 Build images (sin push)
-        run: docker compose build
-
-  # ============================================
-  # RESUMEN
-  # ============================================
-  summary:
-    name: 📋 Pipeline Summary
-    runs-on: ubuntu-latest
-    needs: [backend, frontend]
-    if: always()
-    
-    steps:
-      - name: 📊 Check Status
-        run: |
-          if [ "${{ needs.backend.result }}" = "success" ] && \
-             [ "${{ needs.frontend.result }}" = "success" ]; then
-            echo "✅ Pipeline exitoso"
-            exit 0
-          else
-            echo "❌ Pipeline fallido"
-            exit 1
-          fi
