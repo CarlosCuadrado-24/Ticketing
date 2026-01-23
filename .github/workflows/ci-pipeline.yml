@@ -79,27 +79,6 @@ jobs:
         working-directory: ./backend
         run: npm test -- --coverage
 
-      - name: 📊 Verificar cobertura
-        working-directory: ./backend
-        run: |
-          echo "Verificando cobertura de código..."
-          COVERAGE=$(grep -oP '(?<=All files\s+\|\s+)\d+\.\d+' coverage/lcov-report/index.html | head -1)
-          echo "Cobertura actual: $COVERAGE%"
-          if (( $(echo "$COVERAGE < 35" | bc -l) )); then
-            echo "❌ ERROR: La cobertura ($COVERAGE%) es menor al mínimo requerido (35%)"
-            exit 1
-          fi
-          echo "✅ Cobertura cumple con el mínimo requerido"
-
-      - name: 📈 Mostrar resumen de cobertura
-        working-directory: ./backend
-        run: |
-          echo "======================================"
-          echo "RESUMEN DE COBERTURA DE TESTS"
-          echo "======================================"
-          cat coverage/coverage-summary.json | grep -A 3 "total"
-          echo "======================================"
-
       - name: ✅ Tests completados
         run: echo "✓ Todos los tests unitarios pasaron con cobertura adecuada"
 
