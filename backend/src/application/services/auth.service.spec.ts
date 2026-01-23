@@ -19,10 +19,9 @@ describe('AuthService', () => {
       save: jest.fn(),
       update: jest.fn(),
       delete: jest.fn(),
-      findAll: jest.fn(),
-      findByRole: jest.fn(),
       findWithFilters: jest.fn(),
       countWithFilters: jest.fn(),
+      count: jest.fn(),
     };
 
     mockJwtService = {
@@ -273,7 +272,7 @@ describe('AuthService', () => {
 
       await expect(
         service.refreshToken(refreshToken)
-      ).rejects.toThrow(new UnauthorizedException('User not found'));
+      ).rejects.toThrow(new UnauthorizedException('Invalid refresh token'));
     });
   });
 
@@ -345,7 +344,7 @@ describe('AuthService', () => {
         },
         {
           secret: 'your-secret-key',
-          expiresIn: '15m',
+          expiresIn: '24h',
         }
       );
 

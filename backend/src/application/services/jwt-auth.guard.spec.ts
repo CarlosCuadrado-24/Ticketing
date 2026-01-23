@@ -213,7 +213,7 @@ describe('JwtAuthGuard', () => {
       await guard.canActivate(mockExecutionContext);
 
       expect(mockJwtService.verifyAsync).toHaveBeenCalledWith('my-token-123', {
-        secret: 'your-secret-key',
+        secret: process.env.JWT_SECRET ?? 'your-secret-key',
       });
     });
 
@@ -228,7 +228,7 @@ describe('JwtAuthGuard', () => {
       await guard.canActivate(mockExecutionContext);
 
       expect(mockJwtService.verifyAsync).toHaveBeenCalledWith('cookie-token-456', {
-        secret: 'your-secret-key',
+        secret: process.env.JWT_SECRET ?? 'your-secret-key',
       });
     });
   });
