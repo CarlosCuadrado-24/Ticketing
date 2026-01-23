@@ -79,7 +79,7 @@ jobs:
         working-directory: ./backend
         run: npm test -- --coverage
 
-      - name: 📊 Verificar cobertura > 35%
+      - name: 📊 Verificar cobertura
         working-directory: ./backend
         run: |
           echo "Verificando cobertura de código..."
